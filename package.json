@@ -1,0 +1,29 @@
+{
+  "name": "maawebsite",
+  "version": "1.0.0",
+  "description": "backend server for the MAA website",
+  "main": "maaNode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sudo node maaNode.js",
+    "dev": "sudo nodemon maaNode.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osamaramihafez/maaWebsite.git"
+  },
+  "author": "Osama Hafez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/osamaramihafez/maaWebsite/issues"
+  },
+  "homepage": "https://github.com/osamaramihafez/maaWebsite#readme",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "express": "^4.17.1",
+    "nodemailer": "^6.4.16",
+    "objects-to-csv": "^1.3.6",
+    "pg": "^8.3.0",
+    "square-connect": "^4.20200722.1"
+  }
+}
