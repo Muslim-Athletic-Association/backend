@@ -11,7 +11,7 @@ const member = require('./routes/member');
 const program = require('./routes/program');
 const soccer = require('./routes/soccer');
 const yoga = require('./routes/yoga');
-const mail = require('./model/mail');
+const mail = require('./routes/mail');
 
 var app = express();
 app.use(bodyParser.json());
