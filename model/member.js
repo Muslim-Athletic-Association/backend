@@ -188,17 +188,6 @@ async function getMembersCSV(data) {
   })
 }
 
-// CREATE TABLE consent (
-//   member_id INTEGER,
-//   program_name VARCHAR(50),
-//   prupose VARCHAR(50),
-//   consent BOOLEAN,
-
-//   constraint consentPk primary key (member, program),
-//   constraint consentMemberFk foreign key (member_id) references member(id) on update cascade on delete cascade,
-//   constraint consentProgramFk foreign key (program_name) references program(name) on update cascade on delete cascade
-// );
-
 async function insertConsent(data) {
   // This function inserts a member's consent into the database
   var sql = 'INSERT INTO consent (member_id, program_name, purpose, consent) VALUES ($1, $2, $3, $4);';
