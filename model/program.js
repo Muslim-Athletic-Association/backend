@@ -6,7 +6,7 @@ const errorEnum = c.errorEnum;
 /**
  * Uses the Create operation from ./constants in order to insert a program into the database.
  * 
- * @param {name: string} data 
+ * @param {name: string} data
  */
 async function createProgram(data) {
     var invalid = c.simpleValidation(data, {

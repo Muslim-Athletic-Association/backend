@@ -1,6 +1,7 @@
 CREATE TABLE program(
     program_id SERIAL PRIMARY KEY, 
     name VARCHAR(50),
+    
     UNIQUE(name)
 );
 
@@ -11,9 +12,10 @@ CREATE TABLE person
     last_name VARCHAR(30) NOT NULL,
     email VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
-    gender BOOLEAN,
+    gender VARCHAR(6),
     birthday DATE NOT NULL,
-
+    password VARCHAR(50) NOT NULL,
+    
     UNIQUE (email)
 );
 
@@ -65,7 +67,11 @@ CREATE TABLE session(
 CREATE TABLE competition(
     competition_id SERIAL PRIMARY KEY,
     program INTEGER,
-
+    competition_title VARCHAR(50),
+    start_date date,
+    end_date date,
+    
+    UNIQUE (competition_title),
     constraint programCompetitionFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
 

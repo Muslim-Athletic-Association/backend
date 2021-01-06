@@ -6,23 +6,14 @@ const http = require('http');
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-// const checkout = require('./routes/checkout');
-const member = require('./routes/member');
+const person = require('./routes/person');
 const program = require('./routes/program');
-// const soccer = require('./routes/soccer');
-// const yoga = require('./routes/yoga');
-// const mail = require('./routes/mail');
 
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname)); // This line was added to support the square payments?
-// app.use(checkout);
-// app.use(member);
+app.use(person);
 app.use(program);
-// app.use(soccer);
-// app.use(yoga);
-// app.use(mail);
 
 
 // This sets the options for https so that it finds the ssl certificates
