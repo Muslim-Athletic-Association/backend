@@ -1,7 +1,8 @@
 Current:
 - Create the necessary rudimentary CRUD operations on each of the following tables the database.
     -
-- Add Views for Rosters, Standings, and Schedule in PSQL db.
+- 
 
 Later:
 - Implement password encryption for users
+- Add Views for Rosters, Standings, and Schedule in PSQL db.

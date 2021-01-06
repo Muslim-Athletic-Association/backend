@@ -258,6 +258,5 @@ module.exports = {
   simpleValidation: checkBody,
   isFunction: isFunction,
   errorEnum: errorEnum,
-  INTERNALERROR: INTERNALERROR,
   Message: Message,
 }

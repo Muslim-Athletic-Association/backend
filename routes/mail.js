@@ -1,17 +1,9 @@
 // This file contains all of the routes that handle email related api requests.
-
 const router = require('express').Router();
 const m = require('../model/mail');
-const h = require("../model/constants");
-const isFunction = h.isFunction;
-const errorEnum = h.errorEnum; 
-const setResult = h.setResult;
+const c = require("../routes/routingConstants");
 
-INTERNALERROR = { error: "Server Could not process the request" }
-DUPLICATE = { error: "Duplicate" }
-
-EMPTY = {};
-
+// TODO: handle registration confirmation mailing inside of registration model and remove their current endpoints, there's no point in sending a request for an email in this case.
 
 router.post('/api/mail/yogaClassRegistration', async function (req, res) {
     //Return all teams information.
