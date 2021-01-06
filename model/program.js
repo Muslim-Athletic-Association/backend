@@ -9,11 +9,11 @@ const errorEnum = c.errorEnum;
  * @param {name: string} data 
  */
 async function createProgram(data) {
-    empty = c.simpleValidation(data, {
+    var invalid = c.simpleValidation(data, {
         name: "string"
     })
-    if (empty) {
-        return empty;
+    if (invalid) {
+        return invalid;
     }
     var sql = 'INSERT INTO program (name) VALUES ($1) RETURNING *;';
     var params = [data.name]
@@ -30,11 +30,11 @@ async function createProgram(data) {
  * @param {name: string} data 
  */
 async function deleteProgram(data) {
-    empty = c.simpleValidation(data, {
+    var invalid = c.simpleValidation(data, {
         name: "string"
     })
-    if (empty) {
-        return empty;
+    if (invalid) {
+        return invalid;
     }
     var sql = 'DELETE FROM program WHERE name=$1 RETURNING *;';
     var params = [data.name]
