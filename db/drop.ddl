@@ -1,2 +1,2 @@
-drop database website;
-create database website;
+drop database maadmin;
+create database maadmin;

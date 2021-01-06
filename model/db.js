@@ -5,7 +5,7 @@ const db = new Client({
   password: 'VeryG00dPa$$word',
   host: 'localhost',
   port: 5432,
-  database: 'website'
+  database: 'maadmin'
 })
 
 db.connect()

@@ -1,71 +1,157 @@
--- This is a temporary db. This should not be the final schema but we will work with this for now.
--- Before making db changes, always back up the database (pg_dump).
-
 CREATE TABLE program(
-  -- This is so that we can request all of the program names.
-  
-  pgid SERIAL PRIMARY KEY, 
-  name VARCHAR(50) UNIQUE, --The name of the program, to be referenced in other tables.
-  individualPrice INTEGER DEFAULT 0, -- Tells us the pricing for an individual. (0 if no individuals)
-  groupPrice INTEGER DEFAULT 0, -- Tells us the pricing for a group. (0 if no groups)
-  gender VARCHAR(10) NOT NULL,
-  capacity INTEGER DEFAULT 0, -- Tells us the maximum capacity for a program, 0 if no capacity
-  numRegistered INTEGER DEFAULT 0, -- The # of people registered for a programs
-  photo BOOLEAN DEFAULT FALSE -- Tells us if we need registrants to upload photos for individual registration.
+    program_id SERIAL PRIMARY KEY, 
+    name VARCHAR(50),
+    
+    UNIQUE(name)
 );
 
-CREATE TABLE member
+CREATE TABLE person
 (
-  -- This is so that we can store and retain information about members, it also allows us to filter them by program, gender, age... etc.
-
-  id SERIAL PRIMARY KEY,
-  fName VARCHAR(30) NOT NULL, -- First name
-  lName VARCHAR(30) NOT NULL, -- Last name
-  phone VARCHAR(20) NOT NULL,
-  gender VARCHAR(10) NOT NULL,
-  birthday DATE NOT NULL,
-  email VARCHAR(50) NOT NULL,
---   Also need to figure out how to store an image in this location (or atleast a reference to the image.) 
-
-  UNIQUE (fname, lname, phone) --We will search for members based on a combination of these three names
-);
-
-CREATE table guardian(
-    gid SERIAL PRIMARY KEY,
-    member INTEGER NOT NULL,
-    fname VARCHAR(30) NOT NULL,
-    lname VARCHAR(30) NOT NULL,
-    email VARCHAR(30) NOT NULL,
+    person_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    email VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
-
-    constraint memGuardFk foreign key (member) references member(id) on update cascade on delete cascade
+    gender VARCHAR(6),
+    birthday DATE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    
+    UNIQUE (email)
 );
 
-CREATE TABLE programMember (
-  -- Each member can be registered for a program.
+CREATE TABLE payment(
+    payment_id SERIAL PRIMARY KEY,
+    person INTEGER,
+    program INTEGER,
+    purpose VARCHAR(50),
+    payment_datetime TIMESTAMP,
 
-  member INTEGER,
-  program VARCHAR(50),
-  paid BOOLEAN,
-
-  constraint pmPk primary key (member, program),
-  constraint memberFk foreign key (member) references member(id) on update cascade on delete cascade,
-  constraint programFk foreign key (program) references program(name) on update cascade on delete cascade
+    constraint personPaymentFk foreign key (person) references person(person_id) on update cascade on delete cascade,
+    constraint programPaymentFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
 
 CREATE TABLE consent (
-  member_id INTEGER,
-  program_name VARCHAR(50),
-  purpose VARCHAR(50),
-  consent BOOLEAN,
+    consent_id SERIAL PRIMARY KEY,
+    person INTEGER,
+    purpose VARCHAR(50),
+    is_given BOOLEAN,
+    consent_datetime TIMESTAMP,
 
-  constraint consentPk primary key (member_id, purpose),
-  constraint consentMemberFk foreign key (member_id) references member(id) on update cascade on delete cascade,
-  constraint consentProgramFk foreign key (program_name) references program(name) on update cascade on delete cascade
+    constraint personConsentFk foreign key (person) references person(person_id) on update cascade on delete cascade,
+    UNIQUE (person, purpose)
 );
 
-insert into program (name, individualPrice, groupPrice, gender, capacity, photo) values ('mens over 18 soccer league covid 1', 113, 980, 'Male', 200, TRUE);
-insert into program (name, gender) values ('Yoga', 'Female');
+CREATE TABLE guardian(
+    guardian_id SERIAL PRIMARY KEY,
+    person INTEGER NOT NULL,
+    full_name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    phone VARCHAR(30) NOT NULL,
+
+    constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
+);
+
+CREATE TABLE session(
+    session_id SERIAL PRIMARY KEY,
+    program INTEGER NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    instructor VARCHAR(50),
+    capacity INTEGER,
+    session_time TIME,
+    session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
+    location VARCHAR(20),
+
+    constraint programSessionFk foreign key (program) references program(program_id) on update cascade on delete cascade
+);
+
+CREATE TABLE competition(
+    competition_id SERIAL PRIMARY KEY,
+    program INTEGER,
+    competition_title VARCHAR(50),
+    start_date date,
+    end_date date,
+    
+    UNIQUE (competition_title),
+    constraint programCompetitionFk foreign key (program) references program(program_id) on update cascade on delete cascade
+);
+
+CREATE TABLE team(
+    team_id SERIAL PRIMARY KEY,
+    captain INTEGER,
+    team_name VARCHAR(50),
+
+    constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade
+);
+
+CREATE TABLE competitionGroup(
+    group_id SERIAL PRIMARY KEY,
+    competition INTEGER,
+    capacity INTEGER,
+    level INTEGER,
+
+    constraint groupCompetitionFk foreign key (competition) references competition(competition_id) on update cascade on delete cascade
+);
+
+CREATE TABLE player(
+    player_id SERIAL PRIMARY KEY,
+    team INTEGER,
+    person INTEGER,
+
+    constraint playerTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
+    constraint playerPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade
+);
+
+CREATE TABLE fixture(
+    fixture_id SERIAL PRIMARY KEY,
+    team1 INTEGER,
+    team2 INTEGER,
+    competition INTEGER,
+    fixture_date DATE,
+    fixture_time TIME,
+    score1 INTEGER,
+    score2 INTEGER,
+
+    constraint fixtureTeam1Fk foreign key (team1) references team(team_id) on update cascade on delete cascade,
+    constraint fixtureTeam2Fk foreign key (team2) references team(team_id) on update cascade on delete cascade,
+    constraint fixtureCompetitionFk foreign key (competition) references competition(competition_id) on update cascade on delete cascade
+);
+
+CREATE TABLE yogaMember(
+    yoga_id SERIAL PRIMARY KEY,
+    session INTEGER,
+    person INTEGER,
+
+    constraint yogaPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade,
+    constraint yogaSessionFk foreign key (session) references session(session_id) on update cascade on delete cascade
+);
+
+CREATE TABLE soccerPlayerFixture(
+    soccer_id SERIAL PRIMARY KEY,
+    player INTEGER,
+    fixture INTEGER,
+    goals INTEGER DEFAULT 0,
+    assists INTEGER DEFAULT 0,
+    yellow_cards INTEGER DEFAULT 0,
+    red_card INTEGER DEFAULT 0,
+
+    constraint soccerPlayerFk foreign key (player) references player(player_id) on update cascade on delete cascade,
+    constraint soccerPlayerFixtureFk foreign key (fixture) references fixture(fixture_id) on update cascade on delete cascade
+);
+
+CREATE TABLE teamRecord(
+    team_record_id SERIAL PRIMARY KEY,
+    group_key INTEGER,
+    team INTEGER,
+    fixtures_played INTEGER DEFAULT 0,
+    wins INTEGER DEFAULT 0,
+    losses INTEGER DEFAULT 0,
+    ties INTEGER DEFAULT 0,
+    gf INTEGER DEFAULT 0,
+    ga INTEGER DEFAULT 0,
+    
+    constraint teamRecordTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
+    constraint teamRecordCompetitionGroupFk foreign key (group_key) references competitionGroup(group_id) on update cascade on delete cascade
+);
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO maadmin;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO maadmin;
