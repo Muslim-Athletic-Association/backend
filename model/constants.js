@@ -14,9 +14,6 @@ function isFunction(f) {
   return f && {}.toString.call(f) === '[object Function]';
 };
 
-// Error messages
-INTERNALERROR = { error: "The server could not process the request." }
-
 // This is a constant response return format so that all of our responses have the same format.
 function setResult(d, pass, msg, code) {
   return { data: d, error: msg, success: pass, ecode: code };
@@ -61,6 +58,7 @@ const dataTypeRegex = {
   email: /^[\w-\.]+@([\w-]+\.)+[\w-]+$/,
   phone: /^(\+|\(|\d+|\))+$/, //I made this one myself, might be iffy
   string: /.*/,
+  bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/ //I made this one myself, tested it as well.
 }
 
 /**
@@ -74,11 +72,10 @@ function checkBodyTypes(data, required){
     var key = keys[i];
     var type = required[key];
     var value = data[key];
-    console.log(type, dataTypeRegex[type])
     if (dataTypeRegex[type] && !dataTypeRegex[type].test(value)) {
       // If the regex test fails, this implies that the formatting is incorrect.
-      console.log("Invalid: Body contains an incorrect value type.")
-      return setResult(data, false, "Body contains an incorrect value type.", errorEnum.INVALID);
+      console.log("Invalid: Body contains an invalid value for key: " + key)
+      return setResult(data, false, "Body contains an invalid value for key: " + key, errorEnum.INVALID);
     }
   }
   return;
@@ -93,8 +90,8 @@ function checkBodyTypes(data, required){
 function checkBodyKeys(data, required){
   var keys = Object.keys(data);
   var requiredKeys = Object.keys(required);
-  for (var i = 0; i < Object.keys(keys).length; i++) {
-    if (!keys[i].includes(requiredKeys[i])) {
+  for (var i = 0; i < Object.keys(requiredKeys).length; i++) {
+    if (!keys[i] || !keys[i].includes(requiredKeys[i])) {
       console.log("Invalid: Body is missing the key: " + requiredKeys[i])
       return setResult(data, false, "Body is missing the key: " + requiredKeys[i], errorEnum.INVALID);
     }
