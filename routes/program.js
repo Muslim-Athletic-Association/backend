@@ -1,40 +1,40 @@
 const router = require('express').Router();
-const program = require("../model/program");
-const ObjectsToCsv = require('objects-to-csv');
-const fs = require('fs');
-const db = require("../model/db.js");
-const isFunction = require("../model/helper").isFunction;
+const p = require("../model/program");
+const c = require("./routingConstants");
 
-var programs = {};
-program.getPrograms().then((p)=>{programs = p});
-
-router.get('/api/programs/getPrograms', (req, res) => {
-    //Return all program information.
-    res.header('Access-Control-Allow-Origin', '*');
-    res.status(200);
-    res.json(programs);
+/**
+ * Add a program POST request handling.
+ * See createProgram function for request body requirements.
+ */
+router.post('/api/addProgram', async function createMemberResponse(request, response) {
+    // returns member information in json format if successful
+    response.header('Access-Control-Allow-Origin', '*');
+    await p.createProgram(request.body).then(async function (result) {
+        return await c.simpleResponse(result, response);
+    });
 })
 
-router.post('/api/program/setPrice/:program/:price', (req, res) => {
-    //Return all program information.
-    res.header('Access-Control-Allow-Origin', '*');
-    programs[req.params.program].setPrice(price);
-    res.status(200);
-    res.json(programs);
+/**
+ * Remove a program POST request handling.
+ */
+router.post('/api/deleteProgram', async function createMemberResponse(request, response) {
+    // returns member information in json format if successful
+    response.header('Access-Control-Allow-Origin', '*');
+    await p.deleteProgram(request.body).then(async function (result) {
+        return await c.simpleResponse(result, response);
+    });
 })
 
-router.post('/api/validateRegistration/:program/:gender', (req, res) => {
-    //Check to see if the individual can register for this program.
-    res.header('Access-Control-Allow-Origin', '*');
-    console.log(req.params.program, programs);
-    //console.log(programs[req.params.program]);
-    if (programs[req.params.program].validate(req.params.gender)){
-        res.status(200);
-        res.json({valid: true})
-        return;
-    }
-    res.status(500);
-    res.json(INTERNALERROR);
+/**
+ * Remove a program POST request handling.
+ * 
+ */
+router.get('/api/getPrograms', async function createMemberResponse(request, response) {
+    // returns member information in json format if successful
+    response.header('Access-Control-Allow-Origin', '*');
+    await p.getPrograms(request.body).then(async function (result) {
+        return await c.simpleResponse(result, response);
+    });
 })
 
 module.exports = router;
