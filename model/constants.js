@@ -38,7 +38,7 @@ class Message {
  */
 function checkEmptyBody(data) {
   var keys = Object.keys(data);
-  if (keys.length == 0){
+  if (keys.length == 0) {
     return setResult({}, false, "Request body is empty.", errorEnum.INVALID);
 
   }
@@ -60,7 +60,8 @@ const dataTypeRegex = {
   phone: /^(\+|\(|\d+|\))+$/, //I made this one myself, might be iffy
   string: /.*/,
   bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/, //I made this one myself, tested it as well.
-  integer: /\d+/ //I made this one myself, not tested.
+  integer: /\d+/, //I made this one myself, not tested.
+  list: "ignore"
 }
 
 /**
@@ -68,13 +69,13 @@ const dataTypeRegex = {
  * 
  * @param {Object[key, type]} required
  */
-function checkBodyTypes(data, required){
+function checkBodyTypes(data, required) {
   var keys = Object.keys(required);
   for (var i = 0; i < Object.keys(required).length; i++) {
     var key = keys[i];
     var type = required[key];
     var value = data[key];
-    if (dataTypeRegex[type] && !dataTypeRegex[type].test(value)) {
+    if (dataTypeRegex[type] && dataTypeRegex[type] != "ignore" && !dataTypeRegex[type].test(value)) {
       // If the regex test fails, this implies that the formatting is incorrect.
       console.log("Invalid: Body contains an invalid value for key: " + key)
       return setResult(data, false, "Body contains an invalid value for key: " + key, errorEnum.INVALID);
@@ -89,11 +90,11 @@ function checkBodyTypes(data, required){
  * @param {Object[key, type]} required 
  */
 
-function checkBodyKeys(data, required){
+function checkBodyKeys(data, required) {
   var keys = Object.keys(data);
   var requiredKeys = Object.keys(required);
   for (var i = 0; i < Object.keys(requiredKeys).length; i++) {
-    if (!keys[i] || !keys[i].includes(requiredKeys[i])) {
+    if (!keys[i] || !keys.includes(requiredKeys[i])) {
       console.log("Invalid: Body is missing the key: " + requiredKeys[i])
       return setResult(data, false, "Body is missing the key: " + requiredKeys[i], errorEnum.INVALID);
     }
@@ -113,17 +114,17 @@ function checkBodyKeys(data, required){
  * @param {List[String]} types
  * The types of the values that should be in the parameters
  */
-function checkBody(data, required){
+function checkBody(data, required) {
   var empty = checkEmptyBody(data);
-  if (empty){
+  if (empty) {
     return empty;
   }
   var empty = checkBodyKeys(data, required);
-  if (empty){
+  if (empty) {
     return empty;
   }
   var empty = checkBodyTypes(data, required);
-  if (empty){
+  if (empty) {
     return empty;
   }
   return;
