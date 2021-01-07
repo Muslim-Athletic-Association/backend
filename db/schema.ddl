@@ -19,15 +19,26 @@ CREATE TABLE person
     UNIQUE (email)
 );
 
-CREATE TABLE payment(
-    payment_id SERIAL PRIMARY KEY,
-    person INTEGER,
-    program INTEGER,
-    purpose VARCHAR(50),
-    payment_datetime TIMESTAMP,
+CREATE TABLE subscription(
+    subscription_id SERIAL PRIMARY KEY,
+    program INTEGER NOT NULL,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    price INTEGER,
 
-    constraint personPaymentFk foreign key (person) references person(person_id) on update cascade on delete cascade,
-    constraint programPaymentFk foreign key (program) references program(program_id) on update cascade on delete cascade
+    constraint subscriptionProgramFk foreign key (program) references program(program_id) on update cascade on delete cascade
+);
+
+CREATE TABLE registration(
+    registration_id SERIAL PRIMARY KEY,
+    person INTEGER,
+    subscription INTEGER,
+    datetime TIMESTAMP,
+    payment INTEGER,
+
+    UNIQUE(person, subscription),
+    constraint registrationPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade,
+    constraint registrationSubscriptionFk foreign key (subscription) references subscription(subscription_id) on update cascade on delete cascade
 );
 
 CREATE TABLE consent (
@@ -35,7 +46,7 @@ CREATE TABLE consent (
     person INTEGER,
     purpose VARCHAR(50),
     is_given BOOLEAN,
-    consent_datetime TIMESTAMP,
+    datetime TIMESTAMP,
 
     constraint personConsentFk foreign key (person) references person(person_id) on update cascade on delete cascade,
     UNIQUE (person, purpose)
@@ -51,24 +62,14 @@ CREATE TABLE guardian(
     constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
-CREATE TABLE course(
-    course_id SERIAL PRIMARY KEY,
-    program INTEGER NOT NULL,
-    title VARCHAR(50) NOT NULL,
-    instructor VARCHAR(50),
-    capacity INTEGER,
-
-    constraint programSessionFk foreign key (program) references program(program_id) on update cascade on delete cascade
-);
-
 CREATE TABLE competition(
     competition_id SERIAL PRIMARY KEY,
     program INTEGER,
-    competition_title VARCHAR(50),
+    title VARCHAR(50),
     start_date date,
     end_date date,
     
-    UNIQUE (competition_title),
+    UNIQUE (title),
     constraint programCompetitionFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
 
@@ -76,6 +77,7 @@ CREATE TABLE team(
     team_id SERIAL PRIMARY KEY,
     captain INTEGER,
     team_name VARCHAR(50),
+    capacity INTEGER,
 
     constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade
 );
@@ -115,22 +117,18 @@ CREATE TABLE fixture(
 
 CREATE Table session(
     session_id SERIAL PRIMARY KEY,
-    course INTEGER,
+    program INTEGER,
+    title VARCHAR(50) NOT NULL, --The type of session
+    instructor VARCHAR(50),
+    capacity INTEGER,
     session_time TIME,
     session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
+    start_date DATE,
+    count INTEGER, --The number of sessions that occur after the start date
     location VARCHAR(20),
 
-    constraint sessionCourseFk foreign key (course) references course(course_id) on update cascade on delete cascade
+    constraint sessionProgramFk foreign key (program) references program(program_id) on update cascade on delete cascade
 
-);
-
-CREATE TABLE yogaMember(
-    yoga_id SERIAL PRIMARY KEY,
-    course INTEGER,
-    person INTEGER,
-
-    constraint yogaPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade,
-    constraint yogaCourseFk foreign key (course) references course(course_id) on update cascade on delete cascade
 );
 
 CREATE TABLE soccerPlayerFixture(
@@ -148,7 +146,7 @@ CREATE TABLE soccerPlayerFixture(
 
 CREATE TABLE teamRecord(
     team_record_id SERIAL PRIMARY KEY,
-    group_key INTEGER,
+    group_id INTEGER,
     team INTEGER,
     fixtures_played INTEGER DEFAULT 0,
     wins INTEGER DEFAULT 0,
@@ -158,7 +156,7 @@ CREATE TABLE teamRecord(
     ga INTEGER DEFAULT 0,
     
     constraint teamRecordTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
-    constraint teamRecordCompetitionGroupFk foreign key (group_key) references competitionGroup(group_id) on update cascade on delete cascade
+    constraint teamRecordCompetitionGroupFk foreign key (group_id) references competitionGroup(group_id) on update cascade on delete cascade
 );
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO maadmin;

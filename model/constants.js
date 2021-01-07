@@ -55,10 +55,12 @@ function checkEmptyBody(data) {
 const dataTypeRegex = {
   time: /^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/,
   date: /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/,
+  datetime: /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/,
   email: /^[\w-\.]+@([\w-]+\.)+[\w-]+$/,
   phone: /^(\+|\(|\d+|\))+$/, //I made this one myself, might be iffy
   string: /.*/,
-  bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/ //I made this one myself, tested it as well.
+  bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/, //I made this one myself, tested it as well.
+  integer: /\d+/ //I made this one myself, not tested.
 }
 
 /**
