@@ -51,15 +51,12 @@ CREATE TABLE guardian(
     constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
-CREATE TABLE session(
-    session_id SERIAL PRIMARY KEY,
+CREATE TABLE course(
+    course_id SERIAL PRIMARY KEY,
     program INTEGER NOT NULL,
     title VARCHAR(50) NOT NULL,
     instructor VARCHAR(50),
     capacity INTEGER,
-    session_time TIME,
-    session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
-    location VARCHAR(20),
 
     constraint programSessionFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
@@ -116,13 +113,24 @@ CREATE TABLE fixture(
     constraint fixtureCompetitionFk foreign key (competition) references competition(competition_id) on update cascade on delete cascade
 );
 
+CREATE Table session(
+    session_id SERIAL PRIMARY KEY,
+    course INTEGER,
+    session_time TIME,
+    session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
+    location VARCHAR(20),
+
+    constraint sessionCourseFk foreign key (course) references course(course_id) on update cascade on delete cascade
+
+);
+
 CREATE TABLE yogaMember(
     yoga_id SERIAL PRIMARY KEY,
-    session INTEGER,
+    course INTEGER,
     person INTEGER,
 
     constraint yogaPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade,
-    constraint yogaSessionFk foreign key (session) references session(session_id) on update cascade on delete cascade
+    constraint yogaCourseFk foreign key (course) references course(course_id) on update cascade on delete cascade
 );
 
 CREATE TABLE soccerPlayerFixture(
