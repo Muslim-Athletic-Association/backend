@@ -32,13 +32,13 @@ async function createPerson(data) {
     });
     return await c.create(sql, params, m);
 }
+
 /**
  * Uses the remove operation from ./constants in order to remove a program from the database.
  * 
  * @param {name: string} data 
  */
 async function getPerson(data) {
-    console.log(data);
     var sql = 'SELECT * from person where email = $1;';
     var params = [data.email];
     var m = new c.Message({
@@ -54,6 +54,7 @@ async function getPerson(data) {
         }
     });
 }
+
 module.exports = {
     createPerson: createPerson,
     getPerson: getPerson
