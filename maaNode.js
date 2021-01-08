@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const person = require('./routes/person');
 const program = require('./routes/program');
 const registration = require('./routes/registration');
+const sessions = require('./routes/session');
 
 var app = express();
 app.use(bodyParser.json());
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(person);
 app.use(program);
 app.use(registration);
+app.use(sessions);
 
 
 // This sets the options for https so that it finds the ssl certificates
