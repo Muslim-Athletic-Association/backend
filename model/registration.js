@@ -65,6 +65,28 @@ async function consent(data) {
     return await c.create(sql, params, m);
 }
 
+
+/**
+ * Uses the remove operation from ./constants in order to remove a program from the database.
+ * 
+ * @param {name: string} data 
+ */
+async function getPrograms(data) {
+    var invalid = c.simpleValidation(data, {
+        person: "integer"
+    })
+    if (invalid) {
+        return invalid;
+    }
+    var sql = 'SELECT * from personRegistration where person = $1;';
+    var params = [data.person];
+    var m = new c.Message({
+        success: "Successfully retrieved user registration."
+    });
+    return await c.retrieve(sql, params, m);
+}
+
 module.exports = {
     subscribe: subscribe,
+    getPrograms: getPrograms,
 }
