@@ -78,7 +78,7 @@ function checkBodyTypes(data, required) {
     if (dataTypeRegex[type] && dataTypeRegex[type] != "ignore" && !dataTypeRegex[type].test(value)) {
       // If the regex test fails, this implies that the formatting is incorrect.
       console.log("Invalid: Body contains an invalid value for key: " + key)
-      return setResult(data, false, "Body contains an invalid value for key: " + key, errorEnum.INVALID);
+      return setResult(data, false, "Invalid value set for: " + key, errorEnum.INVALID);
     }
   }
   return;
@@ -151,7 +151,7 @@ async function retrieve(sql, params, message) {
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
     if (result.rows[0] == null) {
-      console.log(none);
+      console.log(message.none);
       return setResult({}, false, message.none, errorEnum.DNE);
     }
     console.log(message.success);

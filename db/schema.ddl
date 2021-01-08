@@ -22,6 +22,7 @@ CREATE TABLE person
 CREATE TABLE subscription(
     subscription_id SERIAL PRIMARY KEY,
     program INTEGER NOT NULL,
+    name VARCHAR(50),
     start_date DATE,
     end_date DATE,
     price INTEGER,
