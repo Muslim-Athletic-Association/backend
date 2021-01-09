@@ -22,8 +22,9 @@ CREATE TABLE person
 CREATE TABLE subscription(
     subscription_id SERIAL PRIMARY KEY,
     program INTEGER NOT NULL,
-    start_date date,
-    end_date date,
+    name VARCHAR(50),
+    start_date DATE,
+    end_date DATE,
     price INTEGER,
 
     constraint subscriptionProgramFk foreign key (program) references program(program_id) on update cascade on delete cascade

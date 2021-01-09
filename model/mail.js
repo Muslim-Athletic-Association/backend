@@ -47,7 +47,7 @@ async function contactUs(data, res) {
         from: 'autmaareply@gmail.com',
         to: data.email,
         subject: 'MAA contact us form: ' + data.subject,
-        bcc: "maawebsite2020@gmail.com",
+        bcc: "info@maaweb.org",
         text: "This is a copy of the message sent through the MAA contact form from " + data.name + ":\n\n" + data.message,
     };
     return await transporter.sendMail(mailOptions, function (error, info) {
