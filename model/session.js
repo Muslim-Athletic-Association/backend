@@ -10,7 +10,7 @@ const errorEnum = c.errorEnum;
  */
 async function getSessions(data) {
     var invalid = c.simpleValidation(data, {
-        program: "yoga"
+        program: "integer"
     })
     if (invalid) {
         return invalid;
