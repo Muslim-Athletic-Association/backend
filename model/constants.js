@@ -39,6 +39,7 @@ class Message {
 function checkEmptyBody(data) {
   var keys = Object.keys(data);
   if (keys.length == 0) {
+    console.log("Request body is empty")
     return setResult({}, false, "Request body is empty.", errorEnum.INVALID);
 
   }
