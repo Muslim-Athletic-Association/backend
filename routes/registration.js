@@ -30,10 +30,11 @@ router.post('/api/registration/subscribe', async function createMemberResponse(r
     });
 })
 
-router.get('/api/registration/getPrograms', async function createMemberResponse(request, response) {
+router.get('/api/registration/getPrograms/:person', async function createMemberResponse(request, response) {
     // returns member information in json format if successful
     response.header('Access-Control-Allow-Origin', '*');
-    await p.getPrograms(request.body).then(async function (result) {
+    console.log(request.params)
+    await p.getPrograms(request.params).then(async function (result) {
         return await c.simpleResponse(result, response);
     });
 })

@@ -11,6 +11,7 @@ const person = require('./routes/person');
 const program = require('./routes/program');
 const registration = require('./routes/registration');
 const sessions = require('./routes/session');
+const mail = require('./routes/mail');
 
 var app = express();
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ app.use(person);
 app.use(program);
 app.use(registration);
 app.use(sessions);
+app.use(mail);
 
 
 //app.use((req, res, next) => {
@@ -29,15 +31,15 @@ app.use(sessions);
 //});
 
 // This sets the options for https so that it finds the ssl certificates
-var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
-var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
-const httpsOptions = {
-  cert: certificate,
-  key: privateKey
-}
+// var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
+// var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
+// const httpsOptions = {
+//   cert: certificate,
+//   key: privateKey
+// }
 
-var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
-  console.log("Serving on https");
-});
+// var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
+//   console.log("Serving on https");
+// });
 
-//app.listen(port, () => {console.log("Listening on port " + port)})
+app.listen(port, () => {console.log("Listening on port " + port)})
