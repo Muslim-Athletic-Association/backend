@@ -18,7 +18,8 @@ async function createPerson(data) {
         email: "email",
         phone: "phone",
         gender: "bool",
-        birthday: "date"
+        birthday: "date",
+	password: "string"
     })
     if (invalid) {
         return invalid;
@@ -33,6 +34,38 @@ async function createPerson(data) {
 }
 
 /**
+ * Uses the Create operation from ./constants in order to insert a program into the database.
+ * 
+ * @param {name: string} data 
+ */
+async function createPersonTemp(data) {
+    if (data.gender && data.gender.toLowerCase() == "male") {
+        data.gender = "true"
+    } else if (data.gender && data.gender.toLowerCase() == "female") {
+        data.gender = "false"
+    }
+    var invalid = c.simpleValidation(data, {
+        first_name: "string",
+        last_name: "string",
+        email: "email",
+        phone: "phone",
+        gender: "bool",
+        birthday: "date"
+    })
+    if (invalid) {
+        return invalid;
+    }
+    var sql = 'INSERT INTO person (first_name, last_name, email, phone, gender, birthday) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;';
+    var params = [data.first_name, data.last_name, data.email, data.phone, data.gender, data.birthday]
+    var m = new c.Message({
+        success: "Successfully added a person.",
+        duplicate: "A person with email already exists."
+    });
+    return await c.create(sql, params, m);
+}
+
+
+/**
  * Uses the remove operation from ./constants in order to remove a program from the database.
  * 
  * @param {name: string} data 
@@ -40,7 +73,7 @@ async function createPerson(data) {
 async function getPerson(data) {
     var invalid = c.simpleValidation(data, {
         email: "email",
-        password: "string"
+	password: "string"
     })
     if (invalid) {
         return invalid;
@@ -62,9 +95,32 @@ async function getPerson(data) {
     });
 }
 
+/**
+ * Uses the remove operation from ./constants in order to remove a program from the database.
+ * 
+ * @param {name: string} data 
+ */
+async function getPersonTemp(data) {
+    var invalid = c.simpleValidation(data, {
+        email: "email"
+    })
+    if (invalid) {
+        return invalid;
+    }
+    var sql = 'SELECT * from person where email = $1;';
+    var params = [data.email];
+    var m = new c.Message({
+        success: "Successfully retrieved user matching email."
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+
 module.exports = {
     createPerson: createPerson,
-    getPerson: getPerson
+    getPerson: getPerson,
+    getPersonTemp: getPersonTemp,
+    createPersonTemp: createPersonTemp
 }
 
 // module.exports = {

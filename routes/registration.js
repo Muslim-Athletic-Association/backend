@@ -45,18 +45,25 @@ router.post('/api/registration/temporary/subscribe', async function createMember
     // returns member information in json format if successful
     response.header('Access-Control-Allow-Origin', '*');
     var subscribe_body = request.body;
-    await p.createPerson(request.body).then(async function (result) {
+    await p.createPersonTemp(request.body).then(async function (result) {
+	if (!result.success){
 	if (result.ecode == c.errorEnum.UNIQUE) {
-            result = await p.getPerson(request.body).then((result) => { return result });
-        } else if (!result.success){
+            	console.log("person already exists, registering them for program.")
+		result = await p.getPersonTemp(request.body).then((result) => { return result });
+        } else {
+	    console.log("Should have returned a response")
 	    return await rc.simpleResponse(result, response);
 	}
+	}
+	console.log(result.success);
         await r.subscribe({ ...request.body, person: result.data[0].person_id }).then(async function (result2) {
-            if(result2.success){
+            console.log("subscribing person")
+	    if(result2.success){
                 result2.error = "Successfully registered for this program."
             }
             return await rc.simpleResponse(result2, response);
         });
+	}
     });
 })
 
