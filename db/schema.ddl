@@ -14,7 +14,7 @@ CREATE TABLE person
     phone VARCHAR(20) NOT NULL,
     gender VARCHAR(6),
     birthday DATE NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(50),
     
     UNIQUE (email)
 );
