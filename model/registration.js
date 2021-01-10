@@ -66,7 +66,7 @@ async function consent(data) {
     var sql = 'INSERT INTO consent (person, is_given, datetime, purpose) VALUES ($1, $2, $3, $4) RETURNING *;';
     var params = [data.person, data.given, data.datetime, data.purpose]
     var m = new c.Message({
-        success: "Successfully created program.",
+        success: "Successfully added consent.",
         duplicate: "The consent with purpose: \"" + data.purpose + "\" has already been given."
     });
     return await c.create(sql, params, m);
