@@ -18,8 +18,7 @@ async function createPerson(data) {
         email: "email",
         phone: "phone",
         gender: "bool",
-        birthday: "date",
-        password: "string"
+        birthday: "date"
     })
     if (invalid) {
         return invalid;
@@ -39,6 +38,13 @@ async function createPerson(data) {
  * @param {name: string} data 
  */
 async function getPerson(data) {
+    var invalid = c.simpleValidation(data, {
+        email: "email",
+        password: "string"
+    })
+    if (invalid) {
+        return invalid;
+    }
     var sql = 'SELECT * from person where email = $1;';
     var params = [data.email];
     var m = new c.Message({
