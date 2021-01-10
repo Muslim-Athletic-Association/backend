@@ -13,7 +13,7 @@ router.post('/api/addPerson', async function createMemberResponse(request, respo
   });
 });
 
-router.get('/api/getPerson', async function createMemberResponse(request, response) {
+router.post('/api/getPerson', async function createMemberResponse(request, response) {
   // returns member information in json format if successful
   response.header('Access-Control-Allow-Origin', '*');
   await p.getPerson(request.body).then(async function (result) {
