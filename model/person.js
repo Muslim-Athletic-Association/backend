@@ -44,9 +44,10 @@ async function getPerson(data) {
     var m = new c.Message({
         success: "Successfully retrieved user matching email."
     });
+    var originalData = data;
     return await c.retrieve(sql, params, m).then(async function (result) {
         var password = result.data[0].password;
-        if(password != data.password){
+        if(password != originalData.password){
             return setResult({}, false, "Incorrect password", c.errorEnum.INVALID)
         } else {
             delete result.data.password;
