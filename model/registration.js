@@ -1,5 +1,6 @@
 const program = require("../model/program");
 const c = require("./constants");
+const e = require("express");
 const isFunction = c.isFunction;
 const errorEnum = c.errorEnum;
 
@@ -27,16 +28,22 @@ async function subscribe(data) {
     });
     return await c.create(sql, params, m).then(async function (result) {
         var consents = data.consent;
-        if (result.success) {
-            for (var i = 0; i < consents.length; i++) {
-                var consent_response = await consent({person: data.person, datetime: data.datetime, ...consents[i]});
-                if (consent_response.success == false){
-                    // In this case, we should also be cancelling the registration
-                    // However, we will assume for now that there is nothing wrong with the consent.
-                    return consent_response;
-                }
+        var consent_responses = []
+        for (var i = 0; i < consents.length; i++) {
+            var consent_response = await consent({person: data.person, datetime: data.datetime, ...consents[i]});
+            if (consent_response.success == false && consent_response.ecode != c.errorEnum.UNIQUE){
+                // In this case, we should also be cancelling the registration
+                // However, we will assume for now that there is nothing wrong with the consent.
+                return consent_response;
             }
+            consent_responses.push(consent_response);
         }
+        result = {...result, consent_responses: consent_responses}
+        var guardian_response = {};
+        if (Object.keys(data).includes("guardian") && data["guardian"]){
+            guardian_response = await addGuardian({...data["guardian"], person: data.person});
+        }
+        result = {...result, guardian_responses: {...guardian_response}}
         return result;
     })
 }
@@ -60,11 +67,34 @@ async function consent(data) {
     var params = [data.person, data.given, data.datetime, data.purpose]
     var m = new c.Message({
         success: "Successfully created program.",
-        duplicate: "A program with that name already exists."
+        duplicate: "The consent with purpose: \"" + data.purpose + "\" has already been given."
     });
     return await c.create(sql, params, m);
 }
 
+/**
+ * Uses the Create operation from ./constants in order to insert a program into the database.
+ * 
+ * @param {name: string} data
+ */
+async function addGuardian(data) {
+    var invalid = c.simpleValidation(data, {
+        person: "integer",
+        full_name: "string",
+        email: "email",
+        phone: "phone"
+    })
+    if (invalid) {
+        return invalid;
+    }
+    var sql = 'INSERT INTO guardian (person, full_name, email, phone) VALUES ($1, $2, $3, $4) RETURNING *;';
+    var params = [data.person, data.full_name, data.email, data.phone]
+    var m = new c.Message({
+        success: "Successfully added guardian.",
+        duplicate: "You already have a guardian with that email and phone #."
+    });
+    return await c.create(sql, params, m);
+}
 
 /**
  * Uses the remove operation from ./constants in order to remove a program from the database.
