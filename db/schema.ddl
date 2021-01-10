@@ -60,6 +60,7 @@ CREATE TABLE guardian(
     email VARCHAR(50) NOT NULL,
     phone VARCHAR(30) NOT NULL,
 
+    unique(person, phone, email),
     constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
