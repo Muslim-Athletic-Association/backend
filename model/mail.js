@@ -12,14 +12,14 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-async function registrationMail(data, res) {
+async function yogaMail(data) {
     // Send a preset confirmation email to the individual who signed up based on the program
-    // required attributes of the body: {email, program}
+    // required attributes of the body: {email}
 
-    var p = String(data.program).toUpperCase()
+    var p = "YOGA"
     switch(p){
         case "YOGA":
-            var registrationConfirmation = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
     }
 
     var mailOptions = {
@@ -28,15 +28,7 @@ async function registrationMail(data, res) {
         subject: 'MAA ' + p + ' REGISTRATION CONFIRMATION',
         html: template
     };
-    return await transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-            res.json(403);
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.json(200);
-        }
-    });
+    return await transporter.sendMail(mailOptions);
 }
 
 async function contactUs(data, res) {
@@ -63,5 +55,5 @@ async function contactUs(data, res) {
 
 module.exports = {
     contactUs: contactUs,
-    registrationMail: registrationMail
+    yogaMail: yogaMail
 }
