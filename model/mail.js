@@ -19,7 +19,7 @@ async function yogaMail(data) {
     var p = "YOGA"
     switch(p){
         case "YOGA":
-            var template = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/YogaUpdated.html"),"utf-8");
     }
 
     var mailOptions = {
