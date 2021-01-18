@@ -115,12 +115,26 @@ async function getPersonTemp(data) {
     return await c.retrieve(sql, params, m);
 }
 
+/**
+ * Uses the remove operation from ./constants in order to remove a program from the database.
+ * 
+ * @param {name: string} data 
+ */
+async function getPeopleTemp(data) {
+    var sql = 'SELECT * from person;';
+    var params = [];
+    var m = new c.Message({
+        success: "Successfully retrieved all people."
+    });
+    return await c.retrieve(sql, params, m);
+}
 
 module.exports = {
     createPerson: createPerson,
     getPerson: getPerson,
     getPersonTemp: getPersonTemp,
-    createPersonTemp: createPersonTemp
+    createPersonTemp: createPersonTemp,
+    getPeople: getPeopleTemp
 }
 
 // module.exports = {
