@@ -42,4 +42,13 @@ router.get('/api/getPeopleCSV', async function createMemberResponse(request, res
   });
 })
 
+router.get('/api/getPeopleCount', async function createMemberResponse(request, response) {
+  // returns member information in json format if successful
+  response.header('Access-Control-Allow-Origin', '*');
+  await p.countPeople(request.body).then(async function (result) {
+    response.json(result.data)
+    // return await c.simpleResponse(result, response);
+  });
+})
+
 module.exports = router;
