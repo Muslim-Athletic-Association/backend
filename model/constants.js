@@ -6,13 +6,13 @@ const errorEnum = {
   UNIQUE: 1,
   SERVER: 2,
   DNE: 3,
-  INVALID: 4
-}
+  INVALID: 4,
+};
 
 // Check if f is a function.
 function isFunction(f) {
-  return f && {}.toString.call(f) === '[object Function]';
-};
+  return f && {}.toString.call(f) === "[object Function]";
+}
 
 // This is a constant response return format so that all of our responses have the same format.
 function setResult(d, pass, msg, code) {
@@ -39,14 +39,18 @@ class Message {
 function checkEmptyBody(data) {
   var keys = Object.keys(data);
   if (keys.length == 0) {
-    console.log("Request body is empty")
+    console.log("Request body is empty");
     return setResult({}, false, "Request body is empty.", errorEnum.INVALID);
-
   }
   for (var i = 0; i < keys.length; i++) {
     if (!keys[i]) {
-      console.log("Invalid: Body is missing atleast one key, value pair.")
-      return setResult(data, false, "Body is missing atleast one key, value pair.", errorEnum.INVALID);
+      console.log("Invalid: Body is missing atleast one key, value pair.");
+      return setResult(
+        data,
+        false,
+        "Body is missing atleast one key, value pair.",
+        errorEnum.INVALID
+      );
     }
   }
   return;
@@ -62,12 +66,12 @@ const dataTypeRegex = {
   string: /.*/,
   bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/, //I made this one myself, tested it as well.
   integer: /\d+/, //I made this one myself, not tested.
-  list: "ignore"
-}
+  list: "ignore",
+};
 
 /**
  * This function uses regular expressions to check if the body's values are of the correct type.
- * 
+ *
  * @param {Object[key, type]} required
  */
 function checkBodyTypes(data, required) {
@@ -76,10 +80,19 @@ function checkBodyTypes(data, required) {
     var key = keys[i];
     var type = required[key];
     var value = data[key];
-    if (dataTypeRegex[type] && dataTypeRegex[type] != "ignore" && !dataTypeRegex[type].test(value)) {
+    if (
+      dataTypeRegex[type] &&
+      dataTypeRegex[type] != "ignore" &&
+      !dataTypeRegex[type].test(value)
+    ) {
       // If the regex test fails, this implies that the formatting is incorrect.
-      console.log("Invalid: Body contains an invalid value for key: " + key)
-      return setResult(data, false, "Invalid value set for: " + key, errorEnum.INVALID);
+      console.log("Invalid: Body contains an invalid value for key: " + key);
+      return setResult(
+        data,
+        false,
+        "Invalid value set for: " + key,
+        errorEnum.INVALID
+      );
     }
   }
   return;
@@ -87,8 +100,8 @@ function checkBodyTypes(data, required) {
 
 /**
  * This function uses checks to see if the body's keys are named correctly.
- * 
- * @param {Object[key, type]} required 
+ *
+ * @param {Object[key, type]} required
  */
 
 function checkBodyKeys(data, required) {
@@ -96,8 +109,13 @@ function checkBodyKeys(data, required) {
   var requiredKeys = Object.keys(required);
   for (var i = 0; i < Object.keys(requiredKeys).length; i++) {
     if (!keys[i] || !keys.includes(requiredKeys[i])) {
-      console.log("Invalid: Body is missing the key: " + requiredKeys[i])
-      return setResult(data, false, "Body is missing the key: " + requiredKeys[i], errorEnum.INVALID);
+      console.log("Invalid: Body is missing the key: " + requiredKeys[i]);
+      return setResult(
+        data,
+        false,
+        "Body is missing the key: " + requiredKeys[i],
+        errorEnum.INVALID
+      );
     }
   }
   return;
@@ -106,10 +124,10 @@ function checkBodyKeys(data, required) {
 /**
  * This function does some simple validation of the formats.
  * It uses helper functions to ensure that the body is not missing any parameters,
- * that the data includes the required keys. 
- * 
+ * that the data includes the required keys.
+ *
  * @param {Object} data
- * The request body 
+ * The request body
  * @param {List[String]} params
  * The keys that should be in the body
  * @param {List[String]} types
@@ -131,97 +149,124 @@ function checkBody(data, required) {
   return;
 }
 
-
 /**
  * ----------------------------------------------------------------------------------
  * THE FOLLOWING FUNCTIONS IMPLEMENT THE DIFFERENT VARIATIONS OF THE CRUD OPERATIONS.
  * ----------------------------------------------------------------------------------
-*/
-
+ */
 
 /**
  * This function prepares a generic row fetch based on the inputs.
  * This function can fetch none, one, or more rows based on an sql command and passed in parameters.
- * It also takes ina message object which contains three 
- * 
- * @param {String} sql 
- * @param {List[String]} params 
- * @param {Message} message 
+ * It also takes ina message object which contains three
+ *
+ * @param {String} sql
+ * @param {List[String]} params
+ * @param {Message} message
  */
 async function retrieve(sql, params, message) {
-  console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
-  return await db.query(sql, params).then(result => {
-    if (result.rows[0] == null) {
-      console.log(message.none);
-      return setResult({}, false, message.none, errorEnum.DNE);
-    }
-    console.log(message.success);
-    return setResult(result.rows, true, message.success, errorEnum.NONE);
-  }).catch(e => {
-    console.log("\nERROR!\n", message.server, e);
-    return setResult({}, false, message.server, errorEnum.SERVER);
-  })
+  console.log(
+    "-- The following query is being executed --\n sql: " +
+      sql +
+      "\n params: " +
+      params
+  );
+  return await db
+    .query(sql, params)
+    .then((result) => {
+      if (result.rows[0] == null) {
+        console.log(message.none);
+        return setResult({}, false, message.none, errorEnum.DNE);
+      }
+      console.log(message.success);
+      return setResult(result.rows, true, message.success, errorEnum.NONE);
+    })
+    .catch((e) => {
+      console.log("\nERROR!\n", message.server, e);
+      return setResult({}, false, message.server, errorEnum.SERVER);
+    });
 }
 
 /**
  * This function prepares a generic row update based on the inputs.
  * This function can update none, one, or more rows based on an sql command and passed in parameters.
- * 
- * @param {String} sql 
- * @param {List[String]} params 
- * @param {Message} message 
+ *
+ * @param {String} sql
+ * @param {List[String]} params
+ * @param {Message} message
  */
 async function update(sql, params, message) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
-  console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
-  return await db.query(sql, params).then(result => {
-    if (result.rows[0] == null) {
-      return setResult({}, false, none, errorEnum.DNE);
-    }
-    return setResult(result.rows, true, success, errorEnum.NONE);
-  }).catch(e => {
-    console.log("\nUpdate error!\n", error, e);
-    return setResult({}, false, message.server, errorEnum.SERVER);
-
-  })
+  console.log(
+    "-- The following query is being executed --\n sql: " +
+      sql +
+      "\n params: " +
+      params
+  );
+  return await db
+    .query(sql, params)
+    .then((result) => {
+      if (result.rows[0] == null) {
+        return setResult({}, false, none, errorEnum.DNE);
+      }
+      return setResult(result.rows, true, success, errorEnum.NONE);
+    })
+    .catch((e) => {
+      console.log("\nUpdate error!\n", error, e);
+      return setResult({}, false, message.server, errorEnum.SERVER);
+    });
 }
 
 /**
  * This function prepares a generic row update based on the inputs.
  * This function can update none, one, or more rows based on an sql command and passed in parameters.
- * 
- * @param {String} sql 
- * @param {List[String]} params 
- * @param {Message} message 
+ *
+ * @param {String} sql
+ * @param {List[String]} params
+ * @param {Message} message
  */
 async function create(sql, params, message) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
-  console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
-  return await db.query(sql, params).then(result => {
-    if (result.rows[0] == null) {
-      // Items were not inserted, but an error was not raised. Be confused.
-      console.log("\n!Nothing was inserted!\n");
-      return setResult({}, false, message.none, errorEnum.DNE);
-    }
-    // Succesfully inserted items.
-    console.log("\nSuccess!\n");
-    return setResult(result.rows, true, message.success, errorEnum.NONE);
-  }).catch(e => {
-    if (e.code == '23505') {
-      // This implies we are inserting something that violates a unique key constraint
-      console.log("\n!Creation Failure: Duplicate!\n");
-      return setResult({}, false, message.duplicate, errorEnum.UNIQUE);
-    }
-    if (e.code == '42601') {
-      // This implies we are inserting something that violates a unique key constraint
-      console.log("\n!Creation Failure: Improper number of parameters passed in!\n");
-      return setResult({}, false, "Improper number of parameters passed in.", errorEnum.INVALID);
-    }
-    // There was an uncaught error due to our query.
-    console.log("\n!Creation error!\n", message.server, e);
-    return setResult({}, false, message.server, errorEnum.SERVER);
-
-  })
+  console.log(
+    "-- The following query is being executed --\n sql: " +
+      sql +
+      "\n params: " +
+      params
+  );
+  return await db
+    .query(sql, params)
+    .then((result) => {
+      if (result.rows[0] == null) {
+        // Items were not inserted, but an error was not raised. Be confused.
+        console.log("\n!Nothing was inserted!\n");
+        return setResult({}, false, message.none, errorEnum.DNE);
+      }
+      // Succesfully inserted items.
+      console.log("\nSuccess!\n");
+      return setResult(result.rows, true, message.success, errorEnum.NONE);
+    })
+    .catch((e) => {
+      if (e.code == "23505") {
+        // This implies we are inserting something that violates a unique key constraint
+        console.log("\n!Creation Failure: Duplicate!\n");
+        return setResult({}, false, message.duplicate, errorEnum.UNIQUE);
+      }
+      if (e.code == "42601") {
+        // This implies we are inserting something that violates a unique key constraint
+        console.log(
+          "\n!Creation Failure: Improper number of parameters passed in!\n"
+        );
+        return setResult(
+          {},
+          false,
+          "Improper number of parameters passed in.",
+          errorEnum.INVALID
+        );
+      }
+      // There was an uncaught error due to our query.
+      console.log("\n!Creation error!\n", message.server, e);
+      return setResult({}, false, message.server, errorEnum.SERVER);
+    });
 }
 
 // TODO: Implement Delete
@@ -230,24 +275,31 @@ async function create(sql, params, message) {
  * NOTE: this implements the based delete operation, but we cannot call it delete in js
  * This function prepares a generic row deletion based on the inputs.
  * This function can delete none, one, or more rows based on an sql command and passed in parameters.
- * 
- * @param {String} sql 
- * @param {List[String]} params 
- * @param {Message} message 
+ *
+ * @param {String} sql
+ * @param {List[String]} params
+ * @param {Message} message
  */
 async function remove(sql, params, message) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
-  console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
-  return await db.query(sql, params).then(result => {
-    if (result.rows[0] == null) {
-      return setResult({}, false, none, errorEnum.DNE);
-    }
-    return setResult(result.rows, true, success, errorEnum.NONE);
-  }).catch(e => {
-    console.log("\n!Deletion error!\n", error, e);
-    return setResult({}, false, message.server, errorEnum.SERVER);
-
-  })
+  console.log(
+    "-- The following query is being executed --\n sql: " +
+      sql +
+      "\n params: " +
+      params
+  );
+  return await db
+    .query(sql, params)
+    .then((result) => {
+      if (result.rows[0] == null) {
+        return setResult({}, false, none, errorEnum.DNE);
+      }
+      return setResult(result.rows, true, success, errorEnum.NONE);
+    })
+    .catch((e) => {
+      console.log("\n!Deletion error!\n", error, e);
+      return setResult({}, false, message.server, errorEnum.SERVER);
+    });
 }
 
 // TODO: Handle more complex situations (i.e. we should only insert if the insert in a specific scenario...
@@ -263,4 +315,4 @@ module.exports = {
   isFunction: isFunction,
   errorEnum: errorEnum,
   Message: Message,
-}
+};
