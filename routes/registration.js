@@ -3,6 +3,7 @@ const r = require("../model/registration");
 const p = require("../model/person");
 const c = require("../model/constants");
 const rc = require("./routingConstants");
+const m = require("../model/mail");
 
 /**
  * Add a program POST request handling.
@@ -53,7 +54,8 @@ router.post('/api/registration/temporary/subscribe', async function createMember
             if(result2.success){
                 result2.error = "Successfully registered for this program."
             }
-            return await rc.simpleResponse(result2, response);
+            rc.simpleResponse(result2, response);
+            m.registrationMail(subscribe_body);
         });
     });
 })
