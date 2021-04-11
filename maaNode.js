@@ -31,15 +31,15 @@ app.use(mail);
 //});
 
 // This sets the options for https so that it finds the ssl certificates
-// var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
-// var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
-// const httpsOptions = {
-//   cert: certificate,
-//   key: privateKey
-// }
+ var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
+ var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
+ const httpsOptions = {
+   cert: certificate,
+   key: privateKey
+ }
 
-// var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
-//   console.log("Serving on https");
-// });
+ var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
+   console.log("Serving on https");
+ });
 
-app.listen(port, () => {console.log("Listening on port " + port)})
+//app.listen(port, () => {console.log("Listening on port " + port)})

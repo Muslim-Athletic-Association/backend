@@ -24,6 +24,8 @@ async function registrationMail(data) {
             var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
     }
 
+    //var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
+
     var mailOptions = {
         from: 'autmaareply@gmail.com',
         to: data.email,

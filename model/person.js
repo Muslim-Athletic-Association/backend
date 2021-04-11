@@ -46,13 +46,13 @@ async function getPerson(data) {
     });
     var originalData = data;
     return await c.retrieve(sql, params, m).then(async function (result) {
-        var password = result.data[0].password;
-        if(password != originalData.password){
-            return setResult({}, false, "Incorrect password", c.errorEnum.INVALID)
-        } else {
-            delete result.data.password;
-            return result;
-        }
+        //var password = result.data[0].password;
+        //if(password != originalData.password){
+          //  return setResult({}, false, "Incorrect password", c.errorEnum.INVALID)
+        //} else {
+            //delete result.data.password;
+         return result;
+        //}
     });
 }
 
