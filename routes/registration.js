@@ -59,6 +59,15 @@ router.post(
         result = await p.getPerson(request.body).then((result) => {
           return result;
         });
+        await r
+          .subscribe({ ...request.body, person: result.data[0].person_id })
+          .then(async function (result2) {
+            if (result2.success) {
+              result2.error = "Successfully registered for this program.";
+            }
+            rc.simpleResponse(result2, response);
+            m.registrationMail(subscribe_body);
+          });
       } else if (result.ecode == c.errorEnum.NONE) {
         await r
           .subscribe({ ...request.body, person: result.data[0].person_id })
