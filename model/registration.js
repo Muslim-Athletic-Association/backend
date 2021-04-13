@@ -132,7 +132,42 @@ async function getPrograms(data) {
   return await c.retrieve(sql, params, m);
 }
 
+/**
+ * Responds with the session zoom link and whatsapp link when given a registered email
+ *
+ * @param {name: string} data
+ */
+async function checkReg(data) {
+  var invalid = c.simpleValidation(data, {
+    email: "email",
+  });
+  if (invalid) {
+    return invalid;
+  }
+  var sql = "SELECT * from ramadanRegistered where email = $1;";
+  var params = [data.email];
+  var m = new c.Message({
+    success: "This email is registered for Ramadan Wellness",
+    none: "This email is not registered for Ramadan Wellness",
+  });
+  return await c.retrieve(sql, params, m).then(async (result) => {
+    if (result.success) {
+        return c.setResult(
+        {
+          zoom_link: "https://utoronto.zoom.us/j/3758796274",
+          whatsapp_link: "",
+        },
+        true,
+        result.error,
+        c.errorEnum.NONE
+      );
+    }
+    return result;
+  });
+}
+
 module.exports = {
   subscribe: subscribe,
   getPrograms: getPrograms,
+  checkReg: checkReg,
 };
