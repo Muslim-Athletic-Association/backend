@@ -85,4 +85,18 @@ router.post(
   }
 );
 
+router.get(
+  "/api/registration/check/:email",
+  async function createMemberResponse(request, response) {
+    // returns member information in json format if successful
+    response.header("Access-Control-Allow-Origin", "*");
+    console.log("Checking to see if the following email is registered: ");
+    console.log(request.params);
+    await r.checkReg(request.params).then(async function (result) {
+      console.log(result);
+      return await rc.simpleResponse(result, response);
+    });
+  }
+);
+
 module.exports = router;
