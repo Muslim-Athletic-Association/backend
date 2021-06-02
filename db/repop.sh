@@ -2,5 +2,6 @@
 psql postgres < ./drop.ddl
 psql maadmin < ./schema.ddl
 psql maadmin < ./testing.ddl
+psql maadmin < ./ramadan.ddl
 psql maadmin < ./views.ddl
 

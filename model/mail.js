@@ -12,15 +12,19 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-async function registrationMail(data, res) {
+async function registrationMail(data) {
     // Send a preset confirmation email to the individual who signed up based on the program
     // required attributes of the body: {email, program}
 
     var p = String(data.program).toUpperCase()
     switch(p){
         case "YOGA":
-            var registrationConfirmation = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
+        case "RAMADAN":
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
     }
+
+    //var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
 
     var mailOptions = {
         from: 'autmaareply@gmail.com',
@@ -29,13 +33,13 @@ async function registrationMail(data, res) {
         html: template
     };
     return await transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-            res.json(403);
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.json(200);
-        }
+        // if (error) {
+        //     console.log(error);
+        //     res.json(403);
+        // } else {
+        //     console.log('Email sent: ' + info.response);
+        //     res.json(200);
+        // }
     });
 }
 

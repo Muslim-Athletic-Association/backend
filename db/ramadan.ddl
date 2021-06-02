@@ -1,0 +1,3 @@
+insert into program (name) values ('Ramadan Wellness');
+insert into subscription (program, name, start_date, end_date, price) values (2, 'Ramadan Wellness Online', '2020-04-13', '2002-04-13', 0);
+insert into session (program, title, instructor, capacity, session_time, session_day, start_date, count, location) values (1, 'Ramadan Session', 'instructor_name', 10, '18:00:00', 'Tuesday', '2020-04-13', 2, 'Online');
