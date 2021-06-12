@@ -1,0 +1,110 @@
+const c = require("./constants");
+const isFunction = c.isFunction;
+const errorEnum = c.errorEnum;
+
+/**
+ * Uses the Create operation from ./constants in order to insert a team into the database.
+ *
+ * @param {name: string} data
+ */
+async function createTeam(data) {
+    var invalid = c.simpleValidation(data, {
+        team_name: "string",
+        person: "int", // person_id
+        capacity: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "INSERT INTO team (team_name, captain, capacity) VALUES ($1, $2, $3) RETURNING *;";
+    var params = [data.team_name, data.captain, data.capacity];
+    var m = new c.Message({
+        success: "Successfully created team.",
+    });
+    return await c.create(sql, params, m);
+}
+
+/**
+ * Uses the remove operation from ./constants in order to remove a team from the database.
+ *
+ * @param {name: string} data
+ */
+async function deleteTeam(data) {
+    var invalid = c.simpleValidation(data, {
+        team_name: "string",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql = "DELETE FROM team WHERE team_name=$1 RETURNING *;";
+    var params = [data.team_name];
+    var m = new c.Message({
+        success: "Successfully removed team.",
+    });
+    return await c.remove(sql, params, m);
+}
+
+/**
+ * Fetches all of the teams registered for a league based on the league's title.
+ *
+ * Please note: at the beginning of a season, teams may all be
+ * placed into the same initial group.
+ *
+ * @param {name: string} data
+ */
+async function getTeamsByCompetition(data) {
+    var invalid = c.simpleValidation(data, {
+        competition: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+
+    // TODO: Must create necessary views first (see the three new tables in ../db/views.ddl)
+    var sql =
+        "select * from teamCompetition where title=$1;";
+    var params = [data.competition];
+    var m = new c.Message({
+        success: "Successfully retrieved all teams.",
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
+ * Fetches all of the teams in a division within a league.
+ *
+ * @param {name: string} data
+ */
+async function getTeamsByDivision(data) {
+    var invalid = c.simpleValidation(data, {
+        competition: "int",
+        group_id: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "SELECT * from team join teamRecord tr where tr.competition=$1 and tr.group_id=$2;";
+    var params = [data.competition, data.group_id];
+    var m = new c.Message({
+        success: "Successfully retrieved all teams.",
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+// I need to find all teams based on a competition, which should have a many to many relationship
+// This is because each team can play in multiple competitions and each competition can have multiple teams.
+
+// In order to do this, I need to select all of the teams that have a record in a specfic group.
+// My issue is that I have a many to many relationship that seems to go through two tables:
+// competition group and team record.
+
+// What if teamRecord kept track of the division (competition group)? Instead of creating a whole new table.
+// Then for individual competitions we could also put individual levels in the "competitor record" as well.
+
+module.exports = {
+    createTeam: createTeam,
+    deleteTeam: deleteTeam,
+    getTeams: getTeams,
+};
