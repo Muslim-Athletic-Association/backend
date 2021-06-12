@@ -94,11 +94,11 @@ CREATE TABLE competitionGroup(
 
 CREATE TABLE player(
     player_id SERIAL PRIMARY KEY,
-    team INTEGER,
-    person INTEGER,
+    team VARCHAR NOT NULL,
+    person INTEGER NOT NULL,
 
     UNIQUE(team, person),
-    constraint playerTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
+    constraint playerTeamFk foreign key (team) references team(team_name) on update cascade on delete cascade,
     constraint playerPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
