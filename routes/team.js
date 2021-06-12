@@ -5,11 +5,9 @@ const t = require("../model/team");
 const c = require("../model/constants");
 const rc = require("./routingConstants");
 const m = require("../model/mail");
-
-/**
- * Prerequisites to completing the below functionality:
- * We must create a competition first
- */
+const e = require("express");
+const { errorEnum } = require("../model/constants");
+const person = require("../model/person");
 
 /**
  * Register a captain for a team based competition
@@ -26,21 +24,18 @@ const m = require("../model/mail");
  * the competitionGroup of each team.
  */
 
-router.post(
-    "/api/competition/create/team",
-    async function compSubResp(request, response) {
-        // Register a person as captain for the league and create their team.
-        response.header("Access-Control-Allow-Origin", "*");
-        await r.subscribe(request.body).then(async function (result) {
-            return await t.createTeam(request.body).then(async (result) => {
-                return await rc.simpleResponse(result, response);
-            });
+router.post("/api/team/create", async function compSubResp(request, response) {
+    // Register a person as captain for the league and create their team.
+    response.header("Access-Control-Allow-Origin", "*");
+    await r.subscribe(request.body).then(async function (result) {
+        return await t.createTeam(request.body).then(async (result) => {
+            return await rc.simpleResponse(result, response);
         });
-    }
-);
+    });
+});
 
 router.get(
-    "/api/competition/:program/:competition/getTeams",
+    "/api/:program/:competition/getTeams",
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
         response.header("Access-Control-Allow-Origin", "*");
@@ -59,13 +54,43 @@ router.get(
  */
 
 router.post(
-    "/api/competition/team/player",
+    "/api/team/player",
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
         response.header("Access-Control-Allow-Origin", "*");
-        console.log(request.params);
-        await r.addPlayer(request.body).then(async function (result) {
-            return await rc.simpleResponse(result, response);
+        // console.log(request.params);
+        await p.createPerson(request.body).then(async function (result) {
+            let getResult = (result = await p
+                .getPerson(request.body)
+                .then((result) => {
+                    return result;
+                }));
+            if (result.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
+                let subBody = { ...request.body, ...result.data[0] };
+                // console.log(subBody);
+                await r.subscribe(subBody).then(async function (result) {
+                    // console.log(getResult);
+                    if (result.success || result.ecode == errorEnum.UNIQUE) {
+                        let playerBody = {
+                            person: getResult.data[0].person_id,
+                            team: request.body.team,
+                        };
+                        // console.log(playerBody);
+                        return await t
+                            .addPlayer(playerBody)
+                            .then(async function (result) {
+                                return await rc.simpleResponse(
+                                    result,
+                                    response
+                                );
+                            });
+                    } else {
+                        return await rc.simpleResponse(result, response);
+                    }
+                });
+            } else {
+                rc.simpleResponse(result, response);
+            }
         });
     }
 );

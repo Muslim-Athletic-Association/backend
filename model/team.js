@@ -9,14 +9,14 @@ const errorEnum = c.errorEnum;
  */
 async function addPlayer(data, message = "") {
     var invalid = c.simpleValidation(data, {
-        team_id: "int",
+        team: "string",
         person: "int",
     });
     if (invalid) {
         return invalid;
     }
     var sql = "INSERT INTO player (team, person) VALUES ($1, $2) RETURNING *;";
-    var params = [data.team_id, data.person];
+    var params = [data.team, data.person];
     var m = new c.Message({
         success: message + "Successfully created player.",
         duplicate: "This player is already registered for this team.",
@@ -50,7 +50,7 @@ async function createTeam(data) {
         if (result.success) {
             let playerData = {
                 person: data.person,
-                team_id: result.data[0].team_id,
+                team: data.team_name
             };
             return await addPlayer(playerData, m.success);
         }
@@ -138,4 +138,5 @@ async function getTeamsByDivision(data) {
 module.exports = {
     createTeam: createTeam,
     deleteTeam: deleteTeam,
+    addPlayer: addPlayer,
 };
