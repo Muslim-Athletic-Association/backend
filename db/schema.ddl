@@ -97,6 +97,7 @@ CREATE TABLE player(
     team INTEGER,
     person INTEGER,
 
+    UNIQUE(team, person),
     constraint playerTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
     constraint playerPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );

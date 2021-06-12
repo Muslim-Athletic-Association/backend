@@ -32,7 +32,7 @@ router.post(
         // Register a person as captain for the league and create their team.
         response.header("Access-Control-Allow-Origin", "*");
         await r.subscribe(request.body).then(async function (result) {
-            return await t.createTeam(request.body).then(() => {
+            return await t.createTeam(request.body).then(async (result) => {
                 return await rc.simpleResponse(result, response);
             });
         });
@@ -59,13 +59,15 @@ router.get(
  */
 
 router.post(
-    "/api/competition/register/:person",
+    "/api/competition/team/player",
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
         response.header("Access-Control-Allow-Origin", "*");
         console.log(request.params);
-        await r.getPrograms(request.params).then(async function (result) {
+        await r.addPlayer(request.body).then(async function (result) {
             return await rc.simpleResponse(result, response);
         });
     }
 );
+
+module.exports = router;
