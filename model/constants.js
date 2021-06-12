@@ -76,6 +76,10 @@ function checkBodyTypes(data, required) {
     var key = keys[i];
     var type = required[key];
     var value = data[key];
+    if (value == undefined){
+      console.log("Invalid: Body contains an undefined value for key: " + key)
+      return setResult(data, false, "Undefined value set for: " + key, errorEnum.INVALID);
+    }
     if (dataTypeRegex[type] && dataTypeRegex[type] != "ignore" && !dataTypeRegex[type].test(value)) {
       // If the regex test fails, this implies that the formatting is incorrect.
       console.log("Invalid: Body contains an invalid value for key: " + key)
