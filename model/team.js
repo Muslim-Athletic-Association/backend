@@ -3,6 +3,28 @@ const isFunction = c.isFunction;
 const errorEnum = c.errorEnum;
 
 /**
+ * Uses the Create operation from ./constants in order to add a player to a team.
+ *
+ * @param {name: string} data
+ */
+async function addPlayer(data, message = "") {
+    var invalid = c.simpleValidation(data, {
+        team_id: "string",
+        person: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql = "INSERT INTO player (team, person) VALUES ($1, $2) RETURNING *;";
+    var params = [data.team_id, data.person];
+    var m = new c.Message({
+        success: "Successfully created player.",
+        duplicate: "This player is already registered for this team.",
+    });
+    return await c.create(sql, params, m);
+}
+
+/**
  * Uses the Create operation from ./constants in order to insert a team into the database.
  *
  * @param {name: string} data
@@ -10,7 +32,7 @@ const errorEnum = c.errorEnum;
 async function createTeam(data) {
     var invalid = c.simpleValidation(data, {
         team_name: "string",
-        person: "int", // person_id
+        person: "int", // person, captain
         capacity: "int",
     });
     if (invalid) {
@@ -18,11 +40,20 @@ async function createTeam(data) {
     }
     var sql =
         "INSERT INTO team (team_name, captain, capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.captain, data.capacity];
+    var params = [data.team_name, data.person, data.capacity];
     var m = new c.Message({
         success: "Successfully created team.",
     });
-    return await c.create(sql, params, m);
+    return await c.create(sql, params, m).then(async (result) => {
+        if (result.success) {
+            let playerData = {
+                person: data.person,
+                team_id: result.data.team_id,
+            };
+            return await addPlayer(playerData, m.success);
+        }
+        return result;
+    });
 }
 
 /**
@@ -62,8 +93,7 @@ async function getTeamsByCompetition(data) {
     }
 
     // TODO: Must create necessary views first (see the three new tables in ../db/views.ddl)
-    var sql =
-        "select * from teamCompetition where title=$1;";
+    var sql = "select * from teamCompetition where title=$1;";
     var params = [data.competition];
     var m = new c.Message({
         success: "Successfully retrieved all teams.",
@@ -106,5 +136,4 @@ async function getTeamsByDivision(data) {
 module.exports = {
     createTeam: createTeam,
     deleteTeam: deleteTeam,
-    getTeams: getTeams,
 };

@@ -67,7 +67,7 @@ CREATE TABLE guardian(
 CREATE TABLE team(
     team_id SERIAL PRIMARY KEY,
     captain INTEGER,
-    team_name VARCHAR(50),
+    team_name VARCHAR(50) UNIQUE,
     team_capacity INTEGER,
 
     constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade

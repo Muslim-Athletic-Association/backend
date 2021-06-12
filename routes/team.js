@@ -6,8 +6,6 @@ const c = require("../model/constants");
 const rc = require("./routingConstants");
 const m = require("../model/mail");
 
-// https://firebase.google.com/docs/auth/admin
-
 /**
  * Prerequisites to completing the below functionality:
  * We must create a competition first
@@ -60,7 +58,7 @@ router.get(
  * 3. Create a player based on person and team (TODO: team model)
  */
 
- router.post(
+router.post(
     "/api/competition/register/:person",
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
