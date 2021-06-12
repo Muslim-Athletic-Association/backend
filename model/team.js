@@ -9,7 +9,7 @@ const errorEnum = c.errorEnum;
  */
 async function addPlayer(data, message = "") {
     var invalid = c.simpleValidation(data, {
-        team_id: "string",
+        team_id: "int",
         person: "int",
     });
     if (invalid) {
@@ -18,7 +18,7 @@ async function addPlayer(data, message = "") {
     var sql = "INSERT INTO player (team, person) VALUES ($1, $2) RETURNING *;";
     var params = [data.team_id, data.person];
     var m = new c.Message({
-        success: "Successfully created player.",
+        success: message + "Successfully created player.",
         duplicate: "This player is already registered for this team.",
     });
     return await c.create(sql, params, m);
@@ -33,22 +33,24 @@ async function createTeam(data) {
     var invalid = c.simpleValidation(data, {
         team_name: "string",
         person: "int", // person, captain
-        capacity: "int",
+        team_capacity: "int",
     });
     if (invalid) {
         return invalid;
     }
     var sql =
-        "INSERT INTO team (team_name, captain, capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.person, data.capacity];
+        "INSERT INTO team (team_name, captain, team_capacity) VALUES ($1, $2, $3) RETURNING *;";
+    var params = [data.team_name, data.person, data.team_capacity];
     var m = new c.Message({
-        success: "Successfully created team.",
+        success: "Successfully created team. ",
+        duplicate: "A team with that name already exists, choose another team name."
     });
     return await c.create(sql, params, m).then(async (result) => {
+        console.log(result.data)
         if (result.success) {
             let playerData = {
                 person: data.person,
-                team_id: result.data.team_id,
+                team_id: result.data[0].team_id,
             };
             return await addPlayer(playerData, m.success);
         }
