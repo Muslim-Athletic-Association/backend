@@ -6,7 +6,8 @@ const errorEnum = {
   UNIQUE: 1,
   SERVER: 2,
   DNE: 3,
-  INVALID: 4
+  INVALID: 4,
+  FOREIGN: 5
 }
 
 // Check if f is a function.
@@ -29,6 +30,7 @@ class Message {
     this.none = options.none || "No rows found.";
     this.server = options.server || "An error occured in the PSQL server.";
     this.duplicate = options.duplicate || "Duplicate.";
+    this.duplicate = options.duplicate || "Violating foreign key constraint.";
   }
 }
 
@@ -220,6 +222,11 @@ async function create(sql, params, message) {
       // This implies we are inserting something that violates a unique key constraint
       console.log("\n!Creation Failure: Improper number of parameters passed in!\n");
       return setResult({}, false, "Improper number of parameters passed in.", errorEnum.INVALID);
+    }
+    if (e.code == '23503') {
+      // This implies we are inserting something that violates a unique key constraint
+      console.log("\n!Creation Failure: Foriegn Key Constraints!\n");
+      return setResult({}, false, "Inserting this value depends on something that doesn't yet exist.", errorEnum.FOREIGN);
     }
     // There was an uncaught error due to our query.
     console.log("\n!Creation error!\n", message.server, e);
