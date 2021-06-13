@@ -66,16 +66,13 @@ router.post(
                     return result;
                 }));
             if (result.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
-                let subBody = { ...request.body, ...result.data[0] };
-                // console.log(subBody);
+                let subBody = { ...request.body, ...getResult.data[0] };
                 await r.subscribe(subBody).then(async function (result) {
-                    // console.log(getResult);
                     if (result.success || result.ecode == errorEnum.UNIQUE) {
                         let playerBody = {
                             person: getResult.data[0].person_id,
                             team: request.body.team,
                         };
-                        // console.log(playerBody);
                         return await t
                             .addPlayer(playerBody)
                             .then(async function (result) {
