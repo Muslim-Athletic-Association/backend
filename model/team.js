@@ -20,6 +20,7 @@ async function addPlayer(data, message = "") {
     var m = new c.Message({
         success: message + "Successfully created player.",
         duplicate: "This player is already registered for this team.",
+        foreign: "It seems that this team doesn't exist."
     });
     return await c.create(sql, params, m);
 }
@@ -43,10 +44,10 @@ async function createTeam(data) {
     var params = [data.team_name, data.person, data.team_capacity];
     var m = new c.Message({
         success: "Successfully created team. ",
-        duplicate: "A team with that name already exists, choose another team name."
+        duplicate: "A team with that name already exists, choose another team name.",
+        foreign: "Captain must log in first in order to create a team."
     });
     return await c.create(sql, params, m).then(async (result) => {
-        console.log(result.data)
         if (result.success) {
             let playerData = {
                 person: data.person,
