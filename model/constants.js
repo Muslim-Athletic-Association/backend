@@ -30,7 +30,7 @@ class Message {
     this.none = options.none || "No rows found.";
     this.server = options.server || "An error occured in the PSQL server.";
     this.duplicate = options.duplicate || "Duplicate.";
-    this.duplicate = options.duplicate || "Violating foreign key constraint.";
+    this.foreign = options.foreign || "Violating foreign key constraint.";
   }
 }
 
@@ -225,8 +225,8 @@ async function create(sql, params, message) {
     }
     if (e.code == '23503') {
       // This implies we are inserting something that violates a unique key constraint
-      console.log("\n!Creation Failure: Foriegn Key Constraints!\n");
-      return setResult({}, false, "Inserting this value depends on something that doesn't yet exist.", errorEnum.FOREIGN);
+      console.log("\n!Creation Failure: Foreign Key Constraints!\n");
+      return setResult({}, false, message.foreign, errorEnum.FOREIGN);
     }
     // There was an uncaught error due to our query.
     console.log("\n!Creation error!\n", message.server, e);
