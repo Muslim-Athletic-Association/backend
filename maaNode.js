@@ -11,13 +11,26 @@ const person = require('./routes/person');
 const program = require('./routes/program');
 const registration = require('./routes/registration');
 const sessions = require('./routes/session');
+const auth = require('./routes/auth');
 const mail = require('./routes/mail');
+const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
+
+const csrfMiddleware = csrf({ cookie: true });
 
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
+app.use(csrfMiddleware);
 
+app.all("*", (req, res, next) => {
+  res.cookie("XSRF-TOKEN", req.csrfToken());
+  next();
+});
+
+app.use(auth);
 app.use(person);
 app.use(program);
 app.use(registration);
@@ -31,15 +44,15 @@ app.use(mail);
 //});
 
 // This sets the options for https so that it finds the ssl certificates
- var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
- var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
- const httpsOptions = {
-   cert: certificate,
-   key: privateKey
- }
+//  var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
+//  var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
+//  const httpsOptions = {
+//    cert: certificate,
+//    key: privateKey
+//  }
 
- var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
-   console.log("Serving on https");
- });
+//  var httpsServer = https.createServer(httpsOptions, app).listen(port, () => {
+//    console.log("Serving on https");
+//  });
 
-//app.listen(port, () => {console.log("Listening on port " + port)})
+app.listen(port, () => {console.log("Listening on port " + port)})
