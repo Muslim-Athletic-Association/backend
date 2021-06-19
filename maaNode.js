@@ -14,21 +14,13 @@ const sessions = require('./routes/session');
 const auth = require('./routes/auth');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
-const csrf = require("csurf");
 
-const csrfMiddleware = csrf({ cookie: true });
 
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
-app.use(csrfMiddleware);
-
-app.all("*", (req, res, next) => {
-  res.cookie("XSRF-TOKEN", req.csrfToken());
-  next();
-});
 
 app.use(auth);
 app.use(person);
