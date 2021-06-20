@@ -29,7 +29,6 @@ router.post(
   "/api/registration/subscribe",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
-    response.header("Access-Control-Allow-Origin", "*");
     await r.subscribe(request.body).then(async function (result) {
       return await rc.simpleResponse(result, response);
     });
@@ -40,7 +39,6 @@ router.get(
   "/api/registration/getPrograms/:person",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
-    response.header("Access-Control-Allow-Origin", "*");
     console.log(request.params);
     await r.getPrograms(request.params).then(async function (result) {
       return await rc.simpleResponse(result, response);
@@ -52,7 +50,6 @@ router.post(
   "/api/registration/temporary/subscribe",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
-    response.header("Access-Control-Allow-Origin", "*");
     var subscribe_body = request.body;
     await p.createPerson(request.body).then(async function (result) {
       if (result.ecode == c.errorEnum.UNIQUE) {
@@ -89,7 +86,6 @@ router.get(
   "/api/registration/check/:email",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
-    response.header("Access-Control-Allow-Origin", "*");
     console.log("Checking to see if the following email is registered: ");
     console.log(request.params);
     await r.checkReg(request.params).then(async function (result) {
