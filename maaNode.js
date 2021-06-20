@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 
-app.use(auth);
+app.use(auth.router);
 app.use(person);
 app.use(program);
 app.use(registration);
