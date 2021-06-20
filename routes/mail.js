@@ -7,13 +7,11 @@ const c = require("../routes/routingConstants");
 
 router.post('/api/mail/yogaClassRegistration', async function (req, res) {
     //Return all teams information.
-    res.header('Access-Control-Allow-Origin', '*');
     m.registrationMail(req.body, res).then(result => {return result});
 })
 
 router.post('/api/mail/contactus', async function (req, res) {
     //Return all teams information.
-    res.header('Access-Control-Allow-Origin', '*');
     m.contactUs(req.body, res).then(result => {return result});
 })
 
