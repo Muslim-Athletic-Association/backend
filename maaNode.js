@@ -2,7 +2,6 @@
 // and where the database is accessed
 var port = 3001;
 
-<<<<<<< HEAD
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -13,21 +12,9 @@ const program = require('./routes/program');
 const registration = require('./routes/registration');
 const sessions = require('./routes/session');
 const auth = require('./routes/auth');
+const team = require('./routes/team');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
-=======
-const https = require("https");
-const fs = require("fs");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const person = require("./routes/person");
-const program = require("./routes/program");
-const registration = require("./routes/registration");
-const team = require("./routes/team");
-const sessions = require("./routes/session");
-const mail = require("./routes/mail");
->>>>>>> routes for team creation working
 
 var app = express();
 app.use(bodyParser.json());
