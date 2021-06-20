@@ -45,38 +45,38 @@ router.post(
     }
 );
 
-router.post(
-    "/api/login",
-    async function loginResponse(request, response) {
-        const idToken = request.body.idToken.toString();
+router.post("/api/login", async function loginResponse(request, response) {
+    const idToken = request.body.idToken.toString();
 
-        const expiresIn = 60 * 60 * 24 * 5 * 1000;
-        admin
-            .auth()
-            .createSessionCookie(idToken, { expiresIn })
-            .then(
-                async (sessionCookie) => {
+    const expiresIn = 60 * 60 * 24 * 5 * 1000;
+    admin
+        .auth()
+        .createSessionCookie(idToken, { expiresIn })
+        .then(
+            async (sessionCookie) => {
+                await p.getPerson(request.body).then((person) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
+                    response.cookie("user", person, options);
                     result = h.setResult(
-                        { idToken },
+                        { idToken, ...person },
                         true,
                         "login cookie set",
                         h.errorEnum.NONE
                     );
                     return await c.simpleResponse(result, response);
-                },
-                (error) => {
-                    console.log(error.code, request.data);
-                    error.code == "auth/invalid-id-token"
-                        ? response
-                              .status(401)
-                              .send({ msg: "UNAUTHORIZED REQUEST!" })
-                        : console.log(error);
-                }
-            );
-    }
-);
+                });
+            },
+            (error) => {
+                console.log(error.code, request.data);
+                error.code == "auth/invalid-id-token"
+                    ? response
+                          .status(401)
+                          .send({ msg: "UNAUTHORIZED REQUEST!" })
+                    : console.log(error);
+            }
+        );
+});
 
 /**
  * This function will be used to verify a user is logged in.
@@ -110,12 +110,8 @@ async function fbAuthorization(req, res, next) {
     }
 }
 
-router.get(
-    "/api/auth",
-    fbAuthorization,
-    async function authTest(request, res) {
-        res.send("Falafel");
-    }
-);
+router.get("/api/auth", fbAuthorization, async function authTest(request, res) {
+    res.send("Falafel");
+});
 
 module.exports = { router, fbAuthorization: fbAuthorization };
