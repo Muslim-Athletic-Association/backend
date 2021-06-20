@@ -11,13 +11,21 @@ const fbAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
+function setAccess(req, res, next) {
+    response.header(
+        "Access-Control-Allow-Origin",
+        "muslimathleticassociation.org"
+    );
+    next();
+}
+
 /**
  * Add a person POST request handling.
  */
 router.post(
     "/api/register",
+    setAccess,
     async function registerResponse(request, response) {
-        response.header("Access-Control-Allow-Origin", "*");
         const idToken = request.body.idToken.toString();
 
         const expiresIn = 60 * 60 * 24 * 5 * 1000;
@@ -46,42 +54,46 @@ router.post(
     }
 );
 
-router.post("/api/login", async function loginResponse(request, response) {
-    response.header("Access-Control-Allow-Origin", "*");
-    const idToken = request.body.idToken.toString();
+router.post(
+    "/api/login",
+    setAccess,
+    async function loginResponse(request, response) {
+        const idToken = request.body.idToken.toString();
 
-    const expiresIn = 60 * 60 * 24 * 5 * 1000;
-    admin
-        .auth()
-        .createSessionCookie(idToken, { expiresIn })
-        .then(
-            async (sessionCookie) => {
-                const options = { maxAge: expiresIn, httpOnly: true };
-                response.cookie("session", sessionCookie, options);
-                console.log(sessionCookie);
-                result = h.setResult(
-                    { idToken },
-                    true,
-                    "login cookie set",
-                    h.errorEnum.NONE
-                );
-                return await c.simpleResponse(result, response);
-            },
-            (error) => {
-                console.log(error.code, request.data);
-                error.code == "auth/invalid-id-token"
-                    ? response
-                          .status(401)
-                          .send({ msg: "UNAUTHORIZED REQUEST!" })
-                    : console.log(error);
-            }
-        );
-});
+        const expiresIn = 60 * 60 * 24 * 5 * 1000;
+        admin
+            .auth()
+            .createSessionCookie(idToken, { expiresIn })
+            .then(
+                async (sessionCookie) => {
+                    const options = { maxAge: expiresIn, httpOnly: true };
+                    response.cookie("session", sessionCookie, options);
+                    console.log(sessionCookie);
+                    result = h.setResult(
+                        { idToken },
+                        true,
+                        "login cookie set",
+                        h.errorEnum.NONE
+                    );
+                    return await c.simpleResponse(result, response);
+                },
+                (error) => {
+                    console.log(error.code, request.data);
+                    error.code == "auth/invalid-id-token"
+                        ? response
+                              .status(401)
+                              .send({ msg: "UNAUTHORIZED REQUEST!" })
+                        : console.log(error);
+                }
+            );
+    }
+);
 
 /**
  * This function will be used to verify a user is logged in.
  */
 async function fbAuthorization(req, res, next) {
+    setAccess(req, res, next);
     const sessionCookie = req.cookies.session || "";
     let authorized = await admin
         .auth()
@@ -114,7 +126,6 @@ router.get(
     "/api/auth",
     fbAuthorization,
     async function authTest(request, response) {
-        response.header("Access-Control-Allow-Origin", "*");
         res.send("Falafel");
     }
 );
