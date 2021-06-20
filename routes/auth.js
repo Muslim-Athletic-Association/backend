@@ -58,7 +58,6 @@ router.post(
                 async (sessionCookie) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
-                    console.log(sessionCookie);
                     result = h.setResult(
                         { idToken },
                         true,
@@ -114,7 +113,7 @@ async function fbAuthorization(req, res, next) {
 router.get(
     "/api/auth",
     fbAuthorization,
-    async function authTest(request, response) {
+    async function authTest(request, res) {
         res.send("Falafel");
     }
 );
