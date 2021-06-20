@@ -11,20 +11,11 @@ const fbAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
-function setAccess(req, res, next) {
-    response.header(
-        "Access-Control-Allow-Origin",
-        "muslimathleticassociation.org"
-    );
-    next();
-}
-
 /**
  * Add a person POST request handling.
  */
 router.post(
     "/api/register",
-    setAccess,
     async function registerResponse(request, response) {
         const idToken = request.body.idToken.toString();
 
@@ -56,7 +47,6 @@ router.post(
 
 router.post(
     "/api/login",
-    setAccess,
     async function loginResponse(request, response) {
         const idToken = request.body.idToken.toString();
 
@@ -93,7 +83,6 @@ router.post(
  * This function will be used to verify a user is logged in.
  */
 async function fbAuthorization(req, res, next) {
-    setAccess(req, res, next);
     const sessionCookie = req.cookies.session || "";
     let authorized = await admin
         .auth()

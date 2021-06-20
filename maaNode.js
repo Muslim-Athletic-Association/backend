@@ -15,11 +15,13 @@ const auth = require('./routes/auth');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
 
-
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: "http://offlinequran.com"
+  }));
 app.use(cookieParser());
 
 app.use(auth.router);
