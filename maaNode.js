@@ -31,12 +31,6 @@ app.use(registration);
 app.use(sessions);
 app.use(mail);
 
-
-//app.use((req, res, next) => {
-//  res.header('Access-Control-Allow-Origin', '*');
-//  next();
-//});
-
 // This sets the options for https so that it finds the ssl certificates
 //  var privateKey = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/privkey.pem');
 //  var certificate = fs.readFileSync('/etc/letsencrypt/live/muslimathleticassociation.org-0001/cert.pem');
