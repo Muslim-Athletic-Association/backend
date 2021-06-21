@@ -11,40 +11,9 @@ const fbAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
-/**
- * Add a person POST request handling.
- */
-router.post(
-    "/api/register",
-    async function registerResponse(request, response) {
-        const idToken = request.body.idToken.toString();
 
-        const expiresIn = 60 * 60 * 24 * 5 * 1000;
-        admin
-            .auth()
-            .createSessionCookie(idToken, { expiresIn })
-            .then(
-                async (sessionCookie) => {
-                    const options = { maxAge: expiresIn, httpOnly: true };
-                    response.cookie("session", sessionCookie, options);
-                    await p
-                        .createPerson(request.body)
-                        .then(async function (result) {
-                            return await c.simpleResponse(result, response);
-                        });
-                },
-                (error) => {
-                    console.log(error.code, request.data);
-                    error.code == "auth/invalid-id-token"
-                        ? response
-                              .status(401)
-                              .send({ msg: "UNAUTHORIZED REQUEST!" })
-                        : console.log(error);
-                }
-            );
-    }
-);
-
+// The login endpoint should work the same for registration and login.
+// since we are actually creating a person before using firebase. 
 router.post("/api/login", async function loginResponse(request, response) {
     const idToken = request.body.idToken.toString();
 
@@ -54,7 +23,7 @@ router.post("/api/login", async function loginResponse(request, response) {
         .createSessionCookie(idToken, { expiresIn })
         .then(
             async (sessionCookie) => {
-                await p.getPerson(request.body).then((person) => {
+                await p.getPerson(request.body).then(async (person) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
                     response.cookie("user", person, options);
