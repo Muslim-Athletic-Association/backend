@@ -1,7 +1,3 @@
-// This is the node file, this is where are all of the http requests are handled
-// and where the database is accessed
-var port = 3001;
-
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -14,6 +10,8 @@ const sessions = require('./routes/session');
 const auth = require('./routes/auth');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
+
+var port = 3001;
 
 var app = express();
 app.use(bodyParser.json());
