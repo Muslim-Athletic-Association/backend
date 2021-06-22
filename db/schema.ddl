@@ -64,30 +64,29 @@ CREATE TABLE guardian(
     constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
+CREATE TABLE team(
+    team_id SERIAL PRIMARY KEY,
+    captain INTEGER,
+    team_name VARCHAR(50) UNIQUE,
+    team_capacity INTEGER,
+
+    constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade
+);
+
 CREATE TABLE competition(
     competition_id SERIAL PRIMARY KEY,
     program INTEGER,
     title VARCHAR(50),
-    start_date date,
-    end_date date,
     
     UNIQUE (title),
     constraint programCompetitionFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
 
-CREATE TABLE team(
-    team_id SERIAL PRIMARY KEY,
-    captain INTEGER,
-    team_name VARCHAR(50),
-    capacity INTEGER,
-
-    constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade
-);
 
 CREATE TABLE competitionGroup(
-    group_id SERIAL PRIMARY KEY,
+    cgroup_id SERIAL PRIMARY KEY,
     competition INTEGER,
-    capacity INTEGER,
+    cg_capacity INTEGER,
     level INTEGER,
 
     constraint groupCompetitionFk foreign key (competition) references competition(competition_id) on update cascade on delete cascade
@@ -95,10 +94,11 @@ CREATE TABLE competitionGroup(
 
 CREATE TABLE player(
     player_id SERIAL PRIMARY KEY,
-    team INTEGER,
-    person INTEGER,
+    team VARCHAR NOT NULL,
+    person INTEGER NOT NULL,
 
-    constraint playerTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
+    UNIQUE(team, person),
+    constraint playerTeamFk foreign key (team) references team(team_name) on update cascade on delete cascade,
     constraint playerPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade
 );
 
@@ -122,7 +122,7 @@ CREATE Table session(
     program INTEGER,
     title VARCHAR(50) NOT NULL, --The type of session
     instructor VARCHAR(50),
-    capacity INTEGER,
+    session_capacity INTEGER,
     session_time TIME,
     session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
     start_date DATE,
@@ -154,11 +154,11 @@ CREATE TABLE teamRecord(
     wins INTEGER DEFAULT 0,
     losses INTEGER DEFAULT 0,
     ties INTEGER DEFAULT 0,
-    gf INTEGER DEFAULT 0,
-    ga INTEGER DEFAULT 0,
+    goals_for INTEGER DEFAULT 0,
+    goals_against INTEGER DEFAULT 0,
     
     constraint teamRecordTeamFk foreign key (team) references team(team_id) on update cascade on delete cascade,
-    constraint teamRecordCompetitionGroupFk foreign key (group_id) references competitionGroup(group_id) on update cascade on delete cascade
+    constraint teamRecordCompetitionGroupFk foreign key (group_id) references competitionGroup(cgroup_id) on update cascade on delete cascade
 );
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO maadmin;

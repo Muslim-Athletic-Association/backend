@@ -8,6 +8,7 @@ const program = require('./routes/program');
 const registration = require('./routes/registration');
 const sessions = require('./routes/session');
 const auth = require('./routes/auth');
+const team = require('./routes/team');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
 
@@ -26,6 +27,7 @@ app.use(auth.router);
 app.use(person);
 app.use(program);
 app.use(registration);
+app.use(team);
 app.use(sessions);
 app.use(mail);
 
