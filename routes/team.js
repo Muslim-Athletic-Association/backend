@@ -35,11 +35,11 @@ router.post("/api/team/create", async function compSubResp(request, response) {
 });
 
 router.get(
-    "/api/:program/:competition/getTeams",
+    "/api/:compTitle/getTeams",
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
         response.header("Access-Control-Allow-Origin", "*");
-        await r.getPrograms(request.params).then(async function (result) {
+        await t.getTeamsByCompetition(request.params).then(async function (result) {
             return await rc.simpleResponse(result, response);
         });
     }
