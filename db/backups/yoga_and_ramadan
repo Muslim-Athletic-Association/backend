@@ -1,0 +1,2512 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.3 (Ubuntu 12.3-1.pgdg18.04+1)
+-- Dumped by pg_dump version 12.3 (Ubuntu 12.3-1.pgdg18.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: competition; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.competition (
+    competition_id integer NOT NULL,
+    program integer,
+    title character varying(50),
+    start_date date,
+    end_date date
+);
+
+
+ALTER TABLE public.competition OWNER TO ubuntu;
+
+--
+-- Name: competition_competition_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.competition_competition_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.competition_competition_id_seq OWNER TO ubuntu;
+
+--
+-- Name: competition_competition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.competition_competition_id_seq OWNED BY public.competition.competition_id;
+
+
+--
+-- Name: competitiongroup; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.competitiongroup (
+    group_id integer NOT NULL,
+    competition integer,
+    capacity integer,
+    level integer
+);
+
+
+ALTER TABLE public.competitiongroup OWNER TO ubuntu;
+
+--
+-- Name: competitiongroup_group_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.competitiongroup_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.competitiongroup_group_id_seq OWNER TO ubuntu;
+
+--
+-- Name: competitiongroup_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.competitiongroup_group_id_seq OWNED BY public.competitiongroup.group_id;
+
+
+--
+-- Name: consent; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.consent (
+    consent_id integer NOT NULL,
+    person integer,
+    purpose character varying(50),
+    is_given boolean,
+    datetime timestamp without time zone
+);
+
+
+ALTER TABLE public.consent OWNER TO ubuntu;
+
+--
+-- Name: consent_consent_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.consent_consent_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.consent_consent_id_seq OWNER TO ubuntu;
+
+--
+-- Name: consent_consent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.consent_consent_id_seq OWNED BY public.consent.consent_id;
+
+
+--
+-- Name: fixture; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.fixture (
+    fixture_id integer NOT NULL,
+    team1 integer,
+    team2 integer,
+    competition integer,
+    fixture_date date,
+    fixture_time time without time zone,
+    score1 integer,
+    score2 integer
+);
+
+
+ALTER TABLE public.fixture OWNER TO ubuntu;
+
+--
+-- Name: fixture_fixture_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.fixture_fixture_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fixture_fixture_id_seq OWNER TO ubuntu;
+
+--
+-- Name: fixture_fixture_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.fixture_fixture_id_seq OWNED BY public.fixture.fixture_id;
+
+
+--
+-- Name: guardian; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.guardian (
+    guardian_id integer NOT NULL,
+    person integer NOT NULL,
+    full_name character varying(50) NOT NULL,
+    email character varying(50) NOT NULL,
+    phone character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.guardian OWNER TO ubuntu;
+
+--
+-- Name: guardian_guardian_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.guardian_guardian_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.guardian_guardian_id_seq OWNER TO ubuntu;
+
+--
+-- Name: guardian_guardian_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.guardian_guardian_id_seq OWNED BY public.guardian.guardian_id;
+
+
+--
+-- Name: person; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.person (
+    person_id integer NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(50) NOT NULL,
+    phone character varying(20) NOT NULL,
+    gender character varying(6),
+    birthday date NOT NULL,
+    password character varying(50)
+);
+
+
+ALTER TABLE public.person OWNER TO ubuntu;
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.person_person_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.person_person_id_seq OWNER TO ubuntu;
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.person_person_id_seq OWNED BY public.person.person_id;
+
+
+--
+-- Name: program; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.program (
+    program_id integer NOT NULL,
+    name character varying(50)
+);
+
+
+ALTER TABLE public.program OWNER TO ubuntu;
+
+--
+-- Name: registration; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.registration (
+    registration_id integer NOT NULL,
+    person integer,
+    subscription integer,
+    datetime timestamp without time zone,
+    payment integer
+);
+
+
+ALTER TABLE public.registration OWNER TO ubuntu;
+
+--
+-- Name: subscription; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.subscription (
+    subscription_id integer NOT NULL,
+    program integer NOT NULL,
+    name character varying(50),
+    start_date date,
+    end_date date,
+    price integer
+);
+
+
+ALTER TABLE public.subscription OWNER TO ubuntu;
+
+--
+-- Name: personregistration; Type: VIEW; Schema: public; Owner: ubuntu
+--
+
+CREATE VIEW public.personregistration AS
+ SELECT program.name,
+    foo.start_date,
+    foo.end_date,
+    foo.person
+   FROM (public.program
+     JOIN ( SELECT registration.registration_id,
+            registration.person,
+            registration.subscription,
+            registration.datetime,
+            registration.payment,
+            subscription.subscription_id,
+            subscription.program,
+            subscription.name,
+            subscription.start_date,
+            subscription.end_date,
+            subscription.price
+           FROM (public.registration
+             JOIN public.subscription ON ((registration.subscription = subscription.subscription_id)))) foo ON ((foo.program = program.program_id)));
+
+
+ALTER TABLE public.personregistration OWNER TO ubuntu;
+
+--
+-- Name: player; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.player (
+    player_id integer NOT NULL,
+    team integer,
+    person integer
+);
+
+
+ALTER TABLE public.player OWNER TO ubuntu;
+
+--
+-- Name: player_player_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.player_player_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.player_player_id_seq OWNER TO ubuntu;
+
+--
+-- Name: player_player_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.player_player_id_seq OWNED BY public.player.player_id;
+
+
+--
+-- Name: program_program_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.program_program_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.program_program_id_seq OWNER TO ubuntu;
+
+--
+-- Name: program_program_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.program_program_id_seq OWNED BY public.program.program_id;
+
+
+--
+-- Name: ramadanregistered; Type: VIEW; Schema: public; Owner: ubuntu
+--
+
+CREATE VIEW public.ramadanregistered AS
+ SELECT person.person_id,
+    person.first_name,
+    person.last_name,
+    person.email,
+    person.phone,
+    person.gender,
+    person.birthday,
+    person.password,
+    personregistration.name,
+    personregistration.start_date,
+    personregistration.end_date,
+    personregistration.person
+   FROM (public.person
+     JOIN public.personregistration ON ((person.person_id = personregistration.person)))
+  WHERE ((personregistration.name)::text = 'Ramadan Wellness'::text);
+
+
+ALTER TABLE public.ramadanregistered OWNER TO ubuntu;
+
+--
+-- Name: registration_registration_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.registration_registration_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.registration_registration_id_seq OWNER TO ubuntu;
+
+--
+-- Name: registration_registration_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.registration_registration_id_seq OWNED BY public.registration.registration_id;
+
+
+--
+-- Name: session; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.session (
+    session_id integer NOT NULL,
+    program integer,
+    title character varying(50) NOT NULL,
+    instructor character varying(50),
+    capacity integer,
+    session_time time without time zone,
+    session_day character varying(20),
+    start_date date,
+    count integer,
+    location character varying(20)
+);
+
+
+ALTER TABLE public.session OWNER TO ubuntu;
+
+--
+-- Name: session_session_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.session_session_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.session_session_id_seq OWNER TO ubuntu;
+
+--
+-- Name: session_session_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.session_session_id_seq OWNED BY public.session.session_id;
+
+
+--
+-- Name: soccerplayerfixture; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.soccerplayerfixture (
+    soccer_id integer NOT NULL,
+    player integer,
+    fixture integer,
+    goals integer DEFAULT 0,
+    assists integer DEFAULT 0,
+    yellow_cards integer DEFAULT 0,
+    red_card integer DEFAULT 0
+);
+
+
+ALTER TABLE public.soccerplayerfixture OWNER TO ubuntu;
+
+--
+-- Name: soccerplayerfixture_soccer_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.soccerplayerfixture_soccer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.soccerplayerfixture_soccer_id_seq OWNER TO ubuntu;
+
+--
+-- Name: soccerplayerfixture_soccer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.soccerplayerfixture_soccer_id_seq OWNED BY public.soccerplayerfixture.soccer_id;
+
+
+--
+-- Name: subscription_subscription_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.subscription_subscription_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.subscription_subscription_id_seq OWNER TO ubuntu;
+
+--
+-- Name: subscription_subscription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.subscription_subscription_id_seq OWNED BY public.subscription.subscription_id;
+
+
+--
+-- Name: team; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.team (
+    team_id integer NOT NULL,
+    captain integer,
+    team_name character varying(50),
+    capacity integer
+);
+
+
+ALTER TABLE public.team OWNER TO ubuntu;
+
+--
+-- Name: team_team_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.team_team_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.team_team_id_seq OWNER TO ubuntu;
+
+--
+-- Name: team_team_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.team_team_id_seq OWNED BY public.team.team_id;
+
+
+--
+-- Name: teamrecord; Type: TABLE; Schema: public; Owner: ubuntu
+--
+
+CREATE TABLE public.teamrecord (
+    team_record_id integer NOT NULL,
+    group_id integer,
+    team integer,
+    fixtures_played integer DEFAULT 0,
+    wins integer DEFAULT 0,
+    losses integer DEFAULT 0,
+    ties integer DEFAULT 0,
+    gf integer DEFAULT 0,
+    ga integer DEFAULT 0
+);
+
+
+ALTER TABLE public.teamrecord OWNER TO ubuntu;
+
+--
+-- Name: teamrecord_team_record_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
+--
+
+CREATE SEQUENCE public.teamrecord_team_record_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.teamrecord_team_record_id_seq OWNER TO ubuntu;
+
+--
+-- Name: teamrecord_team_record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
+--
+
+ALTER SEQUENCE public.teamrecord_team_record_id_seq OWNED BY public.teamrecord.team_record_id;
+
+
+--
+-- Name: competition competition_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competition ALTER COLUMN competition_id SET DEFAULT nextval('public.competition_competition_id_seq'::regclass);
+
+
+--
+-- Name: competitiongroup group_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competitiongroup ALTER COLUMN group_id SET DEFAULT nextval('public.competitiongroup_group_id_seq'::regclass);
+
+
+--
+-- Name: consent consent_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.consent ALTER COLUMN consent_id SET DEFAULT nextval('public.consent_consent_id_seq'::regclass);
+
+
+--
+-- Name: fixture fixture_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.fixture ALTER COLUMN fixture_id SET DEFAULT nextval('public.fixture_fixture_id_seq'::regclass);
+
+
+--
+-- Name: guardian guardian_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.guardian ALTER COLUMN guardian_id SET DEFAULT nextval('public.guardian_guardian_id_seq'::regclass);
+
+
+--
+-- Name: person person_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.person ALTER COLUMN person_id SET DEFAULT nextval('public.person_person_id_seq'::regclass);
+
+
+--
+-- Name: player player_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.player ALTER COLUMN player_id SET DEFAULT nextval('public.player_player_id_seq'::regclass);
+
+
+--
+-- Name: program program_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.program ALTER COLUMN program_id SET DEFAULT nextval('public.program_program_id_seq'::regclass);
+
+
+--
+-- Name: registration registration_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.registration ALTER COLUMN registration_id SET DEFAULT nextval('public.registration_registration_id_seq'::regclass);
+
+
+--
+-- Name: session session_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.session ALTER COLUMN session_id SET DEFAULT nextval('public.session_session_id_seq'::regclass);
+
+
+--
+-- Name: soccerplayerfixture soccer_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.soccerplayerfixture ALTER COLUMN soccer_id SET DEFAULT nextval('public.soccerplayerfixture_soccer_id_seq'::regclass);
+
+
+--
+-- Name: subscription subscription_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.subscription ALTER COLUMN subscription_id SET DEFAULT nextval('public.subscription_subscription_id_seq'::regclass);
+
+
+--
+-- Name: team team_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.team ALTER COLUMN team_id SET DEFAULT nextval('public.team_team_id_seq'::regclass);
+
+
+--
+-- Name: teamrecord team_record_id; Type: DEFAULT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.teamrecord ALTER COLUMN team_record_id SET DEFAULT nextval('public.teamrecord_team_record_id_seq'::regclass);
+
+
+--
+-- Data for Name: competition; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.competition (competition_id, program, title, start_date, end_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: competitiongroup; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.competitiongroup (group_id, competition, capacity, level) FROM stdin;
+\.
+
+
+--
+-- Data for Name: consent; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.consent (consent_id, person, purpose, is_given, datetime) FROM stdin;
+60	46	Yoga Agreement	t	2021-01-15 03:52:55
+61	46	Yoga Sponsor Contact	t	2021-01-15 03:52:55
+62	47	Yoga Agreement	t	2021-01-15 04:43:51
+63	47	Yoga Sponsor Contact	f	2021-01-15 04:43:51
+64	48	Yoga Agreement	t	2021-01-15 04:48:50
+65	48	Yoga Sponsor Contact	f	2021-01-15 04:48:50
+66	49	Yoga Agreement	t	2021-01-15 04:52:29
+67	49	Yoga Sponsor Contact	t	2021-01-15 04:52:29
+68	50	Yoga Agreement	t	2021-01-15 04:56:12
+69	50	Yoga Sponsor Contact	f	2021-01-15 04:56:12
+70	51	Yoga Agreement	t	2021-01-15 05:19:04
+71	51	Yoga Sponsor Contact	f	2021-01-15 05:19:04
+72	52	Yoga Agreement	t	2021-01-15 05:59:40
+73	52	Yoga Sponsor Contact	t	2021-01-15 05:59:40
+74	53	Yoga Agreement	t	2021-01-15 06:33:37
+75	53	Yoga Sponsor Contact	f	2021-01-15 06:33:37
+76	54	Yoga Agreement	t	2021-01-15 07:03:18
+77	54	Yoga Sponsor Contact	t	2021-01-15 07:03:18
+78	55	Yoga Agreement	t	2021-01-15 07:05:34
+79	55	Yoga Sponsor Contact	t	2021-01-15 07:05:34
+80	56	Yoga Agreement	t	2021-01-15 08:16:10
+81	56	Yoga Sponsor Contact	t	2021-01-15 08:16:10
+82	57	Yoga Agreement	t	2021-01-15 14:35:50
+83	57	Yoga Sponsor Contact	t	2021-01-15 14:35:50
+84	58	Yoga Agreement	t	2021-01-15 15:06:28
+85	58	Yoga Sponsor Contact	f	2021-01-15 15:06:28
+86	59	Yoga Agreement	t	2021-01-15 17:28:30
+87	59	Yoga Sponsor Contact	t	2021-01-15 17:28:30
+88	60	Yoga Agreement	t	2021-01-15 17:28:37
+89	60	Yoga Sponsor Contact	t	2021-01-15 17:28:37
+90	61	Yoga Agreement	t	2021-01-15 19:20:25
+91	61	Yoga Sponsor Contact	f	2021-01-15 19:20:25
+92	62	Yoga Agreement	t	2021-01-15 23:23:06
+93	62	Yoga Sponsor Contact	f	2021-01-15 23:23:06
+94	63	Yoga Agreement	t	2021-01-16 02:15:53
+95	63	Yoga Sponsor Contact	t	2021-01-16 02:15:53
+96	64	Yoga Agreement	t	2021-01-16 02:18:08
+97	64	Yoga Sponsor Contact	t	2021-01-16 02:18:08
+98	65	Yoga Agreement	t	2021-01-16 02:18:50
+99	65	Yoga Sponsor Contact	t	2021-01-16 02:18:50
+100	66	Yoga Agreement	t	2021-01-16 03:21:45
+101	66	Yoga Sponsor Contact	t	2021-01-16 03:21:45
+102	67	Yoga Agreement	t	2021-01-16 04:34:12
+103	67	Yoga Sponsor Contact	t	2021-01-16 04:34:12
+104	68	Yoga Agreement	t	2021-01-16 04:56:29
+105	68	Yoga Sponsor Contact	t	2021-01-16 04:56:29
+106	69	Yoga Agreement	t	2021-01-16 06:05:06
+107	69	Yoga Sponsor Contact	t	2021-01-16 06:05:06
+108	70	Yoga Agreement	t	2021-01-16 13:42:33
+109	70	Yoga Sponsor Contact	t	2021-01-16 13:42:33
+110	71	Yoga Agreement	t	2021-01-16 14:30:41
+111	71	Yoga Sponsor Contact	t	2021-01-16 14:30:41
+112	72	Yoga Agreement	t	2021-01-16 14:58:29
+113	72	Yoga Sponsor Contact	t	2021-01-16 14:58:29
+114	73	Yoga Agreement	t	2021-01-16 14:59:56
+115	73	Yoga Sponsor Contact	t	2021-01-16 14:59:56
+116	74	Yoga Agreement	t	2021-01-16 15:00:59
+117	74	Yoga Sponsor Contact	t	2021-01-16 15:00:59
+118	75	Yoga Agreement	t	2021-01-16 15:02:10
+119	75	Yoga Sponsor Contact	t	2021-01-16 15:02:10
+120	76	Yoga Agreement	t	2021-01-16 15:02:10
+121	76	Yoga Sponsor Contact	f	2021-01-16 15:02:10
+122	77	Yoga Agreement	t	2021-01-16 15:02:11
+123	77	Yoga Sponsor Contact	t	2021-01-16 15:02:11
+124	78	Yoga Agreement	t	2021-01-16 15:02:55
+125	78	Yoga Sponsor Contact	f	2021-01-16 15:02:55
+126	79	Yoga Agreement	t	2021-01-16 15:03:02
+127	79	Yoga Sponsor Contact	t	2021-01-16 15:03:02
+128	80	Yoga Agreement	t	2021-01-16 15:06:49
+129	80	Yoga Sponsor Contact	t	2021-01-16 15:06:49
+130	81	Yoga Agreement	t	2021-01-16 15:08:50
+131	81	Yoga Sponsor Contact	t	2021-01-16 15:08:50
+132	82	Yoga Agreement	t	2021-01-16 15:20:41
+133	82	Yoga Sponsor Contact	t	2021-01-16 15:20:41
+134	83	Yoga Agreement	t	2021-01-16 15:26:57
+135	83	Yoga Sponsor Contact	t	2021-01-16 15:26:57
+136	84	Yoga Agreement	t	2021-01-16 15:31:03
+137	84	Yoga Sponsor Contact	t	2021-01-16 15:31:03
+138	85	Yoga Agreement	t	2021-01-16 15:49:11
+139	85	Yoga Sponsor Contact	t	2021-01-16 15:49:11
+140	86	Yoga Agreement	t	2021-01-16 15:53:19
+141	86	Yoga Sponsor Contact	t	2021-01-16 15:53:19
+142	87	Yoga Agreement	t	2021-01-16 16:04:52
+143	87	Yoga Sponsor Contact	t	2021-01-16 16:04:52
+144	88	Yoga Agreement	t	2021-01-16 16:07:36
+145	88	Yoga Sponsor Contact	f	2021-01-16 16:07:36
+146	89	Yoga Agreement	t	2021-01-16 16:46:50
+147	89	Yoga Sponsor Contact	t	2021-01-16 16:46:50
+148	90	Yoga Agreement	t	2021-01-16 16:54:52
+149	90	Yoga Sponsor Contact	f	2021-01-16 16:54:52
+150	91	Yoga Agreement	t	2021-01-16 17:04:12
+151	91	Yoga Sponsor Contact	t	2021-01-16 17:04:12
+152	92	Yoga Agreement	t	2021-01-16 17:09:59
+153	92	Yoga Sponsor Contact	t	2021-01-16 17:09:59
+154	93	Yoga Agreement	t	2021-01-16 17:15:36
+155	93	Yoga Sponsor Contact	f	2021-01-16 17:15:36
+156	94	Yoga Agreement	t	2021-01-16 17:22:44
+157	94	Yoga Sponsor Contact	t	2021-01-16 17:22:44
+158	95	Yoga Agreement	t	2021-01-16 17:32:21
+159	95	Yoga Sponsor Contact	t	2021-01-16 17:32:21
+160	96	Yoga Agreement	t	2021-01-16 17:35:36
+161	96	Yoga Sponsor Contact	t	2021-01-16 17:35:36
+162	97	Yoga Agreement	t	2021-01-16 18:01:29
+163	97	Yoga Sponsor Contact	f	2021-01-16 18:01:29
+164	98	Yoga Agreement	t	2021-01-16 18:38:54
+165	98	Yoga Sponsor Contact	t	2021-01-16 18:38:54
+166	99	Yoga Agreement	t	2021-01-16 18:49:43
+167	99	Yoga Sponsor Contact	t	2021-01-16 18:49:43
+168	100	Yoga Agreement	t	2021-01-16 18:53:04
+169	100	Yoga Sponsor Contact	t	2021-01-16 18:53:04
+170	101	Yoga Agreement	t	2021-01-16 19:19:31
+171	101	Yoga Sponsor Contact	f	2021-01-16 19:19:31
+172	102	Yoga Agreement	t	2021-01-16 19:19:49
+173	102	Yoga Sponsor Contact	t	2021-01-16 19:19:49
+174	103	Yoga Agreement	t	2021-01-16 19:23:53
+175	103	Yoga Sponsor Contact	t	2021-01-16 19:23:53
+176	104	Yoga Agreement	t	2021-01-16 19:40:32
+177	104	Yoga Sponsor Contact	f	2021-01-16 19:40:32
+178	105	Yoga Agreement	t	2021-01-16 19:55:32
+179	105	Yoga Sponsor Contact	t	2021-01-16 19:55:32
+180	106	Yoga Agreement	t	2021-01-16 20:51:26
+181	106	Yoga Sponsor Contact	t	2021-01-16 20:51:26
+182	107	Yoga Agreement	t	2021-01-16 21:29:40
+183	107	Yoga Sponsor Contact	t	2021-01-16 21:29:40
+184	108	Yoga Agreement	t	2021-01-16 22:07:23
+185	108	Yoga Sponsor Contact	t	2021-01-16 22:07:23
+186	109	Yoga Agreement	t	2021-01-16 23:39:37
+187	109	Yoga Sponsor Contact	t	2021-01-16 23:39:37
+188	110	Yoga Agreement	t	2021-01-17 00:44:09
+189	110	Yoga Sponsor Contact	t	2021-01-17 00:44:09
+190	111	Yoga Agreement	t	2021-01-17 00:44:31
+191	111	Yoga Sponsor Contact	t	2021-01-17 00:44:31
+192	112	Yoga Agreement	t	2021-01-17 01:03:36
+193	112	Yoga Sponsor Contact	t	2021-01-17 01:03:36
+194	113	Yoga Agreement	t	2021-01-17 01:14:07
+195	113	Yoga Sponsor Contact	f	2021-01-17 01:14:07
+196	114	Yoga Agreement	t	2021-01-17 01:26:52
+197	114	Yoga Sponsor Contact	t	2021-01-17 01:26:52
+198	115	Yoga Agreement	t	2021-01-17 01:48:53
+199	115	Yoga Sponsor Contact	t	2021-01-17 01:48:53
+210	121	Yoga Agreement	t	2021-01-17 01:52:00
+211	121	Yoga Sponsor Contact	t	2021-01-17 01:52:00
+212	122	Yoga Agreement	t	2021-01-17 01:54:40
+213	122	Yoga Sponsor Contact	t	2021-01-17 01:54:40
+214	123	Yoga Agreement	t	2021-01-17 01:57:33
+215	123	Yoga Sponsor Contact	t	2021-01-17 01:57:33
+216	124	Yoga Agreement	t	2021-01-17 01:59:18
+217	124	Yoga Sponsor Contact	f	2021-01-17 01:59:18
+218	125	Yoga Agreement	t	2021-01-17 02:03:12
+219	125	Yoga Sponsor Contact	t	2021-01-17 02:03:12
+224	128	Yoga Agreement	t	2021-01-17 02:43:47
+225	128	Yoga Sponsor Contact	f	2021-01-17 02:43:47
+226	129	Yoga Agreement	t	2021-01-17 03:35:01
+227	129	Yoga Sponsor Contact	t	2021-01-17 03:35:01
+228	130	Yoga Agreement	t	2021-01-17 04:18:31
+229	130	Yoga Sponsor Contact	t	2021-01-17 04:18:31
+230	131	Yoga Agreement	t	2021-01-17 04:44:51
+231	131	Yoga Sponsor Contact	t	2021-01-17 04:44:51
+232	132	Yoga Agreement	t	2021-01-17 05:00:45
+233	132	Yoga Sponsor Contact	t	2021-01-17 05:00:45
+234	133	Yoga Agreement	t	2021-01-17 05:19:17
+235	133	Yoga Sponsor Contact	t	2021-01-17 05:19:17
+236	134	Yoga Agreement	t	2021-01-17 05:47:45
+237	134	Yoga Sponsor Contact	t	2021-01-17 05:47:45
+238	135	Yoga Agreement	t	2021-01-17 06:39:46
+239	135	Yoga Sponsor Contact	t	2021-01-17 06:39:46
+240	136	Yoga Agreement	t	2021-01-17 06:48:43
+241	136	Yoga Sponsor Contact	t	2021-01-17 06:48:43
+242	137	Yoga Agreement	t	2021-01-17 07:21:08
+243	137	Yoga Sponsor Contact	f	2021-01-17 07:21:08
+244	138	Yoga Agreement	t	2021-01-17 07:48:25
+245	138	Yoga Sponsor Contact	f	2021-01-17 07:48:25
+246	139	Yoga Agreement	t	2021-01-17 08:27:20
+247	139	Yoga Sponsor Contact	t	2021-01-17 08:27:20
+248	140	Yoga Agreement	t	2021-01-17 09:03:31
+249	140	Yoga Sponsor Contact	t	2021-01-17 09:03:31
+250	141	Yoga Agreement	t	2021-01-17 14:38:04
+251	141	Yoga Sponsor Contact	f	2021-01-17 14:38:04
+254	143	Yoga Agreement	t	2021-01-17 15:56:20
+255	143	Yoga Sponsor Contact	t	2021-01-17 15:56:20
+256	144	Yoga Agreement	t	2021-01-17 16:35:14
+257	144	Yoga Sponsor Contact	t	2021-01-17 16:35:14
+258	145	Yoga Agreement	t	2021-01-17 18:19:03
+259	145	Yoga Sponsor Contact	t	2021-01-17 18:19:03
+260	146	Yoga Agreement	t	2021-01-17 18:22:13
+261	146	Yoga Sponsor Contact	t	2021-01-17 18:22:13
+262	147	Yoga Agreement	t	2021-01-17 18:37:07
+263	147	Yoga Sponsor Contact	t	2021-01-17 18:37:07
+264	148	Yoga Agreement	t	2021-01-17 18:56:41
+265	148	Yoga Sponsor Contact	t	2021-01-17 18:56:41
+266	149	Yoga Agreement	t	2021-01-17 19:09:20
+267	149	Yoga Sponsor Contact	t	2021-01-17 19:09:20
+268	150	Yoga Agreement	t	2021-01-17 19:09:39
+269	150	Yoga Sponsor Contact	t	2021-01-17 19:09:39
+270	151	Yoga Agreement	t	2021-01-17 19:18:20
+271	151	Yoga Sponsor Contact	t	2021-01-17 19:18:20
+272	152	Yoga Agreement	t	2021-01-17 19:23:13
+273	152	Yoga Sponsor Contact	t	2021-01-17 19:23:13
+276	154	Yoga Agreement	t	2021-01-17 19:44:34
+277	154	Yoga Sponsor Contact	t	2021-01-17 19:44:34
+278	155	Yoga Agreement	t	2021-01-17 21:53:11
+279	155	Yoga Sponsor Contact	t	2021-01-17 21:53:11
+280	156	Yoga Agreement	t	2021-01-17 22:20:10
+281	156	Yoga Sponsor Contact	t	2021-01-17 22:20:10
+284	158	Yoga Agreement	t	2021-01-18 01:22:21
+285	158	Yoga Sponsor Contact	t	2021-01-18 01:22:21
+286	159	Yoga Agreement	t	2021-01-18 01:55:46
+287	159	Yoga Sponsor Contact	t	2021-01-18 01:55:46
+288	160	Yoga Agreement	t	2021-01-18 02:32:52
+289	160	Yoga Sponsor Contact	t	2021-01-18 02:32:52
+290	161	Yoga Agreement	t	2021-01-18 02:48:51
+291	161	Yoga Sponsor Contact	t	2021-01-18 02:48:51
+292	162	Yoga Agreement	t	2021-01-18 03:21:58
+293	162	Yoga Sponsor Contact	t	2021-01-18 03:21:58
+294	163	Yoga Agreement	t	2021-01-18 03:57:35
+295	163	Yoga Sponsor Contact	t	2021-01-18 03:57:35
+296	164	Yoga Agreement	t	2021-01-18 07:54:15
+297	164	Yoga Sponsor Contact	t	2021-01-18 07:54:15
+298	165	Yoga Agreement	t	2021-01-18 10:01:25
+299	165	Yoga Sponsor Contact	t	2021-01-18 10:01:25
+300	166	Yoga Agreement	t	2021-01-18 11:26:39
+301	166	Yoga Sponsor Contact	t	2021-01-18 11:26:39
+302	167	Yoga Agreement	t	2021-01-18 11:33:31
+303	167	Yoga Sponsor Contact	t	2021-01-18 11:33:31
+304	168	Yoga Agreement	t	2021-01-18 12:45:44
+305	168	Yoga Sponsor Contact	t	2021-01-18 12:45:44
+306	169	Yoga Agreement	t	2021-01-18 14:34:53
+307	169	Yoga Sponsor Contact	t	2021-01-18 14:34:53
+308	170	Yoga Agreement	t	2021-01-18 15:04:42
+309	170	Yoga Sponsor Contact	t	2021-01-18 15:04:42
+310	171	Yoga Agreement	t	2021-01-18 15:23:02
+311	171	Yoga Sponsor Contact	t	2021-01-18 15:23:02
+312	172	Yoga Agreement	t	2021-01-18 15:24:11
+313	172	Yoga Sponsor Contact	t	2021-01-18 15:24:11
+314	173	Yoga Agreement	t	2021-01-18 16:01:10
+315	173	Yoga Sponsor Contact	t	2021-01-18 16:01:10
+316	174	Yoga Agreement	t	2021-01-18 16:28:44
+317	174	Yoga Sponsor Contact	t	2021-01-18 16:28:44
+318	175	Yoga Agreement	t	2021-01-18 16:46:29
+319	175	Yoga Sponsor Contact	t	2021-01-18 16:46:29
+324	178	Yoga Agreement	t	2021-01-18 17:21:08
+325	178	Yoga Sponsor Contact	t	2021-01-18 17:21:08
+326	179	Yoga Agreement	t	2021-01-18 17:53:57
+327	179	Yoga Sponsor Contact	f	2021-01-18 17:53:57
+328	180	Yoga Agreement	t	2021-01-18 18:04:36
+329	180	Yoga Sponsor Contact	f	2021-01-18 18:04:36
+330	181	Yoga Agreement	t	2021-01-18 19:38:07
+331	181	Yoga Sponsor Contact	t	2021-01-18 19:38:07
+332	182	Yoga Agreement	t	2021-01-18 19:44:10
+333	182	Yoga Sponsor Contact	f	2021-01-18 19:44:10
+334	183	Yoga Agreement	t	2021-01-18 19:47:07
+335	183	Yoga Sponsor Contact	t	2021-01-18 19:47:07
+336	184	Yoga Agreement	t	2021-01-18 20:38:51
+337	184	Yoga Sponsor Contact	t	2021-01-18 20:38:51
+338	185	Yoga Agreement	t	2021-01-18 21:16:57
+339	185	Yoga Sponsor Contact	f	2021-01-18 21:16:57
+340	186	Yoga Agreement	t	2021-01-18 21:42:21
+341	186	Yoga Sponsor Contact	t	2021-01-18 21:42:21
+342	187	Yoga Agreement	t	2021-01-18 22:18:44
+343	187	Yoga Sponsor Contact	f	2021-01-18 22:18:44
+344	188	Yoga Agreement	t	2021-01-19 00:18:15
+345	188	Yoga Sponsor Contact	t	2021-01-19 00:18:15
+346	189	Yoga Agreement	t	2021-01-19 01:37:34
+347	189	Yoga Sponsor Contact	t	2021-01-19 01:37:34
+348	190	Yoga Agreement	t	2021-01-19 02:05:30
+349	190	Yoga Sponsor Contact	t	2021-01-19 02:05:30
+350	191	Yoga Agreement	t	2021-01-19 02:16:24
+351	191	Yoga Sponsor Contact	t	2021-01-19 02:16:24
+352	192	Yoga Agreement	t	2021-01-19 02:38:02
+353	192	Yoga Sponsor Contact	t	2021-01-19 02:38:02
+354	193	Yoga Agreement	t	2021-01-19 02:41:38
+355	193	Yoga Sponsor Contact	t	2021-01-19 02:41:38
+356	194	Yoga Agreement	t	2021-01-19 02:50:50
+357	194	Yoga Sponsor Contact	t	2021-01-19 02:50:50
+358	195	Yoga Agreement	t	2021-01-19 02:57:32
+359	195	Yoga Sponsor Contact	t	2021-01-19 02:57:32
+360	196	Yoga Agreement	t	2021-01-19 03:01:15
+361	196	Yoga Sponsor Contact	t	2021-01-19 03:01:15
+362	197	Yoga Agreement	t	2021-01-19 03:23:04
+363	197	Yoga Sponsor Contact	t	2021-01-19 03:23:04
+364	198	Yoga Agreement	t	2021-01-19 03:31:18
+365	198	Yoga Sponsor Contact	t	2021-01-19 03:31:18
+366	199	Yoga Agreement	t	2021-01-19 03:34:06
+367	199	Yoga Sponsor Contact	t	2021-01-19 03:34:06
+368	200	Yoga Agreement	t	2021-01-19 03:51:48
+369	200	Yoga Sponsor Contact	t	2021-01-19 03:51:48
+370	201	Yoga Agreement	t	2021-01-19 04:12:25
+371	201	Yoga Sponsor Contact	t	2021-01-19 04:12:25
+372	202	Yoga Agreement	t	2021-01-19 04:22:03
+373	202	Yoga Sponsor Contact	t	2021-01-19 04:22:03
+374	203	Yoga Agreement	t	2021-01-19 04:25:45
+375	203	Yoga Sponsor Contact	t	2021-01-19 04:25:45
+376	204	Yoga Agreement	t	2021-01-19 04:39:34
+377	204	Yoga Sponsor Contact	t	2021-01-19 04:39:34
+378	205	Yoga Agreement	t	2021-01-19 04:40:42
+379	205	Yoga Sponsor Contact	t	2021-01-19 04:40:42
+380	206	Yoga Agreement	t	2021-01-19 04:44:28
+381	206	Yoga Sponsor Contact	t	2021-01-19 04:44:28
+382	207	Yoga Agreement	t	2021-01-19 05:36:51
+383	207	Yoga Sponsor Contact	f	2021-01-19 05:36:51
+384	208	Yoga Agreement	t	2021-01-19 13:18:17
+385	208	Yoga Sponsor Contact	t	2021-01-19 13:18:17
+386	209	Yoga Agreement	t	2021-01-19 13:28:22
+387	209	Yoga Sponsor Contact	t	2021-01-19 13:28:22
+388	210	Yoga Agreement	t	2021-01-19 14:26:48
+389	210	Yoga Sponsor Contact	f	2021-01-19 14:26:48
+390	211	Yoga Agreement	t	2021-01-19 15:11:51
+391	211	Yoga Sponsor Contact	f	2021-01-19 15:11:51
+392	212	Yoga Agreement	t	2021-01-19 15:50:29
+393	212	Yoga Sponsor Contact	t	2021-01-19 15:50:29
+394	213	Yoga Agreement	t	2021-01-19 16:58:19
+395	213	Yoga Sponsor Contact	t	2021-01-19 16:58:19
+396	214	Yoga Agreement	t	2021-01-19 18:12:24
+397	214	Yoga Sponsor Contact	t	2021-01-19 18:12:24
+398	215	Yoga Agreement	t	2021-01-19 18:23:36
+399	215	Yoga Sponsor Contact	t	2021-01-19 18:23:36
+400	216	Yoga Agreement	t	2021-01-19 18:26:03
+401	216	Yoga Sponsor Contact	f	2021-01-19 18:26:03
+402	217	Yoga Agreement	t	2021-01-19 18:35:52
+403	217	Yoga Sponsor Contact	f	2021-01-19 18:35:52
+404	218	Yoga Agreement	t	2021-01-19 18:47:51
+405	218	Yoga Sponsor Contact	t	2021-01-19 18:47:51
+406	219	Yoga Agreement	t	2021-01-19 23:22:21
+407	219	Yoga Sponsor Contact	t	2021-01-19 23:22:21
+408	220	Yoga Agreement	t	2021-01-20 00:26:17
+409	220	Yoga Sponsor Contact	t	2021-01-20 00:26:17
+410	221	Yoga Agreement	t	2021-01-20 01:30:11
+411	221	Yoga Sponsor Contact	t	2021-01-20 01:30:11
+412	222	Yoga Agreement	t	2021-01-20 02:53:50
+413	222	Yoga Sponsor Contact	t	2021-01-20 02:53:50
+414	223	Yoga Agreement	t	2021-01-20 03:22:21
+415	223	Yoga Sponsor Contact	f	2021-01-20 03:22:21
+416	224	Yoga Agreement	t	2021-01-20 04:54:53
+417	224	Yoga Sponsor Contact	t	2021-01-20 04:54:53
+418	225	Yoga Agreement	t	2021-01-20 05:38:41
+419	225	Yoga Sponsor Contact	f	2021-01-20 05:38:41
+420	226	Yoga Agreement	t	2021-01-20 13:59:42
+421	226	Yoga Sponsor Contact	t	2021-01-20 13:59:42
+422	227	Yoga Agreement	t	2021-01-20 15:05:54
+423	227	Yoga Sponsor Contact	t	2021-01-20 15:05:54
+426	229	Yoga Agreement	t	2021-01-20 22:25:08
+427	229	Yoga Sponsor Contact	t	2021-01-20 22:25:08
+428	230	Yoga Agreement	t	2021-01-20 23:25:54
+429	230	Yoga Sponsor Contact	t	2021-01-20 23:25:54
+430	231	Yoga Agreement	t	2021-01-20 23:26:49
+431	231	Yoga Sponsor Contact	f	2021-01-20 23:26:49
+432	232	Yoga Agreement	t	2021-01-21 00:44:30
+433	232	Yoga Sponsor Contact	t	2021-01-21 00:44:30
+434	233	Yoga Agreement	t	2021-01-21 19:27:35
+435	233	Yoga Sponsor Contact	t	2021-01-21 19:27:35
+436	234	Yoga Agreement	t	2021-01-21 21:16:23
+437	234	Yoga Sponsor Contact	f	2021-01-21 21:16:23
+438	235	Yoga Agreement	t	2021-01-21 22:52:02
+439	235	Yoga Sponsor Contact	t	2021-01-21 22:52:02
+440	236	Yoga Agreement	t	2021-01-21 23:00:46
+441	236	Yoga Sponsor Contact	t	2021-01-21 23:00:46
+442	237	Yoga Agreement	t	2021-01-21 23:08:24
+443	237	Yoga Sponsor Contact	t	2021-01-21 23:08:24
+446	239	Yoga Agreement	t	2021-01-21 23:39:24
+447	239	Yoga Sponsor Contact	f	2021-01-21 23:39:24
+448	240	Yoga Agreement	t	2021-01-22 01:57:25
+449	240	Yoga Sponsor Contact	t	2021-01-22 01:57:25
+450	241	Yoga Agreement	t	2021-01-22 04:22:12
+451	241	Yoga Sponsor Contact	f	2021-01-22 04:22:12
+452	242	Yoga Agreement	t	2021-01-22 07:08:54
+453	242	Yoga Sponsor Contact	f	2021-01-22 07:08:54
+454	243	Yoga Agreement	t	2021-01-22 12:43:06
+455	243	Yoga Sponsor Contact	t	2021-01-22 12:43:06
+456	244	Yoga Agreement	t	2021-01-22 14:50:42
+457	244	Yoga Sponsor Contact	f	2021-01-22 14:50:42
+458	245	Yoga Agreement	t	2021-01-24 00:22:50
+459	245	Yoga Sponsor Contact	f	2021-01-24 00:22:50
+460	246	Yoga Agreement	t	2021-01-24 02:10:14
+461	246	Yoga Sponsor Contact	t	2021-01-24 02:10:14
+462	247	Yoga Agreement	t	2021-01-24 02:13:51
+463	247	Yoga Sponsor Contact	f	2021-01-24 02:13:51
+464	248	Yoga Agreement	t	2021-01-24 22:37:07
+465	248	Yoga Sponsor Contact	t	2021-01-24 22:37:07
+466	249	Yoga Agreement	t	2021-01-25 02:13:57
+467	249	Yoga Sponsor Contact	t	2021-01-25 02:13:57
+468	250	Yoga Agreement	t	2021-01-25 02:15:01
+469	250	Yoga Sponsor Contact	t	2021-01-25 02:15:01
+472	252	Yoga Agreement	t	2021-01-26 23:34:23
+473	252	Yoga Sponsor Contact	f	2021-01-26 23:34:23
+474	253	Yoga Agreement	t	2021-01-29 15:53:55
+475	253	Yoga Sponsor Contact	f	2021-01-29 15:53:55
+476	254	Yoga Agreement	t	2021-01-31 05:18:40
+477	254	Yoga Sponsor Contact	t	2021-01-31 05:18:40
+478	255	Yoga Agreement	t	2021-02-03 00:03:33
+479	255	Yoga Sponsor Contact	t	2021-02-03 00:03:33
+480	256	Yoga Agreement	t	2021-02-03 19:43:51
+481	256	Yoga Sponsor Contact	t	2021-02-03 19:43:51
+486	259	Yoga Agreement	t	2021-02-04 23:49:27
+487	259	Yoga Sponsor Contact	t	2021-02-04 23:49:27
+488	260	Yoga Agreement	t	2021-02-05 01:03:59
+489	260	Yoga Sponsor Contact	t	2021-02-05 01:03:59
+490	261	Yoga Agreement	t	2021-02-05 21:49:57
+491	261	Yoga Sponsor Contact	t	2021-02-05 21:49:57
+492	262	Yoga Agreement	t	2021-02-06 03:13:11
+493	262	Yoga Sponsor Contact	t	2021-02-06 03:13:11
+494	263	Yoga Agreement	t	2021-02-06 13:07:38
+495	263	Yoga Sponsor Contact	t	2021-02-06 13:07:38
+496	264	Yoga Agreement	t	2021-02-06 18:00:49
+497	264	Yoga Sponsor Contact	t	2021-02-06 18:00:49
+498	265	Yoga Agreement	t	2021-02-07 15:47:04
+499	265	Yoga Sponsor Contact	f	2021-02-07 15:47:04
+520	284	Ramadan Agreement	t	2021-04-09 01:07:37
+521	284	Ramadan Sponsor Contact	f	2021-04-09 01:07:37
+522	309	Ramadan Agreement	t	2021-04-09 01:32:14
+523	309	Ramadan Sponsor Contact	t	2021-04-09 01:32:14
+524	313	Ramadan Agreement	t	2021-04-09 01:38:08
+525	313	Ramadan Sponsor Contact	t	2021-04-09 01:38:08
+526	360	Ramadan Agreement	t	2021-04-09 02:09:23
+527	360	Ramadan Sponsor Contact	f	2021-04-09 02:09:23
+528	381	Ramadan Agreement	t	2021-04-09 04:11:39
+529	381	Ramadan Sponsor Contact	f	2021-04-09 04:11:39
+530	388	Ramadan Agreement	t	2021-04-09 04:18:53
+531	388	Ramadan Sponsor Contact	t	2021-04-09 04:18:53
+532	389	Ramadan Agreement	t	2021-04-09 04:20:01
+533	389	Ramadan Sponsor Contact	t	2021-04-09 04:20:01
+534	390	Ramadan Agreement	t	2021-04-09 04:50:14
+535	390	Ramadan Sponsor Contact	t	2021-04-09 04:50:14
+536	391	Ramadan Agreement	t	2021-04-09 08:27:38
+537	391	Ramadan Sponsor Contact	f	2021-04-09 08:27:38
+538	392	Ramadan Agreement	t	2021-04-09 13:00:14
+539	392	Ramadan Sponsor Contact	t	2021-04-09 13:00:14
+544	395	Ramadan Agreement	t	2021-04-09 17:32:49
+545	395	Ramadan Sponsor Contact	t	2021-04-09 17:32:49
+546	406	Ramadan Agreement	t	2021-04-09 21:48:44
+547	406	Ramadan Sponsor Contact	f	2021-04-09 21:48:44
+548	407	Ramadan Agreement	t	2021-04-10 00:38:14
+549	407	Ramadan Sponsor Contact	t	2021-04-10 00:38:14
+572	419	Ramadan Agreement	t	2021-04-10 01:41:18
+573	419	Ramadan Sponsor Contact	f	2021-04-10 01:41:18
+574	420	Ramadan Agreement	t	2021-04-10 16:24:34
+575	420	Ramadan Sponsor Contact	f	2021-04-10 16:24:34
+576	421	Ramadan Agreement	t	2021-04-10 17:01:45
+577	421	Ramadan Sponsor Contact	f	2021-04-10 17:01:45
+584	262	Ramadan Agreement	t	2021-04-10 18:22:06
+585	262	Ramadan Sponsor Contact	t	2021-04-10 18:22:06
+586	429	Ramadan Agreement	t	2021-04-11 02:51:00
+587	429	Ramadan Sponsor Contact	t	2021-04-11 02:51:00
+588	430	Ramadan Agreement	t	2021-04-11 03:48:59
+589	430	Ramadan Sponsor Contact	t	2021-04-11 03:48:59
+590	121	Ramadan Agreement	t	2021-04-11 04:54:20
+591	121	Ramadan Sponsor Contact	t	2021-04-11 04:54:20
+594	433	Ramadan Agreement	t	2021-04-11 10:47:28
+595	433	Ramadan Sponsor Contact	t	2021-04-11 10:47:28
+596	96	Ramadan Agreement	t	2021-04-11 12:16:09
+597	96	Ramadan Sponsor Contact	t	2021-04-11 12:16:09
+598	435	Ramadan Agreement	t	2021-04-11 13:04:03
+599	435	Ramadan Sponsor Contact	t	2021-04-11 13:04:03
+602	161	Ramadan Agreement	t	2021-04-11 14:02:28
+603	161	Ramadan Sponsor Contact	t	2021-04-11 14:02:28
+608	76	Ramadan Agreement	t	2021-04-11 14:53:43
+609	76	Ramadan Sponsor Contact	t	2021-04-11 14:53:43
+610	77	Ramadan Agreement	t	2021-04-11 14:55:08
+611	77	Ramadan Sponsor Contact	t	2021-04-11 14:55:08
+612	112	Ramadan Agreement	t	2021-04-11 14:57:09
+613	112	Ramadan Sponsor Contact	t	2021-04-11 14:57:09
+614	86	Ramadan Agreement	t	2021-04-11 14:58:17
+615	86	Ramadan Sponsor Contact	t	2021-04-11 14:58:17
+616	264	Ramadan Agreement	t	2021-04-11 15:00:02
+617	264	Ramadan Sponsor Contact	t	2021-04-11 15:00:02
+618	226	Ramadan Agreement	t	2021-04-11 15:01:43
+619	226	Ramadan Sponsor Contact	t	2021-04-11 15:01:43
+620	253	Ramadan Agreement	t	2021-04-11 15:02:52
+621	253	Ramadan Sponsor Contact	t	2021-04-11 15:02:52
+622	80	Ramadan Agreement	t	2021-04-11 15:04:12
+623	80	Ramadan Sponsor Contact	t	2021-04-11 15:04:12
+624	48	Ramadan Agreement	t	2021-04-11 15:05:09
+625	48	Ramadan Sponsor Contact	t	2021-04-11 15:05:09
+626	261	Ramadan Agreement	t	2021-04-11 15:06:36
+627	261	Ramadan Sponsor Contact	t	2021-04-11 15:06:36
+628	65	Ramadan Agreement	t	2021-04-11 15:07:33
+629	65	Ramadan Sponsor Contact	t	2021-04-11 15:07:33
+632	192	Ramadan Agreement	t	2021-04-11 15:57:55
+633	192	Ramadan Sponsor Contact	t	2021-04-11 15:57:55
+634	453	Ramadan Agreement	t	2021-04-11 16:20:01
+635	453	Ramadan Sponsor Contact	t	2021-04-11 16:20:01
+640	456	Ramadan Agreement	t	2021-04-11 17:36:15
+641	456	Ramadan Sponsor Contact	t	2021-04-11 17:36:15
+642	255	Ramadan Agreement	t	2021-04-11 18:33:52
+643	255	Ramadan Sponsor Contact	t	2021-04-11 18:33:52
+644	237	Ramadan Agreement	t	2021-04-11 18:40:36
+645	237	Ramadan Sponsor Contact	t	2021-04-11 18:40:36
+646	152	Ramadan Agreement	t	2021-04-11 19:13:57
+647	152	Ramadan Sponsor Contact	t	2021-04-11 19:13:57
+650	461	Ramadan Agreement	t	2021-04-12 03:18:20
+651	461	Ramadan Sponsor Contact	t	2021-04-12 03:18:20
+652	122	Ramadan Agreement	t	2021-04-12 06:23:02
+653	122	Ramadan Sponsor Contact	t	2021-04-12 06:23:02
+654	463	Ramadan Agreement	t	2021-04-12 15:55:08
+655	463	Ramadan Sponsor Contact	t	2021-04-12 15:55:08
+656	464	Ramadan Agreement	t	2021-04-12 17:53:55
+657	464	Ramadan Sponsor Contact	f	2021-04-12 17:53:55
+658	465	Ramadan Agreement	t	2021-04-13 02:45:17
+659	465	Ramadan Sponsor Contact	t	2021-04-13 02:45:17
+662	467	Ramadan Agreement	t	2021-04-13 03:56:16
+663	467	Ramadan Sponsor Contact	f	2021-04-13 03:56:16
+664	468	Ramadan Agreement	t	2021-04-13 17:59:15
+665	468	Ramadan Sponsor Contact	t	2021-04-13 17:59:15
+666	49	Ramadan Agreement	t	2021-04-13 18:30:42
+667	49	Ramadan Sponsor Contact	t	2021-04-13 18:30:42
+668	470	Ramadan Agreement	t	2021-04-13 18:46:49
+669	470	Ramadan Sponsor Contact	f	2021-04-13 18:46:49
+670	471	Ramadan Agreement	t	2021-04-13 18:54:12
+671	471	Ramadan Sponsor Contact	t	2021-04-13 18:54:12
+672	472	Ramadan Agreement	t	2021-04-13 19:50:21
+673	472	Ramadan Sponsor Contact	t	2021-04-13 19:50:21
+674	107	Ramadan Agreement	t	2021-04-13 20:48:41
+675	107	Ramadan Sponsor Contact	t	2021-04-13 20:48:41
+676	474	Ramadan Agreement	t	2021-04-13 21:25:41
+677	474	Ramadan Sponsor Contact	t	2021-04-13 21:25:41
+678	475	Ramadan Agreement	t	2021-04-13 23:04:06
+679	475	Ramadan Sponsor Contact	t	2021-04-13 23:04:06
+680	476	Ramadan Agreement	t	2021-04-13 23:41:39
+681	476	Ramadan Sponsor Contact	t	2021-04-13 23:41:39
+682	477	Ramadan Agreement	t	2021-04-14 16:48:34
+683	477	Ramadan Sponsor Contact	f	2021-04-14 16:48:34
+684	478	Ramadan Agreement	t	2021-04-14 21:20:53
+685	478	Ramadan Sponsor Contact	t	2021-04-14 21:20:53
+686	479	Ramadan Agreement	t	2021-04-15 01:29:17
+687	479	Ramadan Sponsor Contact	t	2021-04-15 01:29:17
+688	480	Ramadan Agreement	t	2021-04-15 01:39:54
+689	480	Ramadan Sponsor Contact	t	2021-04-15 01:39:54
+690	481	Ramadan Agreement	t	2021-04-15 01:56:46
+691	481	Ramadan Sponsor Contact	t	2021-04-15 01:56:46
+692	482	Ramadan Agreement	t	2021-04-15 03:25:31
+693	482	Ramadan Sponsor Contact	f	2021-04-15 03:25:31
+694	483	Ramadan Agreement	t	2021-04-15 17:48:57
+695	483	Ramadan Sponsor Contact	t	2021-04-15 17:48:57
+696	484	Ramadan Agreement	t	2021-04-15 19:10:08
+697	484	Ramadan Sponsor Contact	t	2021-04-15 19:10:08
+698	485	Ramadan Agreement	t	2021-04-19 13:07:00
+699	485	Ramadan Sponsor Contact	t	2021-04-19 13:07:00
+700	155	Ramadan Agreement	t	2021-04-19 16:39:51
+701	155	Ramadan Sponsor Contact	t	2021-04-19 16:39:51
+702	487	Ramadan Agreement	t	2021-04-20 22:21:29
+703	487	Ramadan Sponsor Contact	t	2021-04-20 22:21:29
+706	489	Ramadan Agreement	t	2021-04-21 00:23:10
+707	489	Ramadan Sponsor Contact	f	2021-04-21 00:23:10
+708	490	Yoga Agreement	t	2021-05-02 22:20:43
+709	490	Yoga Sponsor Contact	f	2021-05-02 22:20:43
+710	491	Yoga Agreement	t	2021-05-02 22:24:39
+711	491	Yoga Sponsor Contact	t	2021-05-02 22:24:39
+712	492	Yoga Agreement	t	2021-05-02 22:26:21
+713	492	Yoga Sponsor Contact	f	2021-05-02 22:26:21
+714	493	Ramadan Agreement	t	2021-05-25 08:59:28
+715	493	Ramadan Sponsor Contact	t	2021-05-25 08:59:28
+\.
+
+
+--
+-- Data for Name: fixture; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.fixture (fixture_id, team1, team2, competition, fixture_date, fixture_time, score1, score2) FROM stdin;
+\.
+
+
+--
+-- Data for Name: guardian; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.guardian (guardian_id, person, full_name, email, phone) FROM stdin;
+1	492	sadfsdfsdf	a@b.com	32222222222222
+\.
+
+
+--
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.person (person_id, first_name, last_name, email, phone, gender, birthday, password) FROM stdin;
+388	Ryane	Fyith	ryane.fyith@gmail.com	7804046286	false	2000-04-02	
+389	Aliya	Abougouche	aliyaabougouche@gmail.com	7804047473	false	2000-07-21	
+390	Rania	Melhem	melhem1@ualberta.ca	7802009258	false	1994-03-05	
+391	Humaira	Kapadia	kapadiahumaira24@gmail.com	+919930036195	false	1995-12-24	
+392	Kulsum	Khan	kulsum8@gmail.com	6474494645	false	1991-01-30	
+46	Esraa	Mahmoud	esraa.fahmy55@gmail.com	9024486909	false	1986-03-11	\N
+47	Mariya	Ahmed	mariya.ahmed@me.com	6478922094	false	2000-01-24	\N
+48	Noora	Ali	noora.ali9713@gmail.com	2269295449	false	1997-04-09	\N
+49	Makboolee	Fyith	fyith@ualberta.ca	17806238835	false	1997-03-17	\N
+50	Soha	Brohi 	sohabrohi26@gmail.com	6474578493	false	2000-08-26	\N
+51	Sara	Al-Sabbag	sara.alsabbag@gmail.com	6476776601	false	2000-04-01	\N
+52	Leyan 	Shoshaa	lian-12202@hotmail.com	6475195015	false	2000-03-15	\N
+53	Sadia 	Ahmad 	ahmad_sadia@hotmail.com	4168340698	false	1987-01-15	\N
+54	Zainab	Gajani	zainabgajani@gmail.com	4036194918	false	2002-02-11	\N
+55	Janvi 	Sharma 	janvihilo@gmail.com	8254315512	false	2002-02-15	\N
+56	Maryam	Ajez	ajezmaryam@gmail.com	6477109037	false	2002-01-22	\N
+57	Asmaa	Ali	asmaa98.ali@gmail.com	6475236303	false	1998-02-06	\N
+58	Yousr	Hassan	y.hassan44@gmail.com	6479821891	false	1995-03-07	\N
+59	Sarah	Deeb	sarahdeeb03@gmail.com	6479396331	false	2003-01-26	\N
+60	Maysoun	Deeb	mayadeeb98@outlook.com	4166699435	false	1998-07-02	\N
+61	Miriam	Khan	miriamjkhan@msn.com	6473820185	false	1965-05-22	\N
+62	Yasmin	Yusuf	yasmin_yusuf512@live.com	6478649105	false	1998-09-25	\N
+63	Mariam	Ali	mariamalii@hotmail.ca	6478826160	false	1995-12-12	\N
+64	Sahar	Salih	sahar_salih_66@yahoo.ca	6478928226	false	1995-10-25	\N
+65	Fatima	Ali	fatimalz.ali23@gmail.com	3062705652	false	1998-07-23	\N
+66	Yasmine 	Mougafi	mougafiyassmine@gmail.com	5145615790	false	1993-12-05	\N
+67	Maryam	El-Ashiri	melashiri29@gmail.com	6476098600	false	1999-09-29	\N
+68	Waheeda 	Mohamed 	waheeda@live.ca	6472039149	false	1982-01-15	\N
+69	Fatima	Murad	fmurad@yahoo.com	4168901465	false	1973-05-21	\N
+70	Nesreen 	Al	n.alomleh@gmail.com	6476869459	false	1978-01-01	\N
+71	Farah	Yassine	Lamaaboumerhi@gmail.com	6479159959	false	2007-02-14	\N
+72	Ebtehal	Abdelgawad	hamdyebtehal@gmail.com	7924144464	false	1978-10-15	\N
+73	Ebtesam 	Alaswad	ebtisamalaswad@yahoo.com	4377752040	false	1988-03-29	\N
+74	Sara	saker	sara.saker@gmail.com	6472983463	false	1984-09-20	\N
+75	MEHNAZ	AHMED	mehnaz_ahmed38@hotmail.com	4162938312	false	1975-05-21	\N
+76	Sanaa 	Ali	sanaaali_@hotmail.com	4379945123	false	1997-12-15	\N
+77	Khelood	Zgeer	khelood1979@yahoo.com	6472204998	false	1979-09-01	\N
+78	Amira	Hassan	amirahassan22@gmail.com	6477726353	false	1990-03-07	\N
+79	Manal	Miqdad	manalmiqdad@yahoo.com	2892320426	false	1981-01-01	\N
+80	Riham	Awad	riham_aa@hotmail.com	4169510554	false	1984-12-16	\N
+81	tasnim	rekkas	ka_mou@hotmail.com	4163173743	false	2021-01-01	\N
+82	Khadija	Ghanam	ghanam@hotmail.com	9023683418	false	1970-02-08	\N
+83	Faiza	Siddiqui	siddi11@gmail.com	4165770521	false	1982-12-13	\N
+84	Kinza	Fatima	kinzanaveed@hotmail.com	2269359260	false	1988-12-26	\N
+85	Amera	Rabee	amerarabee3@gmail.com	9029438372	false	1979-01-01	\N
+86	Nida	Khan	zayd.khan@gmail.com	4163168870	false	1984-12-16	\N
+87	Ruwaida	Alkuba	Ruwaidalkubaisi@gmail.com	6472247778	false	1972-06-16	\N
+88	Samrah	Sher	samrah_sher@hotmail.com	6475204897	false	1987-09-14	\N
+89	Sazia	Afreen	safreen_1911@yahoo.com	13652287615	false	1983-01-19	\N
+90	Mahetab 	Mohamed 	mahycanada@hotmail.com	2897954086	false	1979-09-14	\N
+91	Roqaya 	Elrahwan 	aishaelkady@ymail.com	6477794072	false	2027-07-25	\N
+92	Saqiba	Zaid	a3644us@icloud.com	6475519319	false	1981-06-01	\N
+93	Mahvish	Ameen	mahvish.f.ameen@gmail.com	6477054083	false	1988-01-19	\N
+94	Mounwer	Al-Dibouni	monawerjilani@gmail.com	6474716440	false	1966-07-17	\N
+95	Toqa	Alshwatreh	talshwatreh22@isnaschools.com	6479816550	false	2004-08-21	\N
+96	Zarghona 	Mazhar 	zonaadil@hotmail.com	9057833738	false	1978-02-14	\N
+97	Shehnaz	T	shehnaztt@gmail.com	6477171939	false	1980-10-08	\N
+98	MALAK	ALI	malakmazhar.2000@gmail.com	4165785616	false	2000-11-17	\N
+99	Zoya	Khan	zoyayarkhan@gmail.com	6472479989	false	2003-06-23	\N
+100	Radwa	Mostafa	radwa.fathy2911@gmail.com	9029161299	false	1978-08-19	\N
+101	Nawal	Said	umsalsabil@gmail.com	6479363973	false	1975-09-05	\N
+102	Hanna	Ali	faazam@gmail.com	4046646278	false	1974-11-01	\N
+103	Hudaalla	Attaalla	hudaallah2006@gmail.com	6475507719	false	2006-01-16	\N
+104	Farzana	Chowdhury	farzanachowdhury@gmail.com	4168590998	false	1986-01-03	\N
+105	Rehab	Elkord	Relkord@hotmail.com	5199818116	false	1976-06-18	\N
+106	Amira	Babeiti	amibabet@gmail.com	6479919134	false	1998-10-16	\N
+107	Zeba	Fathima	zeba.fshaikh@gmail.com	5145549649	false	1990-01-18	\N
+108	Sultana	Khan	sultu77@yahoo.com	4164270296	false	1977-06-08	\N
+109	Germeen	Sharrood	gsharrood@gmail.com	6478628065	false	1968-11-12	\N
+110	Jehan	Sayed	Jeje.1027@gmail.com	03069145646	false	1979-04-10	\N
+111	Syyedah sarwat	Sabat	sssabat143@hotmail.com	6475696382	false	1988-07-07	\N
+112	Dada	Tell	dara_tell@hotmail.com	2894000033	false	1978-12-05	\N
+113	Amina	Gomaa	agomaa.5@gmail.com	6472195343	false	1993-01-15	\N
+114	Davneet	Shergill 	davneet95@gmail.com	3062813480	false	1995-08-16	\N
+115	Zainab	Sultan	zainabsultan@gmail.com	6399982784	false	1998-09-14	\N
+121	Malak	Abuhatem	malak19051@hotmail.com	7809376649	false	1999-05-19	\N
+122	Asmaa	Ismail 	ismailasmaa217@yahoo.ca	7789533649	false	1984-08-20	\N
+123	Yasmin 	Ziter	yasmin_pda@hotmail.com	4034734430	false	1977-05-02	\N
+124	Saira	Baig	mssgamom@hotmail.com	6472009953	false	1968-09-02	\N
+125	Nahla	Foly	nahla_noaman@yahoo.com	2266006117	false	1974-11-10	\N
+128	Saiyuga	Suthaakarann	saiyuga.karan@gmail.com	6477027098	false	2021-01-18	\N
+129	Balkisu	Aliyu	billybash2015@gmail.com	6475621288	false	1988-09-12	\N
+130	Abi	Karan	abhitah.karan@gmail.com	6476081374	false	1998-07-12	\N
+131	Haya	Salameh	hayas2004@gmail.com	3659965660	false	2004-05-30	\N
+132	Roula	Mansour	roulamansour-k@hotmail.com	6478325767	false	1981-12-19	\N
+133	Aya	Kasir	Ayahkasir@gmail.com	4166271412	false	1995-01-31	\N
+134	Polina	Lerman	Polina.lerman@gmail.com	3062031707	false	1994-09-08	\N
+135	Eman 	Jomha	emanjomha12@hotmail.com	6399160084	false	1997-07-17	\N
+136	Dania 	Ali	daniaali1997@gmail.com	4168099945	false	1997-05-15	\N
+137	Fareda	Jaffer	faredajaffer@hotmail.com	6132911455	false	1976-08-20	\N
+138	Eram	Rather	eramrather@gmail.com	07527228836	false	1981-12-09	\N
+139	Hanan	Mohamad	hanansakr5@gmail.com	4166688572	false	1986-12-09	\N
+140	Maham	Meher	mahamy2k@gmail.com	6477107221	false	2000-11-06	\N
+141	Umm	Hamza	Reema.kamboh@gmail.com	9953936535	false	1980-05-30	\N
+143	Saly	Zaki	khaled.s2020@gmail.com	9052262090	false	1990-09-20	\N
+144	Shanzeh	Syed	shanzeh24@gmail.com	5198031140	false	1998-06-24	\N
+145	Maria	Hoda	mfatimah00@gmail.com	6479867722	false	1981-08-19	\N
+146	Mona	Abdelhadi 	monaahassan@hotmail.com	4168018337	false	1969-10-02	\N
+147	Dana	El Assi	danaelassi@gmail.com	4373336777	false	1988-05-12	\N
+148	Marwa	Elesaily	melesaily@sirtts.com	4168772770	false	1975-10-11	\N
+149	Talia	Alshurafa	manouse_84@hotmail.com	6478782428	false	2010-11-12	\N
+150	Tahani	El-agha	tm200011@hotmail.com	6478662046	false	1985-05-21	\N
+151	Lobna	E.	lnm289@gmail.com	6473353914	false	1987-09-28	\N
+152	Ru	Sh	rshaikh2003@gmail.com	6472483034	false	1984-01-30	\N
+154	Hind	Barnieh	hind.barnieh@gmail.com	6475634946	false	1994-01-01	\N
+155	Wardah	Shaikh	wardah.shaikh@hotmail.com	6477045373	false	1998-11-04	\N
+156	Heba	Ramadan	ramadan.heba89@gmail.com	9056173534	false	1989-11-13	\N
+158	awais	ahmadkhan	asma_zia@yahoo.com	03214312135	false	1977-02-03	\N
+159	Zahaa	Ali	zahaaali16@gmail.com	6479095457	false	2000-12-08	\N
+160	Rahaf	Jaradat	rahafjaradat@icloud.com	3062624114	false	1997-10-13	\N
+161	Sara	Kassem	sarakassem95@gmail.com	5145122665	false	1995-10-06	\N
+162	Bismah	Saleem Khan	bismah_saleemkhan@hotmail.com	6479879622	false	1998-05-25	\N
+163	Sherin	Abouelela	shermahmar2000@gmail.com	6479217563	false	1971-08-21	\N
+164	Aisha	Baig	baig_aisha@hotmail.com	6478553088	false	1983-12-24	\N
+165	Sara	Elkady	selkady13@gmail.com	5147739085	false	1999-04-05	\N
+166	Nafesa 	Danayar	Nafesa_danayar@live.ca	6477731215	false	1993-03-01	\N
+167	Samiha 	Hamdy	samihahamdy3@gmail.com	6474710119	false	1975-04-18	\N
+168	Faryal	Akbar	faryal.akbar@gmail.com	6132200090	false	1986-01-01	\N
+169	Asma	Noman	asmafazeel@hotmail.com	9056161670	false	1977-08-16	\N
+170	Mariam	Wasty	mariam.wasty26@gmail.com	5148655188	false	1990-08-26	\N
+171	Romana	Siddiqui	romanaandahmad@yahoo.ca	6475498577	false	1973-06-28	\N
+172	Zahra	Akbar	zahra.akbar50@gmail.com	2892429102	false	1989-09-11	\N
+173	Mona	Mohamed	mona.ms.mohamed@gmail.com	6477170104	false	1973-09-15	\N
+174	Warda	Rizvi	wmrizvi@gmail.com	6478877514	false	1990-01-27	\N
+175	Sally	Elsayed	sally.ali.ahmad@gmail.com	+14379717126	false	1980-12-08	\N
+178	Riham	Gaber	rehamgaber@gmail.com	6477833917	false	1986-07-18	\N
+179	Hazel	Levin 	hazellevin@icloud.com	4169987717	false	1997-12-05	\N
+180	Rumsha 	Ansari	rumsha.a@gmail.com	6473033076	false	1999-01-16	\N
+181	Nida	Sahi	Sahinida27@gmail.com	6474721788	false	2001-09-27	\N
+182	Maryam	Ahmed 	noor.javed@gmail.com	4169186397	false	2010-10-04	\N
+183	Amina	Babakura	mintusskincare@gmail.com	6472475999	false	1991-10-24	\N
+184	Abeer	Abuishaq	a_eshaq@yahoo.com	9055922235	false	1983-10-02	\N
+185	Sarah	Bardouh	sarah_180_2011@hotmail.com	3067172679	false	1997-11-14	\N
+186	Mahrukh	Awan	mahrukh.imran@live.com	6474611326	false	1998-07-26	\N
+187	Vareesha	Farooqi	vareesha.asif@gmail.com	9052998465	false	1998-03-07	\N
+188	Alla	Bengizi	allabengizi@hotmail.com	9055150091	false	2000-10-24	\N
+189	Marwa	Taleb	marwaabutaleb@hotmail.com	4167880606	false	1980-01-25	\N
+190	Zoia	Iqbal	tozoia.iqbal@hotmail.com	6478947730	false	1999-07-20	\N
+191	Yalina	Tahir	nadeem_fatima@hotmail.com	2898340112	false	2021-03-28	\N
+192	Heba	Mohamed	heba_nasrat@hotmail.com	6479798060	false	1984-10-01	\N
+193	Shereen	Metwaly	shereenamer@gmail.com	4168759214	false	1972-03-11	\N
+194	Mahma	Hoda	mahmahoda@hotmail.com	9058295971	false	1978-04-22	\N
+195	Mona	Elmahdy	monaelmahdy@gmail.com	8074077240	false	1982-10-12	\N
+196	Eman	Salama	esalama@hotmail.ca	6476844386	false	1986-05-08	\N
+197	Lamia 	Shehata 	drloma2003@hotmail.com	5148355412	false	1985-04-28	\N
+198	Elyse	H	elyse.hosein@gmail.com	4165615659	false	1990-01-09	\N
+199	Gihan	Emam	gehan_emam_2005@yahoo.com	7056264817	false	1981-10-20	\N
+200	Sandy	Ali	Sandy.ali5@gmail.com	5148925337	false	1989-07-18	\N
+201	Maryam	Einshouka	meinshouka@gmail.com	5195202145	false	1991-05-01	\N
+202	Noran	Ahmed	nouran3b1@yahoo.com	4379227088	false	1985-12-09	\N
+203	Marwa	Saleh	mar_rashed@hotmail.com	6479794451	false	1979-04-25	\N
+204	Amany	Abouelella	anoshy10@gmail.com	4168367883	false	1982-06-02	\N
+205	Nahla	Elshaer	Nahloola.83@gmail.com	6479390097	false	1983-01-16	\N
+206	Safae	El ghazi	sofiunique@hotmail.com	4384917562	false	1981-04-09	\N
+207	Tala	Aljeilani	talaaljelani@gmail.com	6479943419	false	2001-11-16	\N
+208	Sadaf	Mubashir 	sadafmubashir2@gmail.com	4163173476	false	1972-03-06	\N
+209	Amnah	Ansari	amnahaansari@gmail.com	6477719665	false	1997-04-18	\N
+210	Mona	H	arwanetherland@yahoo.com	6477121101	false	1998-09-23	\N
+211	Yusra 	Khota 	yusra.khota@hotmail.com	4169192339	false	1993-07-17	\N
+212	Atyah	Khan	atyah@hotmail.com	6478017861	false	1980-07-11	\N
+213	Komal	Butt	Komalabidbutt72@gmail.com	6479717217	false	2002-09-18	\N
+214	Samreen	Hasan	sam.zaib81@gmail.com	4168415835	false	1982-01-28	\N
+215	Abiha	Sajid	abihasajid@outlook.com	4379994815	false	2001-07-10	\N
+216	Megan	Dupuis	meganddupuis@gmail.com	6132823485	false	1988-04-19	\N
+217	Asma	Jama	asmajama98@gmail.com	6476544830	false	1998-05-17	\N
+218	Mariam	Ansari	mariamansari11@yahoo.com	6262772856	false	1997-06-26	\N
+219	Nermine	Sobh	nermosobh@hotmail.com	7802787712	false	1977-07-12	\N
+220	Zarqa	Khan	barlaszarqa@gmail.com	4379943810	false	1967-09-01	\N
+221	Erdogan	Hanife	hanifeerdogan043@gmail.com	6477853419	false	1997-02-13	\N
+222	SUNDUS	Meer	anaanam123@yahoo.com	6475018837	false	1997-11-07	\N
+223	Sidi	Ali	s_aliy@yahoo.com	6476098842	false	1988-03-16	\N
+224	Hazzar	Khalil	kheather104@gmail.com	6477037348	false	2000-12-04	\N
+225	Affaf	Rai	affaf.rai@hotmail.com	3657790024	false	1988-03-26	\N
+226	Sumera 	Umar	sumriaz@yahoo.com	6479803372	false	1975-10-04	\N
+227	Ayesha	MacPherson	mmacp012@gmail.com	6478638242	false	1996-05-09	\N
+229	Hoda	Elshikh	hodaelshikh83@hotmail.com	6132202409	false	1983-09-13	\N
+230	Saadia	Altaf	saadia313altaf@yahoo.com	4034565762	false	2021-01-20	\N
+231	Zohra	Parveen	zohrabadar@hotmail.com	2267899282	false	1976-10-07	\N
+232	Mariam	Ashraf	marriamashraf02@gmail.com	4168716431	false	1988-12-02	\N
+233	Suad	Ali	ali.suad94@gmail.com	6477043355	false	1994-02-20	\N
+234	Mehjabeen	Elahi	elahimehjabeen@gmail.com	6477404766	false	1995-05-04	\N
+235	Deedee	Shoukry	deedeeshoukry@yahoo.ca	7054319795	false	1972-12-03	\N
+236	Nehal	Eladl	nehal.eladl@gmail.com	5145834070	false	1989-10-29	\N
+237	Syeda 	Zaidi 	syedanadiaz@hotmail.com	6477657865	false	1974-05-05	\N
+239	Maliha	Syed	msyed1997@gmail.com	6477655557	false	1997-05-29	\N
+240	Reze	Mohamed	rezelle19@yahoo.com	19696851255	false	1982-09-19	\N
+241	Aliyah	Desai	aliyah.desai@hotmail.com	6477878010	false	1998-03-10	\N
+242	Ayaan	Ahmed	ayaan.h.ahmed@gmail.com	6474487331	false	1980-04-24	\N
+243	Farhat 	Khan 	farhatmunira@gmail.com	647676209	false	1986-08-06	\N
+244	Durriya 	Zaidi	dzaidi2800@gmail.com	4165182131	false	1980-07-22	\N
+245	Ola	Elsharif	ola.elsharif@yahoo.com	9053171638	false	2001-06-11	\N
+246	Nairouz	Quateen	nairouz_quateen@icloud.com	7803996687	false	1999-03-23	\N
+247	Tamanna	Moughal	tamana.moughal@gmail.com	6479246246	false	1995-02-15	\N
+248	Zainab	Gajani	gaja5790@mylaurier.ca	4036194918	false	2002-02-11	\N
+249	Janna	Elazab	jannawjannam@gmail.com	2894000413	false	2002-06-24	\N
+250	Jana	Dowidar 	janadowidar02@gmail.com	9055174302	false	2021-01-24	\N
+395	Sarah	Almas	almas1@ualberta.ca	7809743411	false	1997-04-21	
+252	Mimo	Ham	mariam8993@gmail.com	5149990093	false	1990-09-26	\N
+253	Rehma	Khan	rehmak97@gmail.com	2269889605	false	1997-10-28	\N
+254	Nusheen	Ditta	asianne2010@hotmail.com	6479961441	false	1971-03-31	\N
+255	Nadha	Isarudeen	nadha@moulanas.com	6472044783	false	1996-04-20	\N
+256	Meriem	Kacemi	meriem@ualberta.ca	8254362747	false	1992-02-05	\N
+259	Sadiya	Mussa	muneeb0406@gmail.com	5712462943	false	1992-04-20	\N
+260	MAHIZER (Mize)	LYONS	Mizelyons14@gmail.com	9055174343	false	1966-09-02	\N
+261	Yusra	Adil	adil.yusra2@gmail.com	7809027210	false	2004-11-11	\N
+262	Zeana	Hamdonah	z.hamdonah97@hotmail.com	4168282051	false	1997-05-26	\N
+263	Andrea	Patel	andrea.patel81@gmail.com	4168852192	false	1981-01-06	\N
+264	Aya	Elofay	ayasaadelofay@gmail.com	4164761704	false	1985-04-08	\N
+265	Injy	Barakat	ib.barakat@outlook.com	514614442	false	1994-04-12	\N
+309	Polina	Lerman	polina.lerman@gmail.com	3062031707	false	1994-09-08	
+406	Dilshad	H	dilshad_hossain_21@hotmail.com	4168778294	false	1990-01-01	
+407	Ibtesam	Ammura	ibammura@gmail.com	4168448196	false	1966-02-01	
+313	Nairouz	Quateen	nairouzquateen@gmail.com	7803996687	false	1999-03-03	
+284	Menna	Elnaka	Menna_elnaka@hotmail.com	4167683580	false	1995-12-12	
+419	Mariam	Ali	mhali1@ualberta.ca	7806557451	false	1992-05-09	
+420	Moumena	Ali	moumena.ali@icloud.com	5879363637	false	1994-06-23	
+421	Zainab	Sultan	zainab.sultan@outlook.com	6399983784	false	1998-09-14	
+456	Hajra	Memon	hajraa13@gmail.com	6477170011	false	1996-03-13	
+461	Urooj	Khan	uroojkhan2k3@gmail.com	6478779314	false	2003-02-27	
+463	Maysoun	Deeb	Mayadeeb98@outlook.com	4166699435	false	1998-07-02	
+464	Tina	Ismail	tina.ismail01@gmail.com	6477826955	false	2002-04-24	
+465	DeeDee 	Shoukry	whuz007@yahoo.ca	7054319795	false	1972-12-03	
+467	Sara 	Emira	saraoemira@gmail.com	6476777115	false	2000-04-18	
+468	Haroon	Khan	alisha_adil@rocketmail.com	9058667761	false	1989-04-04	
+470	Yvonne 	Findlayter 	yvonne.findlayter@yahoo.ca	6472071852	false	1990-04-27	
+471	Sam	Salih	sameera.salih@gmail.com	9729848977	false	1985-02-25	
+472	Rushdeeyee	Fyith	rushdeeyeef@gmail.com	7806231292	false	2002-10-15	
+474	Polina	Lerman	pol386@usask.ca	3062031707	false	1994-09-08	
+475	Shazia	Afzal	shazia.amir.afzal@gmail.com	6474485781	false	1974-08-20	
+477	Mashal	Hoda	dhariyat@gmail.com	6477023036	false	1980-12-16	
+478	Shazia	Sheikh	shaziasheikh569@gmail.com	4167044374	false	1975-05-24	
+479	Souhier 	Alhundi 	suefakhouri86@gmail.com	6472870308	false	1986-09-20	
+480	Mehvish	Toseef	next_era@hotmail.com	4168787824	false	1987-05-14	
+481	Sonia	Mohsin	dr.soniamohsin123@gmail.com	6472131928	false	1983-11-09	
+482	Mouna	Hamandi	mounahamandi@hotmail.com	6472695355	false	1983-11-12	
+483	Razia 	Sultana 	raziasultana_147@yahoo.com	6474650064	false	1978-04-04	
+484	Zainab	Shaikh	zainab.s@live.com	6472258206	false	1990-11-24	
+485	Marwa	Saleem	Marwasaleem@gmail.com	6479645508	false	2002-05-04	
+487	Radia	Sultana	atifrazia@gmail.com	6474650064	false	1978-04-04	
+489	Rihab	Amatullah 	rihabm90@gmail.com	3302061223	false	1992-03-31	
+490	sdf	asdf	hey@hotmail.com	2342	false	2021-05-05	
+491	sadfasdf	asdf	hi@hi.com	12222222222	false	2021-05-05	
+492	asdfasdf	asdfasdf	a@a.com	111111111111111	false	2021-05-04	
+493	Mahmoud	Al Khazendar	blacknight0078@hotmail.com	6476099330	true	1987-10-31	
+429	Aseel	Tamim	tamimaseel@gmail.com	4165501462	false	2000-10-01	
+430	Mahum	Ahmed	mahum.ahmed@ryerson.ca	4168877522	false	1993-02-27	
+433	Uzma	Chaudhry	uzmasc@gmail.com	9055990501	false	1976-10-05	
+435	Komal	Butt	komalabidbutt72@gmail.com	6479717217	false	2002-09-18	
+360	Alanoud	Emaish	Alanoudemaish@gmail.com	6475174089	false	2002-03-05	
+453	Dara	Tell	dar_tell@hotmail.com	2894000033	false	1978-12-05	
+476	Osama	Hafez	osama.hafez@mail.utoronto.ca	4165566718	true	2001-12-12	
+381	Marwa	A.	marwa2@ualberta.ca	7807297451	false	1998-10-05	
+\.
+
+
+--
+-- Data for Name: player; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.player (player_id, team, person) FROM stdin;
+\.
+
+
+--
+-- Data for Name: program; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.program (program_id, name) FROM stdin;
+1	Yoga
+2	Ramadan Wellness
+\.
+
+
+--
+-- Data for Name: registration; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.registration (registration_id, person, subscription, datetime, payment) FROM stdin;
+31	46	1	2021-01-15 03:52:55	0
+32	47	1	2021-01-15 04:43:51	0
+33	48	1	2021-01-15 04:48:50	0
+34	49	1	2021-01-15 04:52:29	0
+35	50	1	2021-01-15 04:56:12	0
+36	51	1	2021-01-15 05:19:04	0
+37	52	1	2021-01-15 05:59:40	0
+38	53	1	2021-01-15 06:33:37	0
+39	54	1	2021-01-15 07:03:18	0
+40	55	1	2021-01-15 07:05:34	0
+41	56	1	2021-01-15 08:16:10	0
+42	57	1	2021-01-15 14:35:50	0
+43	58	1	2021-01-15 15:06:28	0
+44	59	1	2021-01-15 17:28:30	0
+45	60	1	2021-01-15 17:28:37	0
+46	61	1	2021-01-15 19:20:25	0
+47	62	1	2021-01-15 23:23:06	0
+48	63	1	2021-01-16 02:15:53	0
+49	64	1	2021-01-16 02:18:08	0
+50	65	1	2021-01-16 02:18:50	0
+51	66	1	2021-01-16 03:21:45	0
+52	67	1	2021-01-16 04:34:12	0
+53	68	1	2021-01-16 04:56:29	0
+54	69	1	2021-01-16 06:05:06	0
+55	70	1	2021-01-16 13:42:33	0
+56	71	1	2021-01-16 14:30:41	0
+57	72	1	2021-01-16 14:58:29	0
+58	73	1	2021-01-16 14:59:56	0
+59	74	1	2021-01-16 15:00:59	0
+60	75	1	2021-01-16 15:02:10	0
+61	76	1	2021-01-16 15:02:10	0
+62	77	1	2021-01-16 15:02:11	0
+63	78	1	2021-01-16 15:02:55	0
+64	79	1	2021-01-16 15:03:02	0
+65	80	1	2021-01-16 15:06:49	0
+66	81	1	2021-01-16 15:08:50	0
+67	82	1	2021-01-16 15:20:41	0
+68	83	1	2021-01-16 15:26:57	0
+69	84	1	2021-01-16 15:31:03	0
+70	85	1	2021-01-16 15:49:11	0
+71	86	1	2021-01-16 15:53:19	0
+72	87	1	2021-01-16 16:04:52	0
+73	88	1	2021-01-16 16:07:36	0
+74	89	1	2021-01-16 16:46:50	0
+75	90	1	2021-01-16 16:54:52	0
+76	91	1	2021-01-16 17:04:12	0
+77	92	1	2021-01-16 17:09:59	0
+78	93	1	2021-01-16 17:15:36	0
+79	94	1	2021-01-16 17:22:44	0
+80	95	1	2021-01-16 17:32:21	0
+81	96	1	2021-01-16 17:35:36	0
+82	97	1	2021-01-16 18:01:29	0
+83	98	1	2021-01-16 18:38:54	0
+84	99	1	2021-01-16 18:49:43	0
+85	100	1	2021-01-16 18:53:04	0
+86	101	1	2021-01-16 19:19:31	0
+87	102	1	2021-01-16 19:19:49	0
+88	103	1	2021-01-16 19:23:53	0
+89	104	1	2021-01-16 19:40:32	0
+90	105	1	2021-01-16 19:55:32	0
+91	106	1	2021-01-16 20:51:26	0
+92	107	1	2021-01-16 21:29:40	0
+93	108	1	2021-01-16 22:07:23	0
+94	109	1	2021-01-16 23:39:37	0
+95	110	1	2021-01-17 00:44:09	0
+96	111	1	2021-01-17 00:44:31	0
+97	112	1	2021-01-17 01:03:36	0
+98	113	1	2021-01-17 01:14:07	0
+99	114	1	2021-01-17 01:26:52	0
+100	115	1	2021-01-17 01:48:53	0
+106	121	1	2021-01-17 01:52:00	0
+107	122	1	2021-01-17 01:54:40	0
+108	123	1	2021-01-17 01:57:33	0
+109	124	1	2021-01-17 01:59:18	0
+110	125	1	2021-01-17 02:03:12	0
+113	128	1	2021-01-17 02:43:47	0
+114	129	1	2021-01-17 03:35:01	0
+115	130	1	2021-01-17 04:18:31	0
+116	131	1	2021-01-17 04:44:51	0
+117	132	1	2021-01-17 05:00:45	0
+118	133	1	2021-01-17 05:19:17	0
+119	134	1	2021-01-17 05:47:45	0
+120	135	1	2021-01-17 06:39:46	0
+121	136	1	2021-01-17 06:48:43	0
+122	137	1	2021-01-17 07:21:08	0
+123	138	1	2021-01-17 07:48:25	0
+124	139	1	2021-01-17 08:27:20	0
+125	140	1	2021-01-17 09:03:31	0
+126	141	1	2021-01-17 14:38:04	0
+128	143	1	2021-01-17 15:56:20	0
+129	144	1	2021-01-17 16:35:14	0
+130	145	1	2021-01-17 18:19:03	0
+131	146	1	2021-01-17 18:22:13	0
+132	147	1	2021-01-17 18:37:07	0
+133	148	1	2021-01-17 18:56:41	0
+134	149	1	2021-01-17 19:09:20	0
+135	150	1	2021-01-17 19:09:39	0
+136	151	1	2021-01-17 19:18:20	0
+137	152	1	2021-01-17 19:23:13	0
+139	154	1	2021-01-17 19:44:34	0
+140	155	1	2021-01-17 21:53:11	0
+141	156	1	2021-01-17 22:20:10	0
+143	158	1	2021-01-18 01:22:21	0
+144	159	1	2021-01-18 01:55:46	0
+145	160	1	2021-01-18 02:32:52	0
+146	161	1	2021-01-18 02:48:51	0
+147	162	1	2021-01-18 03:21:58	0
+148	163	1	2021-01-18 03:57:35	0
+149	164	1	2021-01-18 07:54:15	0
+150	165	1	2021-01-18 10:01:25	0
+151	166	1	2021-01-18 11:26:39	0
+152	167	1	2021-01-18 11:33:31	0
+153	168	1	2021-01-18 12:45:44	0
+154	169	1	2021-01-18 14:34:53	0
+155	170	1	2021-01-18 15:04:42	0
+156	171	1	2021-01-18 15:23:02	0
+157	172	1	2021-01-18 15:24:11	0
+158	173	1	2021-01-18 16:01:10	0
+159	174	1	2021-01-18 16:28:44	0
+160	175	1	2021-01-18 16:46:29	0
+163	178	1	2021-01-18 17:21:08	0
+164	179	1	2021-01-18 17:53:57	0
+165	180	1	2021-01-18 18:04:36	0
+166	181	1	2021-01-18 19:38:07	0
+167	182	1	2021-01-18 19:44:10	0
+168	183	1	2021-01-18 19:47:07	0
+169	184	1	2021-01-18 20:38:51	0
+170	185	1	2021-01-18 21:16:57	0
+171	186	1	2021-01-18 21:42:21	0
+172	187	1	2021-01-18 22:18:44	0
+173	188	1	2021-01-19 00:18:15	0
+174	189	1	2021-01-19 01:37:34	0
+175	190	1	2021-01-19 02:05:30	0
+176	191	1	2021-01-19 02:16:24	0
+177	192	1	2021-01-19 02:38:02	0
+178	193	1	2021-01-19 02:41:38	0
+179	194	1	2021-01-19 02:50:50	0
+180	195	1	2021-01-19 02:57:32	0
+181	196	1	2021-01-19 03:01:15	0
+182	197	1	2021-01-19 03:23:04	0
+183	198	1	2021-01-19 03:31:18	0
+184	199	1	2021-01-19 03:34:06	0
+185	200	1	2021-01-19 03:51:48	0
+186	201	1	2021-01-19 04:12:25	0
+187	202	1	2021-01-19 04:22:03	0
+188	203	1	2021-01-19 04:25:45	0
+189	204	1	2021-01-19 04:39:34	0
+190	205	1	2021-01-19 04:40:42	0
+191	206	1	2021-01-19 04:44:28	0
+192	207	1	2021-01-19 05:36:51	0
+193	208	1	2021-01-19 13:18:17	0
+194	209	1	2021-01-19 13:28:22	0
+195	210	1	2021-01-19 14:26:48	0
+196	211	1	2021-01-19 15:11:51	0
+197	212	1	2021-01-19 15:50:29	0
+198	213	1	2021-01-19 16:58:19	0
+199	214	1	2021-01-19 18:12:24	0
+200	215	1	2021-01-19 18:23:36	0
+201	216	1	2021-01-19 18:26:03	0
+202	217	1	2021-01-19 18:35:52	0
+203	218	1	2021-01-19 18:47:51	0
+204	219	1	2021-01-19 23:22:21	0
+205	220	1	2021-01-20 00:26:17	0
+206	221	1	2021-01-20 01:30:11	0
+207	222	1	2021-01-20 02:53:50	0
+208	223	1	2021-01-20 03:22:21	0
+209	224	1	2021-01-20 04:54:53	0
+210	225	1	2021-01-20 05:38:41	0
+211	226	1	2021-01-20 13:59:42	0
+212	227	1	2021-01-20 15:05:54	0
+214	229	1	2021-01-20 22:25:08	0
+215	230	1	2021-01-20 23:25:54	0
+216	231	1	2021-01-20 23:26:49	0
+217	232	1	2021-01-21 00:44:30	0
+218	233	1	2021-01-21 19:27:35	0
+219	234	1	2021-01-21 21:16:23	0
+220	235	1	2021-01-21 22:52:02	0
+221	236	1	2021-01-21 23:00:46	0
+222	237	1	2021-01-21 23:08:24	0
+224	239	1	2021-01-21 23:39:24	0
+225	240	1	2021-01-22 01:57:25	0
+226	241	1	2021-01-22 04:22:12	0
+227	242	1	2021-01-22 07:08:54	0
+228	243	1	2021-01-22 12:43:06	0
+229	244	1	2021-01-22 14:50:42	0
+230	245	1	2021-01-24 00:22:50	0
+231	246	1	2021-01-24 02:10:14	0
+232	247	1	2021-01-24 02:13:51	0
+233	248	1	2021-01-24 22:37:07	0
+234	249	1	2021-01-25 02:13:57	0
+235	250	1	2021-01-25 02:15:01	0
+237	252	1	2021-01-26 23:34:23	0
+238	253	1	2021-01-29 15:53:55	0
+239	254	1	2021-01-31 05:18:40	0
+240	255	1	2021-02-03 00:03:33	0
+241	256	1	2021-02-03 19:43:51	0
+244	259	1	2021-02-04 23:49:27	0
+245	260	1	2021-02-05 01:03:59	0
+246	261	1	2021-02-05 21:49:57	0
+247	262	1	2021-02-06 03:13:11	0
+248	263	1	2021-02-06 13:07:38	0
+249	264	1	2021-02-06 18:00:49	0
+250	265	1	2021-02-07 15:47:04	0
+261	284	2	2021-04-09 01:07:37	0
+262	309	2	2021-04-09 01:32:14	0
+263	313	2	2021-04-09 01:38:08	0
+264	360	2	2021-04-09 02:09:23	0
+265	381	2	2021-04-09 04:11:39	0
+266	388	2	2021-04-09 04:18:53	0
+267	389	2	2021-04-09 04:20:01	0
+268	390	2	2021-04-09 04:50:14	0
+269	391	2	2021-04-09 08:27:38	0
+270	392	2	2021-04-09 13:00:14	0
+273	395	2	2021-04-09 17:32:49	0
+274	406	2	2021-04-09 21:48:44	0
+275	407	2	2021-04-10 00:38:14	0
+287	419	2	2021-04-10 01:41:18	0
+288	420	2	2021-04-10 16:24:34	0
+289	421	2	2021-04-10 17:01:45	0
+293	262	2	2021-04-10 18:22:06	0
+294	429	2	2021-04-11 02:51:00	0
+295	430	2	2021-04-11 03:48:59	0
+296	121	2	2021-04-11 04:54:20	0
+298	433	2	2021-04-11 10:47:28	0
+299	96	2	2021-04-11 12:16:09	0
+300	435	2	2021-04-11 13:04:03	0
+302	161	2	2021-04-11 14:02:28	0
+305	76	2	2021-04-11 14:53:43	0
+306	77	2	2021-04-11 14:55:08	0
+307	112	2	2021-04-11 14:57:09	0
+308	86	2	2021-04-11 14:58:17	0
+309	264	2	2021-04-11 15:00:02	0
+310	226	2	2021-04-11 15:01:43	0
+311	253	2	2021-04-11 15:02:52	0
+312	80	2	2021-04-11 15:04:12	0
+313	48	2	2021-04-11 15:05:09	0
+314	261	2	2021-04-11 15:06:36	0
+315	65	2	2021-04-11 15:07:33	0
+317	192	2	2021-04-11 15:57:55	0
+318	453	2	2021-04-11 16:20:01	0
+321	456	2	2021-04-11 17:36:15	0
+322	255	2	2021-04-11 18:33:52	0
+323	237	2	2021-04-11 18:40:36	0
+324	152	2	2021-04-11 19:13:57	0
+326	461	2	2021-04-12 03:18:20	0
+327	122	2	2021-04-12 06:23:02	0
+328	463	2	2021-04-12 15:55:08	0
+329	464	2	2021-04-12 17:53:55	0
+330	465	2	2021-04-13 02:45:17	0
+332	467	2	2021-04-13 03:56:16	0
+333	468	2	2021-04-13 17:59:15	0
+334	49	2	2021-04-13 18:30:42	0
+335	470	2	2021-04-13 18:46:49	0
+336	471	2	2021-04-13 18:54:12	0
+337	472	2	2021-04-13 19:50:21	0
+338	107	2	2021-04-13 20:48:41	0
+339	474	2	2021-04-13 21:25:41	0
+340	475	2	2021-04-13 23:04:06	0
+341	476	2	2021-04-13 23:41:39	0
+342	477	2	2021-04-14 16:48:34	0
+343	478	2	2021-04-14 21:20:53	0
+344	479	2	2021-04-15 01:29:17	0
+345	480	2	2021-04-15 01:39:54	0
+346	481	2	2021-04-15 01:56:46	0
+347	482	2	2021-04-15 03:25:31	0
+348	483	2	2021-04-15 17:48:57	0
+349	484	2	2021-04-15 19:10:08	0
+350	485	2	2021-04-19 13:07:00	0
+351	155	2	2021-04-19 16:39:51	0
+352	487	2	2021-04-20 22:21:29	0
+354	489	2	2021-04-21 00:23:10	0
+355	490	1	2021-05-02 22:20:43	0
+356	491	1	2021-05-02 22:24:39	0
+357	492	1	2021-05-02 22:26:21	0
+358	493	2	2021-05-25 08:59:28	0
+\.
+
+
+--
+-- Data for Name: session; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.session (session_id, program, title, instructor, capacity, session_time, session_day, start_date, count, location) FROM stdin;
+1	1	yoga session name	instructor_name	10	18:00:00	Thursday	2020-01-11	2	2111 Dunwin Dr #5
+2	1	Ramadan Session	instructor_name	10	18:00:00	Tuesday	2020-04-13	2	Online
+\.
+
+
+--
+-- Data for Name: soccerplayerfixture; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.soccerplayerfixture (soccer_id, player, fixture, goals, assists, yellow_cards, red_card) FROM stdin;
+\.
+
+
+--
+-- Data for Name: subscription; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.subscription (subscription_id, program, name, start_date, end_date, price) FROM stdin;
+1	1	Online Yoga	2020-01-11	2002-02-11	0
+2	2	Ramadan Wellness Online	2020-04-13	2002-04-13	0
+\.
+
+
+--
+-- Data for Name: team; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.team (team_id, captain, team_name, capacity) FROM stdin;
+\.
+
+
+--
+-- Data for Name: teamrecord; Type: TABLE DATA; Schema: public; Owner: ubuntu
+--
+
+COPY public.teamrecord (team_record_id, group_id, team, fixtures_played, wins, losses, ties, gf, ga) FROM stdin;
+\.
+
+
+--
+-- Name: competition_competition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.competition_competition_id_seq', 1, false);
+
+
+--
+-- Name: competitiongroup_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.competitiongroup_group_id_seq', 1, false);
+
+
+--
+-- Name: consent_consent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.consent_consent_id_seq', 715, true);
+
+
+--
+-- Name: fixture_fixture_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.fixture_fixture_id_seq', 1, false);
+
+
+--
+-- Name: guardian_guardian_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.guardian_guardian_id_seq', 1, true);
+
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.person_person_id_seq', 493, true);
+
+
+--
+-- Name: player_player_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.player_player_id_seq', 1, false);
+
+
+--
+-- Name: program_program_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.program_program_id_seq', 2, true);
+
+
+--
+-- Name: registration_registration_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.registration_registration_id_seq', 358, true);
+
+
+--
+-- Name: session_session_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.session_session_id_seq', 2, true);
+
+
+--
+-- Name: soccerplayerfixture_soccer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.soccerplayerfixture_soccer_id_seq', 1, false);
+
+
+--
+-- Name: subscription_subscription_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.subscription_subscription_id_seq', 2, true);
+
+
+--
+-- Name: team_team_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.team_team_id_seq', 1, false);
+
+
+--
+-- Name: teamrecord_team_record_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
+--
+
+SELECT pg_catalog.setval('public.teamrecord_team_record_id_seq', 1, false);
+
+
+--
+-- Name: competition competition_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competition
+    ADD CONSTRAINT competition_pkey PRIMARY KEY (competition_id);
+
+
+--
+-- Name: competition competition_title_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competition
+    ADD CONSTRAINT competition_title_key UNIQUE (title);
+
+
+--
+-- Name: competitiongroup competitiongroup_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competitiongroup
+    ADD CONSTRAINT competitiongroup_pkey PRIMARY KEY (group_id);
+
+
+--
+-- Name: consent consent_person_purpose_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.consent
+    ADD CONSTRAINT consent_person_purpose_key UNIQUE (person, purpose);
+
+
+--
+-- Name: consent consent_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.consent
+    ADD CONSTRAINT consent_pkey PRIMARY KEY (consent_id);
+
+
+--
+-- Name: fixture fixture_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.fixture
+    ADD CONSTRAINT fixture_pkey PRIMARY KEY (fixture_id);
+
+
+--
+-- Name: guardian guardian_person_phone_email_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.guardian
+    ADD CONSTRAINT guardian_person_phone_email_key UNIQUE (person, phone, email);
+
+
+--
+-- Name: guardian guardian_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.guardian
+    ADD CONSTRAINT guardian_pkey PRIMARY KEY (guardian_id);
+
+
+--
+-- Name: person person_email_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_email_key UNIQUE (email);
+
+
+--
+-- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (person_id);
+
+
+--
+-- Name: player player_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.player
+    ADD CONSTRAINT player_pkey PRIMARY KEY (player_id);
+
+
+--
+-- Name: program program_name_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.program
+    ADD CONSTRAINT program_name_key UNIQUE (name);
+
+
+--
+-- Name: program program_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.program
+    ADD CONSTRAINT program_pkey PRIMARY KEY (program_id);
+
+
+--
+-- Name: registration registration_person_subscription_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registration_person_subscription_key UNIQUE (person, subscription);
+
+
+--
+-- Name: registration registration_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registration_pkey PRIMARY KEY (registration_id);
+
+
+--
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (session_id);
+
+
+--
+-- Name: soccerplayerfixture soccerplayerfixture_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.soccerplayerfixture
+    ADD CONSTRAINT soccerplayerfixture_pkey PRIMARY KEY (soccer_id);
+
+
+--
+-- Name: subscription subscription_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.subscription
+    ADD CONSTRAINT subscription_pkey PRIMARY KEY (subscription_id);
+
+
+--
+-- Name: team team_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.team
+    ADD CONSTRAINT team_pkey PRIMARY KEY (team_id);
+
+
+--
+-- Name: teamrecord teamrecord_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.teamrecord
+    ADD CONSTRAINT teamrecord_pkey PRIMARY KEY (team_record_id);
+
+
+--
+-- Name: fixture fixturecompetitionfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.fixture
+    ADD CONSTRAINT fixturecompetitionfk FOREIGN KEY (competition) REFERENCES public.competition(competition_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: fixture fixtureteam1fk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.fixture
+    ADD CONSTRAINT fixtureteam1fk FOREIGN KEY (team1) REFERENCES public.team(team_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: fixture fixtureteam2fk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.fixture
+    ADD CONSTRAINT fixtureteam2fk FOREIGN KEY (team2) REFERENCES public.team(team_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: competitiongroup groupcompetitionfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competitiongroup
+    ADD CONSTRAINT groupcompetitionfk FOREIGN KEY (competition) REFERENCES public.competition(competition_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: consent personconsentfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.consent
+    ADD CONSTRAINT personconsentfk FOREIGN KEY (person) REFERENCES public.person(person_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: guardian personguardianfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.guardian
+    ADD CONSTRAINT personguardianfk FOREIGN KEY (person) REFERENCES public.person(person_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: player playerpersonfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.player
+    ADD CONSTRAINT playerpersonfk FOREIGN KEY (person) REFERENCES public.person(person_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: player playerteamfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.player
+    ADD CONSTRAINT playerteamfk FOREIGN KEY (team) REFERENCES public.team(team_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: competition programcompetitionfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.competition
+    ADD CONSTRAINT programcompetitionfk FOREIGN KEY (program) REFERENCES public.program(program_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: registration registrationpersonfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registrationpersonfk FOREIGN KEY (person) REFERENCES public.person(person_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: registration registrationsubscriptionfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registrationsubscriptionfk FOREIGN KEY (subscription) REFERENCES public.subscription(subscription_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: session sessionprogramfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT sessionprogramfk FOREIGN KEY (program) REFERENCES public.program(program_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: soccerplayerfixture soccerplayerfixturefk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.soccerplayerfixture
+    ADD CONSTRAINT soccerplayerfixturefk FOREIGN KEY (fixture) REFERENCES public.fixture(fixture_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: soccerplayerfixture soccerplayerfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.soccerplayerfixture
+    ADD CONSTRAINT soccerplayerfk FOREIGN KEY (player) REFERENCES public.player(player_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: subscription subscriptionprogramfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.subscription
+    ADD CONSTRAINT subscriptionprogramfk FOREIGN KEY (program) REFERENCES public.program(program_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: team teamcaptainfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.team
+    ADD CONSTRAINT teamcaptainfk FOREIGN KEY (captain) REFERENCES public.person(person_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: teamrecord teamrecordcompetitiongroupfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.teamrecord
+    ADD CONSTRAINT teamrecordcompetitiongroupfk FOREIGN KEY (group_id) REFERENCES public.competitiongroup(group_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: teamrecord teamrecordteamfk; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
+--
+
+ALTER TABLE ONLY public.teamrecord
+    ADD CONSTRAINT teamrecordteamfk FOREIGN KEY (team) REFERENCES public.team(team_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: TABLE competition; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.competition TO maadmin;
+
+
+--
+-- Name: SEQUENCE competition_competition_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.competition_competition_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE competitiongroup; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.competitiongroup TO maadmin;
+
+
+--
+-- Name: SEQUENCE competitiongroup_group_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.competitiongroup_group_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE consent; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.consent TO maadmin;
+
+
+--
+-- Name: SEQUENCE consent_consent_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.consent_consent_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE fixture; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.fixture TO maadmin;
+
+
+--
+-- Name: SEQUENCE fixture_fixture_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.fixture_fixture_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE guardian; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.guardian TO maadmin;
+
+
+--
+-- Name: SEQUENCE guardian_guardian_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.guardian_guardian_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE person; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.person TO maadmin;
+
+
+--
+-- Name: SEQUENCE person_person_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.person_person_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE program; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.program TO maadmin;
+
+
+--
+-- Name: TABLE registration; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.registration TO maadmin;
+
+
+--
+-- Name: TABLE subscription; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.subscription TO maadmin;
+
+
+--
+-- Name: TABLE personregistration; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.personregistration TO maadmin;
+
+
+--
+-- Name: TABLE player; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.player TO maadmin;
+
+
+--
+-- Name: SEQUENCE player_player_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.player_player_id_seq TO maadmin;
+
+
+--
+-- Name: SEQUENCE program_program_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.program_program_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE ramadanregistered; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.ramadanregistered TO maadmin;
+
+
+--
+-- Name: SEQUENCE registration_registration_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.registration_registration_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE session; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.session TO maadmin;
+
+
+--
+-- Name: SEQUENCE session_session_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.session_session_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE soccerplayerfixture; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.soccerplayerfixture TO maadmin;
+
+
+--
+-- Name: SEQUENCE soccerplayerfixture_soccer_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.soccerplayerfixture_soccer_id_seq TO maadmin;
+
+
+--
+-- Name: SEQUENCE subscription_subscription_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.subscription_subscription_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE team; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.team TO maadmin;
+
+
+--
+-- Name: SEQUENCE team_team_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.team_team_id_seq TO maadmin;
+
+
+--
+-- Name: TABLE teamrecord; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON TABLE public.teamrecord TO maadmin;
+
+
+--
+-- Name: SEQUENCE teamrecord_team_record_id_seq; Type: ACL; Schema: public; Owner: ubuntu
+--
+
+GRANT ALL ON SEQUENCE public.teamrecord_team_record_id_seq TO maadmin;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
