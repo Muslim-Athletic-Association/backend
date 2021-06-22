@@ -1,3 +1,4 @@
+const { setResult } = require("./constants");
 const c = require("./constants");
 const isFunction = c.isFunction;
 const errorEnum = c.errorEnum;
@@ -20,13 +21,15 @@ async function addPlayer(data, message = "") {
     var m = new c.Message({
         success: message + "Successfully created player.",
         duplicate: "This player is already registered for this team.",
-        foreign: "It seems that this team doesn't exist."
+        foreign: "It seems that this team doesn't exist.",
     });
     return await c.create(sql, params, m);
 }
 
 /**
  * Uses the Create operation from ./constants in order to insert a team into the database.
+ *
+ * TODO: Clean this function up
  *
  * @param {name: string} data
  */
@@ -44,19 +47,37 @@ async function createTeam(data) {
     var params = [data.team_name, data.person, data.team_capacity];
     var m = new c.Message({
         success: "Successfully created team. ",
-        duplicate: "A team with that name already exists, choose another team name.",
-        foreign: "Captain must log in first in order to create a team."
+        duplicate:
+            "A team with that name already exists, choose another team name.",
+        foreign: "Captain must log in first in order to create a team.",
     });
-    return await c.create(sql, params, m).then(async (result) => {
-        if (result.success) {
-            let playerData = {
-                person: data.person,
-                team: data.team_name
-            };
-            return await addPlayer(playerData, m.success);
-        }
-        return result;
-    });
+    return await c
+        .create(sql, params, m)
+        .then(async (result) => {
+            if (result.success) {
+                let playerData = {
+                    person: data.person,
+                    team: data.team_name,
+                };
+                let player = await addPlayer(playerData, m.success);
+                if (player.success) {
+                    return result;
+                } else {
+                    return player;
+                }
+            }
+            return result;
+        })
+        .then(async (result2) => {
+            if (result2.success) {
+                var sql =
+                    "INSERT INTO teamRecord (team, group_id) VALUES ($1, $2) RETURNING *;";
+                // Group is currently hard coded
+                var params = [result2.data[0].team_id, 1];
+                await c.create(sql, params, m);
+            }
+            return result2;
+        });
 }
 
 /**
@@ -89,7 +110,7 @@ async function deleteTeam(data) {
  */
 async function getTeamsByCompetition(data) {
     var invalid = c.simpleValidation(data, {
-        competition: "int",
+        compTitle: "int",
     });
     if (invalid) {
         return invalid;
@@ -97,7 +118,7 @@ async function getTeamsByCompetition(data) {
 
     // TODO: Must create necessary views first (see the three new tables in ../db/views.ddl)
     var sql = "select * from teamCompetition where title=$1;";
-    var params = [data.competition];
+    var params = [data.compTitle];
     var m = new c.Message({
         success: "Successfully retrieved all teams.",
     });
@@ -140,4 +161,5 @@ module.exports = {
     createTeam: createTeam,
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
+    getTeamsByCompetition: getTeamsByCompetition
 };
