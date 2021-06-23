@@ -12,7 +12,7 @@ router.post('/api/addPerson', async function createMemberResponse(request, respo
   });
 });
 
-router.post('/api/getPerson', async function createMemberResponse(request, response) {
+router.get('/api/getPerson', async function createMemberResponse(request, response) {
   // returns member information in json format if successful
   await p.getPerson(request.body).then(async function (result) {
       return await c.simpleResponse(result, response);
