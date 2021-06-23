@@ -25,7 +25,7 @@ router.post("/api/login", async function loginResponse(request, response) {
                 await p.getPerson(request.body).then(async (person) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
-                    response.cookie("user", person, { maxAge: expiresIn });
+                    prepCookies(person, response, expiresIn);
                     result = h.setResult(
                         { idToken, ...person },
                         true,
@@ -81,5 +81,14 @@ async function fbAuthorization(req, res, next) {
 router.get("/api/auth", fbAuthorization, async function authTest(request, res) {
     res.send("Falafel");
 });
+
+function prepCookies(obj, res, exp) {
+    var keys = Object.keys(obj);
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var value = obj[key];
+        res.cookie(key, value, { maxAge: exp });
+    }
+}
 
 module.exports = { router, fbAuthorization: fbAuthorization };
