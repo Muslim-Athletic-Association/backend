@@ -13,16 +13,16 @@ async function subscribe(data) {
   var invalid = c.simpleValidation(data, {
     person_id: "integer",
     subscription: "integer",
-    datetime: "datetime",
+    // datetime: "datetime",
     // payment: "integer",
-    consent: "list",
+    // consent: "list",
   });
   if (invalid) {
     return invalid;
   }
   var sql =
-    "INSERT INTO registration (person, subscription, datetime) VALUES ($1, $2, $3) RETURNING *;";
-  var params = [data.person_id, data.subscription, data.datetime];
+    "INSERT INTO registration (person, subscription) VALUES ($1, $2, $3) RETURNING *;";
+  var params = [data.person_id, data.subscription];
   var m = new c.Message({
     success: "Registration Successful.",
     duplicate: "You are already registered for this program.",
@@ -33,7 +33,7 @@ async function subscribe(data) {
     for (var i = 0; i < consents.length; i++) {
       var consent_response = await consent({
         person_id: data.person_id,
-        datetime: data.datetime,
+        // datetime: data.datetime,
         ...consents[i],
       });
       if (
@@ -67,7 +67,7 @@ async function subscribe(data) {
 async function consent(data) {
   var invalid = c.simpleValidation(data, {
     person_id: "integer",
-    datetime: "datetime",
+    // datetime: "datetime",
     purpose: "string",
     given: "bool",
   });
@@ -75,8 +75,8 @@ async function consent(data) {
     return invalid;
   }
   var sql =
-    "INSERT INTO consent (person, is_given, datetime, purpose) VALUES ($1, $2, $3, $4) RETURNING *;";
-  var params = [data.person_id, data.given, data.datetime, data.purpose];
+    "INSERT INTO consent (person, is_given, purpose) VALUES ($1, $2, $3, $4) RETURNING *;";
+  var params = [data.person_id, data.given, data.purpose];
   var m = new c.Message({
     success: "Successfully added consent.",
     duplicate:
