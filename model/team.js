@@ -36,7 +36,7 @@ async function addPlayer(data, message = "") {
 async function createTeam(data) {
     var invalid = c.simpleValidation(data, {
         team_name: "string",
-        person: "int", // person, captain
+        person_id: "int", // person, captain
         team_capacity: "int",
     });
     if (invalid) {
@@ -44,7 +44,7 @@ async function createTeam(data) {
     }
     var sql =
         "INSERT INTO team (team_name, captain, team_capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.person, data.team_capacity];
+    var params = [data.team_name, data.person_id, data.team_capacity];
     var m = new c.Message({
         success: "Successfully created team. ",
         duplicate:
