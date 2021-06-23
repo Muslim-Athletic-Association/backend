@@ -11,9 +11,8 @@ const fbAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
-
 // The login endpoint should work the same for registration and login.
-// since we are actually creating a person before using firebase. 
+// since we are actually creating a person before using firebase.
 router.post("/api/login", async function loginResponse(request, response) {
     const idToken = request.body.idToken.toString();
 
@@ -26,7 +25,7 @@ router.post("/api/login", async function loginResponse(request, response) {
                 await p.getPerson(request.body).then(async (person) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
-                    response.cookie("user", person, options);
+                    response.cookie("user", person, { maxAge: expiresIn });
                     result = h.setResult(
                         { idToken, ...person },
                         true,
