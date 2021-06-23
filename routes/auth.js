@@ -25,7 +25,7 @@ router.post("/api/login", async function loginResponse(request, response) {
                 await p.getPerson(request.body).then(async (person) => {
                     const options = { maxAge: expiresIn, httpOnly: true };
                     response.cookie("session", sessionCookie, options);
-                    prepCookies(person, response, expiresIn);
+                    prepCookies(person.data[0], response, expiresIn);
                     result = h.setResult(
                         { idToken, ...person },
                         true,
