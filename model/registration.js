@@ -21,7 +21,7 @@ async function subscribe(data) {
     return invalid;
   }
   var sql =
-    "INSERT INTO registration (person, subscription) VALUES ($1, $2, $3) RETURNING *;";
+    "INSERT INTO registration (person, subscription) VALUES ($1, $2) RETURNING *;";
   var params = [data.person_id, data.subscription];
   var m = new c.Message({
     success: "Registration Successful.",
@@ -30,21 +30,23 @@ async function subscribe(data) {
   return await c.create(sql, params, m).then(async function (result) {
     var consents = data.consent;
     var consent_responses = [];
-    for (var i = 0; i < consents.length; i++) {
-      var consent_response = await consent({
-        person_id: data.person_id,
-        // datetime: data.datetime,
-        ...consents[i],
-      });
-      if (
-        consent_response.success == false &&
-        consent_response.ecode != c.errorEnum.UNIQUE
-      ) {
-        // In this case, we should also be cancelling the registration
-        // However, we will assume for now that there is nothing wrong with the consent.
-        return consent_response;
+    if (consents!= undefined){
+      for (var i = 0; i < consents.length; i++) {
+        var consent_response = await consent({
+          person_id: data.person_id,
+          // datetime: data.datetime,
+          ...consents[i],
+        });
+        if (
+          consent_response.success == false &&
+          consent_response.ecode != c.errorEnum.UNIQUE
+        ) {
+          // In this case, we should also be cancelling the registration
+          // However, we will assume for now that there is nothing wrong with the consent.
+          return consent_response;
+        }
+        consent_responses.push(consent_response);
       }
-      consent_responses.push(consent_response);
     }
     result = { ...result, consent_responses: consent_responses };
     var guardian_response = {};
