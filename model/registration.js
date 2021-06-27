@@ -77,7 +77,7 @@ async function consent(data) {
     return invalid;
   }
   var sql =
-    "INSERT INTO consent (person, is_given, purpose) VALUES ($1, $2, $3, $4) RETURNING *;";
+    "INSERT INTO consent (person, is_given, purpose) VALUES ($1, $2, $3) RETURNING *;";
   var params = [data.person_id, data.given, data.purpose];
   var m = new c.Message({
     success: "Successfully added consent.",
