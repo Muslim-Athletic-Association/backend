@@ -149,8 +149,10 @@ async function getTeamsByDivision(data) {
 
 /**
  * Create a team record based on the given data
+ * 
+ * @param {name: string} data
  */
-async function createTeamRecord(){
+async function createTeamRecord(data){
     var invalid = c.simpleValidation(data, {
         team_id: "int",
         group_id: "int",
@@ -169,8 +171,10 @@ async function createTeamRecord(){
 
 /**
  * Update a team record based on the given data
- */
- async function updateTeamRecord(){
+ * 
+ * @param {name: string} data
+*/
+ async function updateTeamRecord(data) {
     var invalid = c.simpleValidation(data, {
         team_id: "int",
         group_id: "int",
@@ -198,6 +202,8 @@ async function createTeamRecord(){
 
 /**
  * Update a team record based on the given data
+ * 
+ * @param {name: string} data
  */
  async function setTeamRecord(){
     var invalid = c.simpleValidation(data, {
