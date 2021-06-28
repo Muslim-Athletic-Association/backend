@@ -191,7 +191,40 @@ async function createTeamRecord(){
         WHERE team=$1 AND group_id=$2 RETURNING *;";
     var params = [data.team_id, data.group, data.goals_for, data.goals_against, data.outcome];
     var m = new c.Message({
-        success: "Successfully retrieved all teams.",
+        success: "Successfully updated team record.",
+    });
+    return await c.update(sql, params, m);
+}
+
+/**
+ * Update a team record based on the given data
+ */
+ async function setTeamRecord(){
+    var invalid = c.simpleValidation(data, {
+        team: "int",
+        group_id: "int",
+        fixtures_played: 'int',
+        data.wins: 'int',
+        data.losses: 'int',
+        data.ties: 'int',
+        data.goals_for: 'int',
+        data.goals_against: 'int'
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "UPDATE teamRecord SET \
+        fixtures_played = $3, \
+        goals_for = $4,\
+        goals_against = $5, \
+        wins = $6 \
+        ties = $7 \
+        losses = $8 \
+        WHERE team=$1 AND group_id=$2 RETURNING *;";
+    var params = [data.team_id, data.group, data.goals_for, data.goals_against, data.wins, data.ties, data.losses];
+    var m = new c.Message({
+        success: "Successfully set team record.",
     });
     return await c.update(sql, params, m);
 }
@@ -203,4 +236,5 @@ module.exports = {
     getTeamsByCompetition: getTeamsByCompetition,
     createTeamRecord: createTeamRecord,
     updateTeamRecord: updateTeamRecord,
+    setTeamRecord: setTeamRecord,
 };
