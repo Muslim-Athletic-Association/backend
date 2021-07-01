@@ -9,6 +9,7 @@ const registration = require('./routes/registration');
 const sessions = require('./routes/session');
 const auth = require('./routes/auth');
 const team = require('./routes/team');
+const schedule = require('./routes/schedule');
 const mail = require('./routes/mail');
 const cookieParser = require("cookie-parser");
 
@@ -28,6 +29,7 @@ app.use(person);
 app.use(program);
 app.use(registration);
 app.use(team);
+app.use(schedule);
 app.use(sessions);
 app.use(mail);
 
