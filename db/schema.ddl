@@ -104,17 +104,20 @@ CREATE TABLE player(
 
 CREATE TABLE fixture(
     fixture_id SERIAL PRIMARY KEY,
-    team1 INTEGER,
-    team2 INTEGER,
-    competition INTEGER,
+    team1 VARCHAR(50),
+    team2 VARCHAR(50),
+    cgroup INTEGER,
     fixture_date DATE,
     fixture_time TIME,
-    score1 INTEGER,
-    score2 INTEGER,
+    score1 INTEGER DEFAULT 0,
+    score2 INTEGER DEFAULT 0,
 
-    constraint fixtureTeam1Fk foreign key (team1) references team(team_id) on update cascade on delete cascade,
-    constraint fixtureTeam2Fk foreign key (team2) references team(team_id) on update cascade on delete cascade,
-    constraint fixtureCompetitionFk foreign key (competition) references competition(competition_id) on update cascade on delete cascade
+    unique(team1, fixture_date, fixture_time),
+    unique(team2, fixture_date, fixture_time),
+
+    constraint fixtureTeam1Fk foreign key (team1) references team(team_name) on update cascade on delete cascade,
+    constraint fixtureTeam2Fk foreign key (team2) references team(team_name) on update cascade on delete cascade,
+    constraint fixtureCGroupFk foreign key (cgroup) references competitionGroup(cgroup_id) on update cascade on delete cascade
 );
 
 CREATE Table session(
