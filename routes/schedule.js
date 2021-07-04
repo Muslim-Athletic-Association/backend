@@ -17,11 +17,11 @@ router.post(
 );
 
 router.get(
-    "/api/upload/fixtures",
+    "/api/fixtures/:cgroup",
     async function uploadFixture(request, response) {
         // fetch fixtures from the database based on group (or group and date).
         await fixtures
-            .getGroupFixtures(request.body)
+            .getGroupFixtures(request.params)
             .then(async function (result) {
                 return await rc.simpleResponse(result, response);
             });
