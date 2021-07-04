@@ -56,20 +56,25 @@ async function getGroupFixtures(data) {
         return invalid;
     }
 
-    var containsDate = c.simpleValidation(data, {
-        date: "date",
-    });
+    var containsDate = c.simpleValidation(
+        data,
+        {
+            date: "date",
+        },
+        false
+    );
     if (containsDate) {
-        var sql = "SELECT * FROM fixture WHERE cGroup=$1 and fixture_date=$2;";
-        var params = [data.cgroup, data.date];
-        var m = new c.Message({
-            success: "Successfully created fixture.",
-        });
-    } else {
         var sql = "SELECT * FROM fixture WHERE cGroup=$1;";
         var params = [data.cgroup];
         var m = new c.Message({
-            success: "Successfully created fixture.",
+            success: "Successfully fetched fixture.",
+        });
+    } else {
+        console.log("Date passed in, fetching fixtures by date");
+        var sql = "SELECT * FROM fixture WHERE cGroup=$1 and fixture_date=$2;";
+        var params = [data.cgroup, data.date];
+        var m = new c.Message({
+            success: "Successfully fetched fixtures by date.",
         });
     }
     return await c.retrieve(sql, params, m);
