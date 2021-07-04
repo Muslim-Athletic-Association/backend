@@ -179,9 +179,9 @@ async function createTeamRecord(data){
         team_id: "int",
         group_id: "int",
         fixtures_played: 'int',
-        data.goals_for: 'int',
-        data.goals_against: 'int',
-        data.outcome: 'string' //outcome to be updated i.e wins, ties, or losses
+        goals_for: 'int',
+        goals_against: 'int',
+        outcome: 'string' //outcome to be updated i.e wins, ties, or losses
     });
     if (invalid) {
         return invalid;
@@ -210,11 +210,11 @@ async function createTeamRecord(data){
         team: "int",
         group_id: "int",
         fixtures_played: 'int',
-        data.wins: 'int',
-        data.losses: 'int',
-        data.ties: 'int',
-        data.goals_for: 'int',
-        data.goals_against: 'int'
+        wins: 'int',
+        losses: 'int',
+        ties: 'int',
+        goals_for: 'int',
+        goals_against: 'int'
     });
     if (invalid) {
         return invalid;
