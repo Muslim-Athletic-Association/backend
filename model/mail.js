@@ -22,6 +22,8 @@ async function registrationMail(data) {
             var template = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
         case "RAMADAN":
             var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
+        case "SOCCER":
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/soccer.html"),"utf-8");
     }
 
     //var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
