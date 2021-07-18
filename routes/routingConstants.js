@@ -11,7 +11,7 @@ function simpleResponse(result, response) {
         response.status(200);
     } else if (ecode == c.errorEnum.SERVER) {
         response.status(500);
-    } else if (ecode == c.errorEnum.UNIQUE) {
+    } else if (ecode == c.errorEnum.UNIQUE || ecode == c.errorEnum.FOREIGN) {
         // Should only occur in queries that includes insert and update.
         response.status(409);
     } else if (ecode == c.errorEnum.DNE) {

@@ -6,7 +6,8 @@ const errorEnum = {
   UNIQUE: 1,
   SERVER: 2,
   DNE: 3,
-  INVALID: 4
+  INVALID: 4,
+  FOREIGN: 5
 }
 
 // Check if f is a function.
@@ -29,6 +30,7 @@ class Message {
     this.none = options.none || "No rows found.";
     this.server = options.server || "An error occured in the PSQL server.";
     this.duplicate = options.duplicate || "Duplicate.";
+    this.foreign = options.foreign || "Violating foreign key constraint.";
   }
 }
 
@@ -76,6 +78,10 @@ function checkBodyTypes(data, required) {
     var key = keys[i];
     var type = required[key];
     var value = data[key];
+    if (value == undefined){
+      console.log("Invalid: Body contains an undefined value for key: " + key)
+      return setResult(data, false, "Undefined value set for: " + key, errorEnum.INVALID);
+    }
     if (dataTypeRegex[type] && dataTypeRegex[type] != "ignore" && !dataTypeRegex[type].test(value)) {
       // If the regex test fails, this implies that the formatting is incorrect.
       console.log("Invalid: Body contains an invalid value for key: " + key)
@@ -216,6 +222,11 @@ async function create(sql, params, message) {
       // This implies we are inserting something that violates a unique key constraint
       console.log("\n!Creation Failure: Improper number of parameters passed in!\n");
       return setResult({}, false, "Improper number of parameters passed in.", errorEnum.INVALID);
+    }
+    if (e.code == '23503') {
+      // This implies we are inserting something that violates a unique key constraint
+      console.log("\n!Creation Failure: Foreign Key Constraints!\n");
+      return setResult({}, false, message.foreign, errorEnum.FOREIGN);
     }
     // There was an uncaught error due to our query.
     console.log("\n!Creation error!\n", message.server, e);
