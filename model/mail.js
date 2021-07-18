@@ -22,6 +22,8 @@ async function registrationMail(data) {
             var template = fs.readFileSync(path.join(__dirname, "../assets/email/yoga.html"),"utf-8");
         case "RAMADAN":
             var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
+        case "SOCCER":
+            var template = fs.readFileSync(path.join(__dirname, "../assets/email/soccer.html"),"utf-8");
     }
 
     //var template = fs.readFileSync(path.join(__dirname, "../assets/email/ramadan.html"),"utf-8");
@@ -33,13 +35,13 @@ async function registrationMail(data) {
         html: template
     };
     return await transporter.sendMail(mailOptions, function (error, info) {
-        // if (error) {
-        //     console.log(error);
-        //     res.json(403);
-        // } else {
-        //     console.log('Email sent: ' + info.response);
-        //     res.json(200);
-        // }
+        if (error) {
+            console.log(error);
+            res.json(403);
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.json(200);
+        }
     });
 }
 

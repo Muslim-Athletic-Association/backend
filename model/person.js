@@ -54,13 +54,7 @@ async function getPerson(data) {
     });
     var originalData = data;
     return await c.retrieve(sql, params, m).then(async function (result) {
-        // var password = result.data[0].password;
-        // if(password != originalData.password){
-        // return setResult({}, false, "Incorrect password", c.errorEnum.INVALID)
-        // } else {
-        // delete result.data.password;
         return result;
-        // }
     });
 }
 
@@ -68,15 +62,3 @@ module.exports = {
     createPerson: createPerson,
     getPerson: getPerson,
 };
-
-// module.exports = {
-//   getMember: getMember,
-//   createMember: createMember,
-//   getMembers: getMembers,
-//   getProgramMember: getProgramMember,
-//   getProgramMembers: getProgramMembers,
-//   registerMember: registerMember,
-//   register: register,
-//   addGuardian: addGuardian,
-//   insertConsent: insertConsent,
-// };
