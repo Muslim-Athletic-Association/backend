@@ -45,6 +45,17 @@ router.get(
     }
 );
 
+router.get(
+    "/api/:team_name/getPlayersByTeam",
+    async function gpbtResponse(request, response) {
+        // returns member information in json format if successful
+        response.header("Access-Control-Allow-Origin", "*");
+        await t.getPlayersByTeam(request.params).then(async function (result) {
+            return await rc.simpleResponse(result, response);
+        });
+    }
+);
+
 /**
  * Register a person for a team based competition
  * Steps:
