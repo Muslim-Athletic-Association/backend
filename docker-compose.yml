@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+    docker_postgres:
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: VeryG00dPassword
+            POSTGRES_USER: maadmin
+            POSTGRES_DB: maadmin
+        volumes:
+            - ./pgdata:/var/lib/postgresql/data
+            - ./db/schema.ddl:/docker-entrypoint-initdb.d/schema.sql
+            - ./db/soccer21.ddl:/docker-entrypoint-initdb.d/soccer21.sql
+            - ./db/views.ddl:/docker-entrypoint-initdb.d/views.sql
+            # Note that the file extensions need to be sql files, not ddl files.
+        command: -p 5433
+        ports:
+            - "5433:5433"
+        networks:
+            - default
+    maadmin:
+        build: .
+        depends_on:
+            - docker_postgres
+        ports:
+            - "3001:3001"
+        networks:
+            - default
