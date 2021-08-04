@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Client = require("pg").Client;
 
 const config = {
