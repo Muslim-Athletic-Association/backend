@@ -12,7 +12,6 @@ let db = new Client(config);
 
 async function connect_to_db() {
     let retries = 5;
-    console.log(config);
     while (retries) {
         db = new Client(config);
         await db
