@@ -185,11 +185,11 @@ async function update(sql, params, message) {
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
     if (result.rows[0] == null) {
-      return setResult({}, false, none, errorEnum.DNE);
+      return setResult({}, false, message.none, errorEnum.DNE);
     }
-    return setResult(result.rows, true, success, errorEnum.NONE);
+    return setResult(result.rows, true, message.success, errorEnum.NONE);
   }).catch(e => {
-    console.log("\nUpdate error!\n", error, e);
+    console.log("\nUpdate error!\n", e);
     return setResult({}, false, message.server, errorEnum.SERVER);
 
   })
