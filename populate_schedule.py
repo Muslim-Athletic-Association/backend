@@ -29,8 +29,8 @@ def parse_fixture(line):
     game = {b"cgroup": 1,
             b"team1": x[0],
             b"team2": x[3],
-            b"date": x[4],
-            b"time": x[5]}
+            b"fixture_date": x[4],
+            b"fixture_time": x[5]}
     return game
 
 
