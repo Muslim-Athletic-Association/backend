@@ -2,7 +2,6 @@ const router = require("express").Router();
 const c = require("../model/constants");
 const rc = require("./routingConstants");
 const fixtures = require("../model/fixture");
-const schedule = require("../model/schedule");
 
 router.post(
     "/api/upload/fixture",
@@ -16,9 +15,19 @@ router.post(
     }
 );
 
+router.post(
+    "/api/update/fixture/score",
+    async function updateFixtureScore(request, response) {
+        // Upload one fixture to the database.
+        await fixtures.updateScore(request.body).then(async function (result) {
+            return await rc.simpleResponse(result, response);
+        });
+    }
+);
+
 router.get(
-    "/api/fixtures/:cgroup",
-    async function uploadFixture(request, response) {
+    "/api/fixtures/:cgroup/:fixture_date?",
+    async function fetchFixtures(request, response) {
         // fetch fixtures from the database based on group (or group and date).
         await fixtures
             .getGroupFixtures(request.params)
@@ -28,4 +37,4 @@ router.get(
     }
 );
 
-module.exports = router
+module.exports = router;
