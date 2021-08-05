@@ -1,0 +1,7 @@
+team1,score1,score2,team2,date,time,
+Perilous Penguins FC,,,Perilous Potatos FC,7-10-2021,20:00:00,Normal Game
+asdasdasdasd Potatos FC,,,Perilous Penguins FC,7-10-2021,20:00:00,Same time for one team
+asdasdasdasd Potatos FC,,,Perilous Potatos FC,7-10-2021,21:00:00,Normal Game
+Perilous Penguins FC,,,Perilous Penguins FC,7-13-2021,21:00:00,Playing against self
+Perilous Penguins FC,,,Perilous Potatos FC,7-17-2021,16:00:00,"Same game, different date"
+Perilous Penguins FC,,,Perilous Potatos FC,7-17-2021,17:00:00,"Same game, different time"
