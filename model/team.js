@@ -147,19 +147,100 @@ async function getTeamsByDivision(data) {
     return await c.retrieve(sql, params, m);
 }
 
-// I need to find all teams based on a competition, which should have a many to many relationship
-// This is because each team can play in multiple competitions and each competition can have multiple teams.
+/**
+ * Create a team record based on the given data
+ * 
+ * @param {name: string} data
+ */
+async function createTeamRecord(data){
+    var invalid = c.simpleValidation(data, {
+        team_id: "int",
+        group_id: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "INSERT INTO teamRecord (team, group_id) VALUES ($1, $2) RETURNING *;";
+    var params = [data.team_id, data.group_id];
+    var m = new c.Message({
+        success: "Successfully created team record.",
+    });
+    return await c.create(sql, params, m);
+}
 
-// In order to do this, I need to select all of the teams that have a record in a specfic group.
-// My issue is that I have a many to many relationship that seems to go through two tables:
-// competition group and team record.
+/**
+ * Update a team record based on the given data
+ * 
+ * @param {name: string} data
+*/
+ async function updateTeamRecord(data) {
+    var invalid = c.simpleValidation(data, {
+        team_id: "int",
+        group_id: "int",
+        fixtures_played: 'int',
+        goals_for: 'int',
+        goals_against: 'int',
+        outcome: 'string' //outcome to be updated i.e wins, ties, or losses
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "UPDATE teamRecord SET \
+        fixtures_played = fixtures_played + 1, \
+        goals_for = goals_for + $3,\
+        goals_against = goals_against + $4, \
+        $5 = $5 + 1 \
+        WHERE team=$1 AND group_id=$2 RETURNING *;";
+    var params = [data.team_id, data.group, data.goals_for, data.goals_against, data.outcome];
+    var m = new c.Message({
+        success: "Successfully updated team record.",
+    });
+    return await c.update(sql, params, m);
+}
 
-// What if teamRecord kept track of the division (competition group)? Instead of creating a whole new table.
-// Then for individual competitions we could also put individual levels in the "competitor record" as well.
+/**
+ * Update a team record based on the given data
+ * 
+ * @param {name: string} data
+ */
+ async function setTeamRecord(){
+    var invalid = c.simpleValidation(data, {
+        team: "int",
+        group_id: "int",
+        fixtures_played: 'int',
+        wins: 'int',
+        losses: 'int',
+        ties: 'int',
+        goals_for: 'int',
+        goals_against: 'int'
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "UPDATE teamRecord SET \
+        fixtures_played = $3, \
+        goals_for = $4,\
+        goals_against = $5, \
+        wins = $6 \
+        ties = $7 \
+        losses = $8 \
+        WHERE team=$1 AND group_id=$2 RETURNING *;";
+    var params = [data.team_id, data.group, data.goals_for, data.goals_against, data.wins, data.ties, data.losses];
+    var m = new c.Message({
+        success: "Successfully set team record.",
+    });
+    return await c.update(sql, params, m);
+}
 
 module.exports = {
     createTeam: createTeam,
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
-    getTeamsByCompetition: getTeamsByCompetition
+    getTeamsByCompetition: getTeamsByCompetition,
+    createTeamRecord: createTeamRecord,
+    updateTeamRecord: updateTeamRecord,
+    setTeamRecord: setTeamRecord,
 };

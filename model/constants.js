@@ -95,14 +95,17 @@ function checkBodyTypes(data, required) {
  * This function uses checks to see if the body's keys are named correctly.
  * 
  * @param {Object[key, type]} required 
+ * @param {bool} print 
  */
 
-function checkBodyKeys(data, required) {
+function checkBodyKeys(data, required, p=true) {
   var keys = Object.keys(data);
   var requiredKeys = Object.keys(required);
   for (var i = 0; i < Object.keys(requiredKeys).length; i++) {
     if (!keys[i] || !keys.includes(requiredKeys[i])) {
-      console.log("Invalid: Body is missing the key: " + requiredKeys[i])
+      if (p){
+        console.log("Invalid: Body is missing the key: " + requiredKeys[i])
+      }
       return setResult(data, false, "Body is missing the key: " + requiredKeys[i], errorEnum.INVALID);
     }
   }
@@ -121,12 +124,12 @@ function checkBodyKeys(data, required) {
  * @param {List[String]} types
  * The types of the values that should be in the parameters
  */
-function checkBody(data, required) {
+function checkBody(data, required, p=true) {
   var empty = checkEmptyBody(data);
   if (empty) {
     return empty;
   }
-  var empty = checkBodyKeys(data, required);
+  var empty = checkBodyKeys(data, required, p);
   if (empty) {
     return empty;
   }
@@ -182,11 +185,11 @@ async function update(sql, params, message) {
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
     if (result.rows[0] == null) {
-      return setResult({}, false, none, errorEnum.DNE);
+      return setResult({}, false, message.none, errorEnum.DNE);
     }
-    return setResult(result.rows, true, success, errorEnum.NONE);
+    return setResult(result.rows, true, message.success, errorEnum.NONE);
   }).catch(e => {
-    console.log("\nUpdate error!\n", error, e);
+    console.log("\nUpdate error!\n", e);
     return setResult({}, false, message.server, errorEnum.SERVER);
 
   })
