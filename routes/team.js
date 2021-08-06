@@ -56,6 +56,17 @@ router.get(
     }
 );
 
+router.get(
+    "/api/:competition_id/getPlayersByLeague",
+    async function gpblResponse(request, response) {
+        // returns member information in json format if successful
+        response.header("Access-Control-Allow-Origin", "*");
+        await t.getPlayersByLeague(request.params).then(async function (result) {
+            return await rc.simpleResponse(result, response);
+        });
+    }
+);
+
 /**
  * Register a person for a team based competition
  * Steps:

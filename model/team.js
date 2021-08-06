@@ -147,6 +147,27 @@ async function getTeamsByCompetition(data) {
 }
 
 /**
+ * Fetches all players in a specific league.
+ *
+ * @param {name: string} data
+ */
+ async function getPlayersByLeague(data) {
+    var invalid = c.simpleValidation(data, {
+        competition_id: "int",
+    });
+    if (invalid) {
+        return invalid;
+    }
+    var sql =
+        "SELECT first_name, last_name FROM person JOIN (SELECT * player join (SELECT * from teamCompetition where competition_id=$1) tc on player.team = tc.team_name) pc ON pc.person=person.person_id;";
+    var params = [data.team_name];
+    var m = new c.Message({
+        success: "Successfully retrieved all teams.",
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
  * Fetches all of the teams in a division within a league.
  *
  * @param {name: string} data
@@ -183,5 +204,6 @@ module.exports = {
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
     getTeamsByCompetition: getTeamsByCompetition,
-    getPlayersByTeam: getPlayersByTeam
+    getPlayersByTeam: getPlayersByTeam,
+    getPlayersByLeague: getPlayersByLeague
 };
