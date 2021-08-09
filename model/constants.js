@@ -34,6 +34,8 @@ class Message {
   }
 }
 
+const defaultMsg = new Message({});
+
 /**
  * Check to see if the values of a request body are empty.
  * This is a helper function for checkBody
@@ -157,7 +159,7 @@ function checkBody(data, required, p=true) {
  * @param {List[String]} params 
  * @param {Message} message 
  */
-async function retrieve(sql, params, message) {
+async function retrieve(sql, params, message=defaultMsg) {
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
     if (result.rows[0] == null) {
@@ -180,7 +182,7 @@ async function retrieve(sql, params, message) {
  * @param {List[String]} params 
  * @param {Message} message 
  */
-async function update(sql, params, message) {
+async function update(sql, params, message=defaultMsg) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
@@ -203,7 +205,7 @@ async function update(sql, params, message) {
  * @param {List[String]} params 
  * @param {Message} message 
  */
-async function create(sql, params, message) {
+async function create(sql, params, message=defaultMsg) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
@@ -249,7 +251,7 @@ async function create(sql, params, message) {
  * @param {List[String]} params 
  * @param {Message} message 
  */
-async function remove(sql, params, message) {
+async function remove(sql, params, message=defaultMsg) {
   // Note: Should all update calls must return all columns (i.e. RETURNING *)?
   console.log("-- The following query is being executed --\n sql: " + sql + "\n params: " + params);
   return await db.query(sql, params).then(result => {
