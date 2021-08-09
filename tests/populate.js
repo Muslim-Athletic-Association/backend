@@ -24,22 +24,36 @@ async function getAllTableInfo() {
                 let table_name = table_data["table_name"];
                 let table_columns = await getTableInformation(table_name);
                 console.log(table_columns);
-                let tbl = {}
-                tbl[table_name] = {}
+                let tbl = {};
+                tbl[table_name] = {};
                 let name_to_type = table_columns.data.forEach((column) => {
-                    let name = column.column_name
-                    let ntt = {}
-                    ntt[name] = column.data_type
-                    tbl[table_name] = {...tbl[table_name], ...ntt}
+                    let name = column.column_name;
+                    let ntt = {};
+                    ntt[name] = column.data_type;
+                    tbl[table_name] = { ...tbl[table_name], ...ntt };
                     return ntt;
-                })
-                return tbl
+                });
+                return tbl;
             })
         );
         console.log(falafel);
         return falafel;
     });
 }
+
+/**
+ * Create n rows of mock data
+ *
+ * @param {int} n
+ * @param {string} table_name
+ * @param {column_name: column_type} table_name
+ */
+function createMockRows(n, table_name, table_params) {}
+
+/**
+ * Prompt the user on which table(s) they would like to mock data for.
+ */
+function promptUser() {}
 
 getAllTableInfo().then((tables) => console.log(tables));
 
