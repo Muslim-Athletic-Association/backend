@@ -1,53 +1,46 @@
-const program = require("../model/program");
-const c = require("./constants");
+const c = require("../model/constants");
 const isFunction = c.isFunction;
 const errorEnum = c.errorEnum;
-var faker = require('faker');
+var faker = require("faker");
 
-/**
- * Insert mock teams into the database
- *
- * @param {int} num_teams
- */
- async function createTeams(num_teams) {
-    var sql =
-        "INSERT INTO person (first_name, last_name, email, phone, gender, birthday, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
-    var params = [
-        data.first_name,
-        data.last_name,
-        data.email,
-        data.phone,
-        data.gender,
-        data.birthday,
-        "",
-    ];
-    var m = new c.Message({
-        success: "Successfully added a person.",
-        duplicate: "A person with email already exists.",
-    });
-    return await c.create(sql, params, m);
+// Objective: Prompt user with how much fake data they want in each table.
+
+async function getTableInformation(table_name) {
+    let sql =
+        "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1;";
+    var params = [table_name];
+    return await c.retrieve(sql, params);
 }
 
-/**
- * Insert a mock competition
- *
- * @param {int} num_teams
- */
- async function createTeams(num_teams) {
-    var sql =
-        "INSERT INTO person (first_name, last_name, email, phone, gender, birthday, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
-    var params = [
-        data.first_name,
-        data.last_name,
-        data.email,
-        data.phone,
-        data.gender,
-        data.birthday,
-        "",
-    ];
-    var m = new c.Message({
-        success: "Successfully added a person.",
-        duplicate: "A person with email already exists.",
+async function getAllTableInfo() {
+    let sql =
+        "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';";
+    let params = [];
+    return await c.retrieve(sql, params).then(async (query) => {
+        let num_tables = query.data.length;
+        console.log(`There are ${num_tables} tables in total.`);
+        let falafel = await Promise.all(
+            query.data.map(async (table_data) => {
+                let table_name = table_data["table_name"];
+                let table_columns = await getTableInformation(table_name);
+                console.log(table_columns);
+                let tbl = {}
+                tbl[table_name] = {}
+                let name_to_type = table_columns.data.forEach((column) => {
+                    let name = column.column_name
+                    let ntt = {}
+                    ntt[name] = column.data_type
+                    tbl[table_name] = {...tbl[table_name], ...ntt}
+                    return ntt;
+                })
+                return tbl
+            })
+        );
+        console.log(falafel);
+        return falafel;
     });
-    return await c.create(sql, params, m);
 }
+
+getAllTableInfo().then((tables) => console.log(tables));
+
+module.exports = { getAllTableInfo: getAllTableInfo };
