@@ -31,6 +31,53 @@ class Match {
         this.score1 = score1;
         this.score2 = score2;
     }
+
+    /**
+     * Create a fixture in the database
+     * @return {Object} database insertion result
+     */
+    async create() {
+        let sql =
+            "INSERT INTO fixture (team1, team2, cgroup, fixture_date, fixture_time) VALUES ($1, $2, $3, $4, $5) RETURNING *;";
+        let params = [
+            this.team1,
+            this.team2,
+            this.cgroup,
+            this.date,
+            this.time,
+        ];
+        let msg = c.Message({
+            success: `Created match \n ${this.toString()}`,
+            duplicate: `A Match already exists on ${this.date} or ${this.time} for one of ${this.team1} or ${this.team2}.`,
+            foreign: `Either team: ${team1} or ${team2} or group: ${cgroup} does not exist.`,
+        });
+        return await c.create(sql, params, msg);
+    }
+
+    /**
+     * So far, all of the logic has been stored in a session (pretend it was),
+     * now we will update the matches in the actual database.
+     * @return {Object} result from database
+     */
+    async update(match) {
+        let old = this.toString();
+        let sql =
+            "UPDATE fixture SET team1 = $1, team2 = $2, cgroup = $3, fixture_date = $4, fixture_time = $5 RETURNING *;";
+        let params = [
+            this.team1,
+            this.team2,
+            this.cgroup,
+            this.date,
+            this.time,
+        ];
+        let msg = c.Message({
+            success: `Updated match \n old: ${old} \n new: ${this.toString()}`,
+            duplicate: `A Match already exists on ${this.date} or ${this.time} for one of ${this.team1} or ${this.team2}.`,
+            foreign: `Either team: ${team1} or ${team2} or group: ${cgroup} does not exist.`,
+        });
+        await c.update(sql, params, msg);
+    }
+
     /**
      * Check to see if another match is earlier than this one
      * @param {string} other representing the other team
@@ -100,6 +147,19 @@ class Match {
             this.cgroup == other.cgroup
         );
     }
+    /**
+     * Sets the date and time for the match.
+     * @param {moment} dateTime
+     */
+    setDateTime(dateTime) {
+        let datetime = t.toJSON().split(":");
+        current.fixture_time = datetime[1];
+        current.fixture_date = datetime[0];
+    }
+
+    toString() {
+        return `${this.team1} | ${this.score1}:${this.score2} | ${this.team2} at ${this.fixture_date} on ${this.fixture_time} in group ${this.cgroup}`;
+    }
 
     /**
      * Check to see if this is the same game as other
@@ -114,13 +174,7 @@ class Match {
 class Schedule {
     // Each schedule will be specific to a division
 
-    constructor(
-        group,
-        maxTeams,
-        matches = [],
-        startDate = null,
-        endDate = null
-    ) {
+    constructor(group, matches = [], startDate = null, endDate = null) {
         this.matches = matches;
         this.teams = [];
         this.maxTeams = maxTeams;
@@ -136,24 +190,24 @@ class Schedule {
 
     /**
      * Add a team to the schedule by creating match ups against all other teams.
-     *
+     * We will only create one match up for the time being.
      * @param {string} team1 team name
      */
     addTeam(team1) {
         let num_teams = this.teams.length;
         for (var i = 0; i < num_teams; i++) {
             for (var j = i; i < num_teams; j++) {
-                this.matches.push(new Match(team1, team2, this.group));
+                match = new Match(team1, team2, this.group);
+                await match.create();
+                this.matches.push(match);
             }
         }
         this.teams.push(team1);
     }
 
     /**
-     * Add times to the games based on a specific date
-     * Games should be added to fields based on a modulos of available fields to time.
-     * i.e. (endTime - startTime) % numFields
-     * Note: the date is the same for all games that fit in the timeframe.
+     * Create a schedule based on a single day of the week i.e. every sunday between 1-4.
+     * TODO: consider adding a booking table to psql instead of passing everything in all the time.
      *
      * @param {moment} startTime the start time for when the location is booked
      * @param {moment} endTime the end time for when the location is booked
@@ -161,13 +215,43 @@ class Schedule {
      * @param {int} numFields the number of fields booked at the location
      * @param {int} matchLength based on the number of hours, this is how long a game is (can be float)
      */
-    assignTimes(startTime, endTime, date, numFields, matchLength) {
+    weekdaySchedule(startTime, endTime, startDate, numFields, matchLength) {
+        let numDays = this.unassigned.length / (this.teams.length / 2);
+        for (var date = 0; date < numDays; date.add(1, "weeks")) {
+            this.dates[date] = this.prepareMatchDay(
+                startTime,
+                endtime,
+                date,
+                numFields
+            );
+            // Note: what if a date is already booked?
+            // We have a conflict and should move all matches on that day to another day.
+        }
+        for (var date = 0; date < numDays; date.add(1, "weeks")) {
+            let matches = this.dates[date];
+            for (var match = 0; match < matches.length; match++) {
+                matches[match].update();
+            }
+        }
+    }
+
+    /**
+     * Add times to the games based on a specific date
+     * Games should be added to fields based on a modulos of available fields to time.
+     * i.e. (endTime - startTime) % numFields
+     * Note: the date is the same for all games that fit in the timeframe.
+     * Used in assignTimesOnDay()
+     *
+     * @param {moment} startTime the start time for when the location is booked
+     * @param {moment} endTime the end time for when the location is booked
+     * @param {moment} date the day on which we have booked the location
+     * @param {int} numFields the number of fields booked at the location
+     * @param {int} matchLength number of hours, this is how long a game is (can be float)
+     */
+    prepareMatchDay(startTime, endTime, date, numFields) {
         let scheduled = [];
-        this.dates[date] = [];
         let bookingLength = startTime - endTime;
-        // let maxGames = ((bookingLength) // matchLength) * numFields;
         for (var t = 0; t < bookingLength; t.add(matchLength, "hours")) {
-            // Keep scheduling games until the bookingLength run out
             for (var f = numFields; numFields > 0; numFields--) {
                 // Keep scheduling games at this matchLength until the fields run out
                 let current = this.unassigned.pop();
@@ -177,9 +261,7 @@ class Schedule {
                     );
                     return;
                 }
-                let datetime = t.toJSON().split(":");
-                current.fixture_time = datetime[1];
-                current.fixture_date = datetime[0];
+                current.setDateTime(t);
                 let conflict = false;
                 this.dates[date].forEach((match) => {
                     if (match.sameTeam(current) && match.sameTimeAs(current)) {
@@ -195,14 +277,8 @@ class Schedule {
                 }
             }
         }
-        // Then we should update the database with the new times
+        return scheduled;
     }
-
-    /**
-     * delete a match from our schedule
-     * @param {Match} match
-     */
-    deleteMatch(match) {}
 
     /**
      * Move all games that were scheduled for originalDate to newDate
@@ -218,39 +294,43 @@ class Schedule {
         });
         this.dates[nDate] = matches;
         delete this.dates[date];
+        // TODO: Update matches in database
     }
 
     /**
-     * So far, all of the logic has been stored in a session (pretend it was),
-     * now we will update the matches in the actual database.
-     * @return {Object} result from database
+     * This function's purpose is to find conflicts in datetimes in your own schedule
+     * Note: The conflicts are (and should be) limited to this schedule.
+     *
      */
-    uploadToDatabase() {}
+    find_conflicts() {}
+
+    /**
+     * delete a match from our schedule
+     * @param {Match} match
+     */
+    deleteMatch(match) {}
 }
 
 /**
  * Givens:
- *  - A list of teams (and therefore the # of teams)
- *  - The maximum # of teams per division
+ *  - A list of teams  names(and therefore the # of teams)
  *
  *
  * We want to:
- *  - pair all of the teams (create a match up)
+ *  - pair all of the teams (create a fixture)
  *  - Add a time to each game (make sure each time does not conflict with the time of another team)
  *      - Make sure each team plays every other team at least once.
- *  - Set the score to be 0 - 0 for all games? or do we want this to be null to start? Likely null.
- *    This would require a schema change, so make sure it's right first.
  */
 
+/**
+ *
+ * @param {list} teams team names
+ * @param {int} group
+ */
 function generate_matches(teams, group) {
     // Create an unordered set of match-ups based on all of the teams in a single group.
     let schedule = new Schedule(group);
     teams.forEach((team) => {
         schedule.addTeam(team);
     });
-}
-
-// Have new functions modify the schedule based on new restrictions. i.e. only 6 weeks, but 12 games so then put two games per week.
-function backToBack() {
-    // TODO: Group matches on a specific date to be next to one another based on the team.
 }
