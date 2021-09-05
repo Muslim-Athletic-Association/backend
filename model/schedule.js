@@ -4,7 +4,7 @@ const c = require("./constants");
 const isFunction = c.isFunction;
 const errorEnum = c.errorEnum;
 
-// TODO: all functions here just represent logic, we should add the actual functionality when the logic is completed.
+// NOTE: handle edge cases as they come along, not all at once
 
 moment().format();
 
@@ -225,7 +225,6 @@ class Schedule {
             // Note: what if a date is already booked?
             // We have a conflict and should move all matches on that day to another day.
         }
-        console.log(this.dates)
         for (var date = 0; date < numDays; date.add(1, "weeks")) {
             let matches = this.dates[date];
             for (var match = 0; match < matches.length; match++) {
@@ -257,9 +256,7 @@ class Schedule {
                 // Keep scheduling games at this matchLength until the fields run out
                 current = this.matches[m];
                 m--;
-                console.log(m)
                 current.setDateTime(t);
-                console.log(`Match: ${current.toString()}`)
                 scheduled.push(current);
                 this.dates[date].push(current);
             }
