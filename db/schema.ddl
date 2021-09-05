@@ -109,8 +109,8 @@ CREATE TABLE fixture(
     cgroup INTEGER,
     fixture_date DATE,
     fixture_time TIME,
-    score1 INTEGER DEFAULT 0,
-    score2 INTEGER DEFAULT 0,
+    score1 INTEGER DEFAULT -1,
+    score2 INTEGER DEFAULT -1,
 
     unique(team1, fixture_date, fixture_time),
     unique(team2, fixture_date, fixture_time),

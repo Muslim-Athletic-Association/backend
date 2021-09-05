@@ -20,8 +20,8 @@ class Match {
         cgroup,
         fixture_date = null,
         fixture_time = null,
-        score1 = null,
-        score2 = null
+        score1 = -1,
+        score2 = -1
     ) {
         this.team1 = team1;
         this.team2 = team2;
@@ -46,10 +46,10 @@ class Match {
             this.date,
             this.time,
         ];
-        let msg = c.Message({
+        let msg = new c.Message({
             success: `Created match \n ${this.toString()}`,
             duplicate: `A Match already exists on ${this.date} or ${this.time} for one of ${this.team1} or ${this.team2}.`,
-            foreign: `Either team: ${team1} or ${team2} or group: ${cgroup} does not exist.`,
+            foreign: `Either team: ${this.team1} or ${this.team2} or group: ${this.cgroup} does not exist.`,
         });
         return await c.create(sql, params, msg);
     }
@@ -70,7 +70,7 @@ class Match {
             this.date,
             this.time,
         ];
-        let msg = c.Message({
+        let msg = new c.Message({
             success: `Updated match \n old: ${old} \n new: ${this.toString()}`,
             duplicate: `A Match already exists on ${this.date} or ${this.time} for one of ${this.team1} or ${this.team2}.`,
             foreign: `Either team: ${team1} or ${team2} or group: ${cgroup} does not exist.`,
@@ -149,12 +149,12 @@ class Match {
     }
     /**
      * Sets the date and time for the match.
-     * @param {moment} dateTime
+     * @param {moment} t
      */
-    setDateTime(dateTime) {
+    setDateTime(t) {
         let datetime = t.toJSON().split(":");
-        current.fixture_time = datetime[1];
-        current.fixture_date = datetime[0];
+        this.fixture_time = datetime[1];
+        this.fixture_date = datetime[0];
     }
 
     toString() {
@@ -177,12 +177,7 @@ class Schedule {
     constructor(group, matches = [], startDate = null, endDate = null) {
         this.matches = matches;
         this.teams = [];
-        this.maxTeams = maxTeams;
         this.group = group;
-        // unassigned stores the games that still don't have a date or time.
-        this.unassigned = this.matches.filter(
-            (match) => match.fixture_time != null
-        );
         this.dates = {};
         this.startDate = startDate;
         this.endDate = endDate;
@@ -193,14 +188,13 @@ class Schedule {
      * We will only create one match up for the time being.
      * @param {string} team1 team name
      */
-    addTeam(team1) {
+    async addTeam(team1) {
         let num_teams = this.teams.length;
         for (var i = 0; i < num_teams; i++) {
-            for (var j = i; i < num_teams; j++) {
-                match = new Match(team1, team2, this.group);
-                await match.create();
-                this.matches.push(match);
-            }
+            let team2 = this.teams[i]
+            let match = new Match(team1, team2, this.group);
+            await match.create();
+            this.matches.push(match);
         }
         this.teams.push(team1);
     }
@@ -215,24 +209,30 @@ class Schedule {
      * @param {int} numFields the number of fields booked at the location
      * @param {int} matchLength based on the number of hours, this is how long a game is (can be float)
      */
-    weekdaySchedule(startTime, endTime, startDate, numFields, matchLength) {
-        let numDays = this.unassigned.length / (this.teams.length / 2);
-        for (var date = 0; date < numDays; date.add(1, "weeks")) {
-            this.dates[date] = this.prepareMatchDay(
+    async weekdaySchedule(startTime, endTime, startDate, numFields, matchLength) {
+        var duration = moment.duration(endTime.diff(startTime));
+        var bookingLength = duration.asHours();
+        let numDays = Math.floor(this.matches.length / (bookingLength * matchLength)) + 1
+        let endDate = new moment(startDate);
+        for (var date = startDate; date < endDate; date.add(1, "weeks")) {
+            this.dates[date] = [];
+            this.prepareMatchDay(
                 startTime,
-                endtime,
+                endTime,
                 date,
                 numFields
             );
             // Note: what if a date is already booked?
             // We have a conflict and should move all matches on that day to another day.
         }
+        console.log(this.dates)
         for (var date = 0; date < numDays; date.add(1, "weeks")) {
             let matches = this.dates[date];
             for (var match = 0; match < matches.length; match++) {
-                matches[match].update();
+                await matches[match].update();
             }
         }
+        return c.setResult({"blah":"coolio"}, true, "Falafel", c.errorEnum.NONE)
     }
 
     /**
@@ -248,33 +248,20 @@ class Schedule {
      * @param {int} numFields the number of fields booked at the location
      * @param {int} matchLength number of hours, this is how long a game is (can be float)
      */
-    prepareMatchDay(startTime, endTime, date, numFields) {
+    prepareMatchDay(startTime, endTime, date, numFields, bookingLength, matchLength) {
         let scheduled = [];
-        let bookingLength = startTime - endTime;
-        for (var t = 0; t < bookingLength; t.add(matchLength, "hours")) {
-            for (var f = numFields; numFields > 0; numFields--) {
+        let current;
+        let m = this.matches.length - 1;
+        for (var t = startTime; t < endTime; t.add(matchLength, "hours")) {
+            for (var f = numFields; (f > 0) && (m > 0); f--) {
                 // Keep scheduling games at this matchLength until the fields run out
-                let current = this.unassigned.pop();
-                if (current == undefined) {
-                    console.log(
-                        "All matches have been assigned to a date and time."
-                    );
-                    return;
-                }
+                current = this.matches[m];
+                m--;
+                console.log(m)
                 current.setDateTime(t);
-                let conflict = false;
-                this.dates[date].forEach((match) => {
-                    if (match.sameTeam(current) && match.sameTimeAs(current)) {
-                        conflict = true;
-                    }
-                });
-                if (!conflict) {
-                    scheduled.push(current);
-                    this.dates[date].push(current);
-                } else {
-                    current.fixture_time = null;
-                    current.fixture_date = null;
-                }
+                console.log(`Match: ${current.toString()}`)
+                scheduled.push(current);
+                this.dates[date].push(current);
             }
         }
         return scheduled;
@@ -327,10 +314,19 @@ class Schedule {
  * @param {list} teams team names
  * @param {int} group
  */
-function generate_matches(teams, group) {
+async function generate_matches(teams, group) {
     // Create an unordered set of match-ups based on all of the teams in a single group.
     let schedule = new Schedule(group);
-    teams.forEach((team) => {
-        schedule.addTeam(team);
-    });
+    for (var team = 0; team < teams.length; team++) {
+        await schedule.addTeam(teams[team]);
+    }
+    startTime = new moment("12-25-2021", "MM-DD-YYYY");
+    endTime = new moment("12-25-2021", "MM-DD-YYYY");
+    startTime.add(4, "hours");
+    endTime.add(8, "hours");
+    return await schedule.weekdaySchedule(startTime, endTime, startTime, 4, 1);
 }
+
+module.exports = {
+    generate_matches: generate_matches,
+};

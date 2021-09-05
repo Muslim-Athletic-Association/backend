@@ -46,12 +46,11 @@ router.post(
         // Step 2: Ensure that no schedule already exists for this group
         //  i.e. cannot generate a new schedule for a group that already contains a fixture.
 
-
         // Step 3: Create schedule using generate_matches() in schedule model
         //  ^To be tested first.
         await schedule
-            .generateMatches(request.body)
-            .then(async function (result) {
+            .generate_matches(request.body["teams"], request.body["group"])
+            .then(async (result) => {
                 return await rc.simpleResponse(result, response);
             });
     }
