@@ -151,11 +151,6 @@ function createMockRows(n, table_name, table_params) {}
  */
 function promptUser() {}
 
-// getAllTableInfo().then((tables) => console.log(tables));
-crazy_stuff().then((tables) => {
-    // console.log(tables);
-});
-
 module.exports = {
     getAllTableInfo: getAllTableInfo,
     crazy_stuff: crazy_stuff,
