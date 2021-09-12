@@ -13,8 +13,7 @@ CREATE TABLE person
     email VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     gender VARCHAR(6),
-    birthday DATE NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    birthday DATE NOT NULL
     
     UNIQUE (email)
 );
@@ -25,7 +24,7 @@ CREATE TABLE subscription(
     name VARCHAR(50),
     start_date DATE,
     end_date DATE,
-    price INTEGER,
+    price Numeric(7, 2),
 
     constraint subscriptionProgramFk foreign key (program) references program(program_id) on update cascade on delete cascade
 );
@@ -35,7 +34,7 @@ CREATE TABLE registration(
     person INTEGER,
     subscription INTEGER,
     datetime TIMESTAMP,
-    payment INTEGER,
+    payment Numeric(7, 2),
 
     UNIQUE(person, subscription),
     constraint registrationPersonFk foreign key (person) references person(person_id) on update cascade on delete cascade,
