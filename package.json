@@ -4,7 +4,7 @@
   "description": "backend server for the MAA website",
   "main": "maaNode.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "sudo node maaNode.js",
     "dev": "sudo nodemon maaNode.js"
   },
@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "faker": "^5.5.3",
     "firebase-admin": "^9.9.0",
+    "jest": "^27.1.1",
     "nodemailer": "^6.4.16",
     "nodemon": "^2.0.12",
     "objects-to-csv": "^1.3.6",
