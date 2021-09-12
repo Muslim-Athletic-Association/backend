@@ -120,6 +120,24 @@ CREATE TABLE fixture(
     constraint fixtureCGroupFk foreign key (cgroup) references competitionGroup(cgroup_id) on update cascade on delete cascade
 );
 
+/* We want to be able to keep track of time and location for our bookings */
+CREATE TABLE booking(
+    booking_id SERIAL PRIMARY KEY,
+    location VARCHAR(50),
+    booking_date DATE,
+    start_time TIME,
+    duration TIME
+);
+
+/* Tie a booking to a program */
+CREATE TABLE booking_for(
+    booking INTEGER,
+    program_name INTEGER
+
+    constraint bookingFK foreign key (booking) references booking(booking_id) on update cascade on delete cascade,
+    constraint program_bookingFK foreign key (program_name) references program(name) on update cascade on delete cascade
+);
+
 CREATE Table session(
     session_id SERIAL PRIMARY KEY,
     program INTEGER,
