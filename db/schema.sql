@@ -13,7 +13,7 @@ CREATE TABLE person
     email VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     gender VARCHAR(6),
-    birthday DATE NOT NULL
+    birthday DATE NOT NULL,
     
     UNIQUE (email)
 );
