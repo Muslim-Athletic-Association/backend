@@ -1,6 +1,6 @@
 #This file should be executed in it's local directory
-psql postgres < ./drop.sql
-psql maadmin < ./schema.sql
-psql maadmin < ./soccer21.sql
-psql maadmin < ./views.sql
+PGPASSWORD=VeryG00dPassword psql -U maadmin postgres < ./drop.sql
+PGPASSWORD=VeryG00dPassword psql -U maadmin maadmin < ./schema.sql
+PGPASSWORD=VeryG00dPassword psql -U maadmin maadmin < ./soccer21.sql
+PGPASSWORD=VeryG00dPassword psql -U maadmin maadmin < ./views.sql
 
