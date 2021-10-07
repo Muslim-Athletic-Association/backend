@@ -1,8 +1,8 @@
-const registrationTests = require("./registration-tests.js");
+const setup = require("./setup.js");
+// const registrationTests = require("./registration-tests.js");
 
 describe("Test APIs", () => {
-    test("", () => {
-        
-        // expect(actual).toEqual([]);
+    test("setup database", async () => {
+        await setup.seedDatabase();
     });
 });

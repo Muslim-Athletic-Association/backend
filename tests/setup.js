@@ -1,4 +1,8 @@
 const faker = require("faker");
+const utils = require("./utils");
+const Client = require("pg").Client;
+let db = new Client(utils.dbConfig);
+db.connect()
 
 /**
  * In this seeded database there is:
@@ -12,7 +16,7 @@ const faker = require("faker");
  * - 1 service (subscription)
  * - 4 registered individuals
  */
-const seeded = {
+const seedData = {
     program: [
         {
             program_id: 1,
@@ -26,8 +30,8 @@ const seeded = {
     person: [
         {
             person_id: 1,
-            first_name: faker.name.find_name(),
-            last_name: faker.name.find_name(),
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "female",
@@ -35,8 +39,8 @@ const seeded = {
         },
         {
             person_id: 2,
-            first_name: faker.name.find_name(),
-            last_name: faker.name.find_name(),
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
@@ -44,8 +48,8 @@ const seeded = {
         },
         {
             person_id: 3,
-            first_name: faker.name.find_name(),
-            last_name: faker.name.find_name(),
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
@@ -53,15 +57,15 @@ const seeded = {
         },
         {
             person_id: 4,
-            first_name: faker.name.find_name(),
-            last_name: faker.name.find_name(),
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
             birthday: faker.date.past(100),
         },
     ],
-    suscription: [
+    subscription: [
         {
             subscription_id: 1,
             program: 2,
@@ -118,21 +122,21 @@ const seeded = {
             datetime: "2020-1-10 12:12:12",
         },
         {
-            consent_id: 1,
+            consent_id: 2,
             person: 2,
             purpose: "soccer waiver",
             is_given: true,
             datetime: "2020-1-10 12:12:12",
         },
         {
-            consent_id: 1,
+            consent_id: 3,
             person: 3,
             purpose: "soccer waiver",
             is_given: true,
             datetime: "2020-1-10 12:12:12",
         },
         {
-            consent_id: 1,
+            consent_id: 4,
             person: 4,
             purpose: "soccer waiver",
             is_given: true,
@@ -143,7 +147,7 @@ const seeded = {
         {
             guardian_id: 1,
             person: 1,
-            full_name: faker.name.name(),
+            full_name: faker.name.findName(),
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
         },
@@ -156,7 +160,7 @@ const seeded = {
             team_capacity: 12,
         },
         {
-            team_id: 1,
+            team_id: 2,
             captain: 3,
             team_name: "TEST B FC",
             team_capacity: 12,
@@ -180,17 +184,17 @@ const seeded = {
     player: [
         {
             player_id: 1,
-            team: 1,
+            team: "TEST A FC",
             person: 2,
         },
         {
             player_id: 2,
-            team: 2,
+            team: "TEST B FC",
             person: 3,
         },
         {
-            player_id: 2,
-            team: 1,
+            player_id: 3,
+            team: "TEST A FC",
             person: 4,
         },
     ],
@@ -209,10 +213,10 @@ const seeded = {
             session_id: 1,
             program: 2,
             title: "TEST SESSION",
-            instructor: faker.name.name(),
-            session_capactity: 10,
+            instructor: faker.name.findName(),
+            session_capacity: 10,
             session_time: "12:12:00",
-            session_date: "WEDNESDAY",
+            session_day: "WEDNESDAY",
             start_date: "2020-1-20",
             count: 4,
             location: "3579 Copernicus Dr.",
@@ -249,13 +253,72 @@ const seeded = {
     ],
 };
 
-async function seedDatabase() {}
-
-const API_URL = "http://localhost:3001";
-
-async function apiPOST(path: string, body: any = {}) {
-    return await fetch(API_URL + path, {
-        method: "POST",
-        body: JSON.stringify(body),
+/**
+ * Before we start testing, we should wipe the database clean.
+ */
+async function clearDatabase() {
+    tables = Object.keys(seedData);
+    tables.forEach(async (table) => {
+        sql = `Delete from ${table} *`;
+        await db
+            .query(sql, [])
+            .then((result) => {
+                return result.rows;
+            })
+            .catch((e) => {
+                console.log("\n!Deletion error!\n", e);
+            });
     });
 }
+
+function prepareTableSQL(table) {
+    let rows = seedData[table];
+    let columns = Object.keys(rows[0]);
+    let columns_string = "(";
+    for (var i = 0; i < columns.length; i++) {
+        columns_string = columns_string + `${columns[i]}, `;
+    }
+    columns_string =
+        columns_string.substring(0, columns_string.length - 2) + ") values (";
+    for (var i = 0; i < columns.length; i++) {
+        columns_string = columns_string + `\$${i + 1}, `;
+    }
+    columns_string =
+        columns_string.substring(0, columns_string.length - 2) + ")";
+    let sql = `insert into ${table} ${columns_string}`;
+    rowValues = [];
+    for (var row = 0; row < rows.length; row++) {
+        rowValues.push(Object.values(rows[row]));
+    }
+    return [sql, rowValues];
+}
+
+/**
+ * This is where we actually put all of the mock data above into the database
+ */
+async function seedDatabase() {
+    await clearDatabase();
+    let tables = Object.keys(seedData);
+    for (let t = 0; t < tables.length; t++) {
+        table = tables[t];
+        let ret = prepareTableSQL(table);
+        let sql = ret[0];
+        let rows = ret[1];
+        for (var row = 0; row < rows.length; row++) {
+            await db
+                .query(sql, rows[row])
+                .then((result) => {
+                    return result.rows;
+                })
+                .catch((e) => {
+                    console.log("\nInsertion error!\n", e);
+                    console.log(sql, rows[row]);
+                });
+        }
+    }
+    await db.end();
+}
+
+module.exports = {
+    seedDatabase: seedDatabase,
+};
