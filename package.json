@@ -1,38 +1,40 @@
 {
-  "name": "maawebsite",
-  "version": "1.0.0",
-  "description": "backend server for the MAA website",
-  "main": "maaNode.js",
-  "scripts": {
-    "test": "jest --detectOpenHandles",
-    "start": "sudo node maaNode.js",
-    "dev": "sudo nodemon maaNode.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/osamaramihafez/maaWebsite.git"
-  },
-  "author": "Osama Hafez",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/osamaramihafez/maaWebsite/issues"
-  },
-  "homepage": "https://github.com/osamaramihafez/maaWebsite#readme",
-  "dependencies": {
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "csvtojson": "^2.0.10",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "faker": "^5.5.3",
-    "firebase-admin": "^9.9.0",
-    "jest": "^27.2.4",
-    "nodemailer": "^6.4.16",
-    "nodemon": "^2.0.12",
-    "objects-to-csv": "^1.3.6",
-    "pg": "^8.3.0"
-  },
-  "prettier": {
-    "tabWidth": 4
-  }
+    "name": "maawebsite",
+    "version": "1.0.0",
+    "description": "backend server for the MAA website",
+    "main": "maaNode.js",
+    "scripts": {
+        "test": "jest --detectOpenHandles",
+        "start": "sudo node maaNode.js",
+        "dev": "sudo nodemon maaNode.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/osamaramihafez/maaWebsite.git"
+    },
+    "author": "Osama Hafez",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/osamaramihafez/maaWebsite/issues"
+    },
+    "homepage": "https://github.com/osamaramihafez/maaWebsite#readme",
+    "dependencies": {
+        "cookie-parser": "^1.4.5",
+        "cors": "^2.8.5",
+        "csvtojson": "^2.0.10",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "faker": "^5.5.3",
+        "firebase-admin": "^9.9.0",
+        "jest": "^27.2.4",
+        "node-fetch": "^3.0.0",
+        "nodemailer": "^6.4.16",
+        "nodemon": "^2.0.12",
+        "objects-to-csv": "^1.3.6",
+        "pg": "^8.3.0"
+    },
+    "prettier": {
+        "tabWidth": 4
+    },
+    "type": "module"
 }
