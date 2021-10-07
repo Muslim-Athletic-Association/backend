@@ -4,7 +4,7 @@
   "description": "backend server for the MAA website",
   "main": "maaNode.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "start": "sudo node maaNode.js",
     "dev": "sudo nodemon maaNode.js"
   },
