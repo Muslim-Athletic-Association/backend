@@ -8,11 +8,11 @@ CREATE TABLE program(
 CREATE TABLE person
 (
     person_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    gender VARCHAR(6),
+    phone VARCHAR(50) NOT NULL,
+    gender VARCHAR(50),
     birthday DATE NOT NULL,
     
     UNIQUE (email)
@@ -57,7 +57,7 @@ CREATE TABLE guardian(
     person INTEGER NOT NULL,
     full_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    phone VARCHAR(30) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
 
     unique(person, phone, email),
     constraint personGuardianFk foreign key (person) references person(person_id) on update cascade on delete cascade
@@ -126,10 +126,10 @@ CREATE Table session(
     instructor VARCHAR(50),
     session_capacity INTEGER,
     session_time TIME,
-    session_day VARCHAR(20), -- This will be a day of the week. TODO: add this to the ERD diagram
+    session_day VARCHAR(50), -- This will be a day of the week. TODO: add this to the ERD diagram
     start_date DATE,
     count INTEGER, --The number of sessions that occur after the start date
-    location VARCHAR(20),
+    location VARCHAR(50),
 
     constraint sessionProgramFk foreign key (program) references program(program_id) on update cascade on delete cascade
 
