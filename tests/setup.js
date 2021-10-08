@@ -1,8 +1,9 @@
 const faker = require("faker");
+const moment = require("moment");
 const utils = require("./utils");
 const Client = require("pg").Client;
 let db = new Client(utils.dbConfig);
-db.connect()
+db.connect();
 
 /**
  * In this seeded database there is:
@@ -35,7 +36,7 @@ const seedData = {
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "female",
-            birthday: faker.date.past(100),
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         },
         {
             person_id: 2,
@@ -44,7 +45,7 @@ const seedData = {
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
-            birthday: faker.date.past(100),
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         },
         {
             person_id: 3,
@@ -53,7 +54,7 @@ const seedData = {
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
-            birthday: faker.date.past(100),
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         },
         {
             person_id: 4,
@@ -62,7 +63,7 @@ const seedData = {
             email: faker.internet.email(),
             phone: faker.phone.phoneNumber(),
             gender: "male",
-            birthday: faker.date.past(100),
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         },
     ],
     subscription: [
@@ -321,4 +322,5 @@ async function seedDatabase() {
 
 module.exports = {
     seedDatabase: seedDatabase,
+    seedData: seedData,
 };
