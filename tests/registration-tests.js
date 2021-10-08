@@ -1,42 +1,65 @@
+const faker = require("faker");
 const utils = require("./utils");
 const apiGET = utils.apiGET;
 const apiPOST = utils.apiPOST;
-const dbConfig = utils.dbConfig;
-const Client = require("pg").Client;
 const setup = require("./setup");
-const seedDatabase = setup.seedDatabase;
+const moment = require("moment");
 const seedData = setup.seedData;
 
-function registration_tests() {
-    let people;
+function registrationTests() {
+    let person;
+    let subscription;
     let registrations;
-    let db;
 
     beforeAll(async () => {
-        let db = new Client(dbConfig);
-        await db.connect();
-        await seedDatabase();
-        people = seedData.person;
+        let newPerson = {
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
+            email: faker.internet.email(),
+            phone: faker.phone.phoneNumber(),
+            gender: "false",
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+        };
+
+        let resp1 = await apiPOST(`/addPerson`, newPerson);
+        person = resp1.data.data[0];
+        subscription = seedData.subscription[0];
         registrations = seedData.registration;
     }, 30000);
 
-    afterAll(() => {
-        db.end();
-    });
+    // it("getting registration information", async () => {
+    //     let registrationA = seedData.registrations[0];
 
-    it("test getting a person's registration", async () => {
-        let person = people[0];
-        let person_id = person.person_id;
-        let resp1 = await apiPOST(`/registration/${person_id}`);
+    //     const resp1 = await apiGET(`/getRegistration/${registrationA}`);
+    //     let registrationB = resp1.data.data[0];
+    //     checkMatch(registrationA, registrationB);
+    // });
 
-        expect(resp1).toHaveStatus("success");
-    });
+    it("test succesful registering", async () => {
+        let newRegistration = {
+            person: person.person_id,
+            subscription: subscription.subscription_id, // Do we really need a subscription?
+            payment: 50.0, // Does it make sense for a payment to be any arbitrary number? Can we make it so that the payment has to be match the subscription price?
+            datetime: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+        };
 
-    it("test new person's registration", async () => {
-        const resp1 = await apiPOST(`/registration/subscribe`);
-
-        expect(resp1).toHaveStatus("success");
+        let resp1 = await apiPOST(`/registration/subscribe`, newRegistration);
+        let registration = resp1.data.data[0];
+        checkMatch(newRegistration, registration);
     });
 }
 
-module.exports = { registration_tests: registration_tests };
+function checkMatch(registrationA, registrationB) {
+    expect(registrationA.person).toEqual(registrationB.person);
+    expect(registrationA.subscription).toEqual(registrationB.subscription);
+    expect(parseInt(registrationA.payment)).toEqual(
+        parseInt(registrationB.payment)
+    );
+    expect(
+        new moment(registrationA.datetime).format("YYYY-MM-DD HH:MM:SS")
+    ).toEqual(new moment(registrationB.datetime).format("YYYY-MM-DD HH:MM:SS"));
+}
+
+module.exports = {
+    registrationTests: registrationTests,
+};

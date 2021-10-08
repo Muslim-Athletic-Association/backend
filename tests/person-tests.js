@@ -6,15 +6,12 @@ const dbConfig = utils.dbConfig;
 const Client = require("pg").Client;
 const setup = require("./setup");
 const moment = require("moment");
-// const seedDatabase = setup.seedDatabase;
 const seedData = setup.seedData;
 
 function personTests() {
     let people;
-    let db;
 
     beforeAll(async () => {
-        // await seedDatabase();
         people = seedData.person;
     }, 30000);
 
@@ -35,7 +32,7 @@ function personTests() {
             gender: "false",
             birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         };
-        console.log(newPerson.phone)
+
         let resp1 = await apiPOST(`/addPerson`, newPerson);
         let person = resp1.data.data[0];
         checkMatch(newPerson, person);
