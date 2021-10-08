@@ -38,7 +38,7 @@ function registrationTests() {
             `/registration/getPrograms/${person.email}`
         );
         data = resp2.data.data;
-        expect(data).toEqual();
+        expect(data).toEqual([]);
     });
 
     it("test succesful registering", async () => {
