@@ -115,19 +115,19 @@ async function addGuardian(data) {
 }
 
 /**
- * Uses the remove operation from ./constants in order to remove a program from the database.
- *
+ * Get a person's registration info.
+ * 
  * @param {name: string} data
  */
 async function getPrograms(data) {
   var invalid = c.simpleValidation(data, {
-    person_id: "integer",
+    email: "email",
   });
   if (invalid) {
     return invalid;
   }
-  var sql = "SELECT * from personRegistration where person = $1;";
-  var params = [data.person_id];
+  var sql = "SELECT * FROM personRegistration JOIN person ON person.person_id=personRegistration.person WHERE email=$1;";
+  var params = [data.email];
   var m = new c.Message({
     success: "Successfully retrieved user registration.",
   });

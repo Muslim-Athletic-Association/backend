@@ -24,16 +24,22 @@ function registrationTests() {
         let resp1 = await apiPOST(`/addPerson`, newPerson);
         person = resp1.data.data[0];
         subscription = seedData.subscription[0];
+        person2 = seedData.person[0];
         registrations = seedData.registration;
     }, 30000);
 
-    // it("getting registration information", async () => {
-    //     let registrationA = seedData.registrations[0];
-
-    //     const resp1 = await apiGET(`/getRegistration/${registrationA}`);
-    //     let registrationB = resp1.data.data[0];
-    //     checkMatch(registrationA, registrationB);
-    // });
+    it("Get the programs a person is registered for.", async () => {
+        const resp1 = await apiGET(
+            `/registration/getPrograms/${person2.email}`
+        );
+        let data = resp1.data.data[0];
+        expect(data.name).toEqual("yoga");
+        const resp2 = await apiGET(
+            `/registration/getPrograms/${person.email}`
+        );
+        data = resp2.data.data;
+        expect(data).toEqual();
+    });
 
     it("test succesful registering", async () => {
         let newRegistration = {

@@ -19,7 +19,7 @@ async function apiPOST(path, body = {}) {
 }
 
 async function apiGET(path) {
-    return await axios.get(API_URL + path).catch((e) => {
+    return await axios.get(API_URL + path, { validateStatus: false }).catch((e) => {
         console.log(e.toJSON());
     });
 }
