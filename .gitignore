@@ -2,3 +2,4 @@
 node_modules/
 pgdata
 package-lock.json
+testOutput.txt

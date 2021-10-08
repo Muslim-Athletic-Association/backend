@@ -11,7 +11,7 @@ const errorEnum = c.errorEnum;
  */
 async function subscribe(data) {
   var invalid = c.simpleValidation(data, {
-    person_id: "integer",
+    person: "integer",
     subscription: "integer",
     // datetime: "datetime",
     // payment: "integer",
@@ -21,8 +21,8 @@ async function subscribe(data) {
     return invalid;
   }
   var sql =
-    "INSERT INTO registration (person, subscription) VALUES ($1, $2) RETURNING *;";
-  var params = [data.person_id, data.subscription];
+    "INSERT INTO registration (person, subscription, datetime, payment) VALUES ($1, $2, $3, $4) RETURNING *;";
+  var params = [data.person, data.subscription, data.datetime, data.payment];
   var m = new c.Message({
     success: "Registration Successful.",
     duplicate: "You are already registered for this program.",
