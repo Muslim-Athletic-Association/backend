@@ -164,13 +164,13 @@ async function retrieve(sql, params, message=defaultMsg) {
   return await db.query(sql, params).then(result => {
     if (result.rows[0] == null) {
       console.log(message.none);
-      return setResult({}, false, message.none, errorEnum.DNE);
+      return setResult([], false, message.none, errorEnum.DNE);
     }
     console.log(message.success);
     return setResult(result.rows, true, message.success, errorEnum.NONE);
   }).catch(e => {
     console.log("\nERROR!\n", message.server, e);
-    return setResult({}, false, message.server, errorEnum.SERVER);
+    return setResult([], false, message.server, errorEnum.SERVER);
   })
 }
 

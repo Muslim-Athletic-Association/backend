@@ -36,7 +36,7 @@ router.post(
 );
 
 router.get(
-  "/api/registration/getPrograms/:person",
+  "/api/registration/getPrograms/:email",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
     console.log(request.params);
