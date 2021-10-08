@@ -24,7 +24,7 @@ async function createPerson(data) {
         return invalid;
     }
     var sql =
-        "INSERT INTO person (first_name, last_name, email, phone, gender, birthday, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
+        "INSERT INTO person (first_name, last_name, email, phone, gender, birthday) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;";
     var params = [
         data.first_name,
         data.last_name,
@@ -32,11 +32,10 @@ async function createPerson(data) {
         data.phone,
         data.gender,
         data.birthday,
-        "",
     ];
     var m = new c.Message({
         success: "Successfully added a person.",
-        duplicate: "A person with email already exists.",
+        duplicate: "A person with this email already exists.",
     });
     return await c.create(sql, params, m);
 }
