@@ -1,6 +1,5 @@
 const personTests = require("./person-tests.js").personTests;
-// const registration_tests =
-//     require("./registration-tests.js").registration_tests;
+const registrationTests = require("./registration-tests.js").registrationTests;
 const setup = require("./setup.js");
 
 describe("Set up", () => {
@@ -11,4 +10,8 @@ describe("Set up", () => {
 
 describe("Test Person", () => {
     personTests();
+});
+
+describe("Test Registration", () => {
+    registrationTests();
 });
