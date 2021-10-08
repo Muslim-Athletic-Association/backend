@@ -62,7 +62,7 @@ const dataTypeRegex = {
   date: /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/,
   datetime: /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/,
   email: /^[\w-\.]+@([\w-]+\.)+[\w-]+$/,
-  phone: /^(\+|\(|\d+|\))+$/, //I made this one myself, might be iffy
+  phone: /(\+\d{1,3}\s?)?((\(\d{3}\)\s?)|(\d{3})(\s|-?||.?))(\d{3}(\s|-?|.?))(\d{4})(\s?(([E|e]xt[:|.|]?)|x|X)(\s?\d+))?/,
   string: /.*/,
   bool: /([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])/, //I made this one myself, tested it as well.
   integer: /\d+/, //I made this one myself, not tested.

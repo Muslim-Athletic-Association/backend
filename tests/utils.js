@@ -1,5 +1,6 @@
 require("dotenv").config();
 const Client = require("pg").Client;
+const axios = require("axios");
 
 const dbConfig = {
     user: process.env.POSTGRES_USER,
@@ -9,43 +10,22 @@ const dbConfig = {
     database: process.env.POSTGRES_DB,
 };
 
-async function dbConnect(db) {
-    let retries = 5;
-    while (retries) {
-        db = new Client(dbConfig);
-        await db
-            .connect()
-            .then(() => {
-                console.log("Connected to db successfully");
-                retries = 0;
-                return;
-            })
-            .catch(async (err) => {
-                console.log("Could not connect to db, retrying", err);
-                retries--;
-                console.log(`retries left: ${retries}`);
-                // wait 5 seconds
-                await new Promise((res) => setTimeout(() => res(), 3000));
-            });
-    }
-}
-
-const API_URL = "http://localhost:3001"; // This should be an env variable.
+const API_URL = "http://localhost:3001/api"; // This should be an env variable.
 
 async function apiPOST(path, body = {}) {
-    return await fetch(API_URL + path, {
-        method: "POST",
-        body: JSON.stringify(body),
+    return await axios.post(API_URL + path, body).catch((e) => {
+        console.log(e.toJSON());
     });
 }
 
 async function apiGET(path) {
-    return await fetch(API_URL + path);
+    return await axios.get(API_URL + path).catch((e) => {
+        console.log(e.toJSON());
+    });
 }
 
 module.exports = {
     apiGET: apiGET,
     apiPOST: apiPOST,
-    dbConnect: dbConnect,
     dbConfig: dbConfig,
 };
