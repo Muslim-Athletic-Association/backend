@@ -38,9 +38,11 @@ router.get(
     async function createMemberResponse(request, response) {
         // returns member information in json format if successful
         response.header("Access-Control-Allow-Origin", "*");
-        await t.getTeamsByCompetition(request.params).then(async function (result) {
-            return await rc.simpleResponse(result, response);
-        });
+        await t
+            .getTeamsByCompetition(request.params)
+            .then(async function (result) {
+                return await rc.simpleResponse(result, response);
+            });
     }
 );
 
@@ -81,7 +83,6 @@ router.post(
                 subBody.person = subBody.person_id || subBody.person;
                 await r.subscribe(subBody).then(async function (result) {
                     if (result.success || result.ecode == errorEnum.UNIQUE) {
-                        console.log(subBody)
                         return await t
                             .addPlayer(subBody)
                             .then(async function (result) {
