@@ -21,6 +21,7 @@ function personTests() {
         const resp1 = await apiGET(`/getPerson/${personA.email}`);
         let personB = resp1.data.data[0];
         checkMatch(personA, personB);
+        expect(resp1.data.success).toEqual(true);
     });
 
     it("test creating a person", async () => {
