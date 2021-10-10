@@ -36,7 +36,7 @@ router.post(
 );
 
 router.get(
-  "/api/registration/getPrograms/:person",
+  "/api/registration/getPrograms/:email",
   async function createMemberResponse(request, response) {
     // returns member information in json format if successful
     console.log(request.params);
@@ -57,7 +57,7 @@ router.post(
         });
         if (result.ecode == c.errorEnum.NONE || result.ecode == c.errorEnum.UNIQUE) {
             await r
-            .subscribe({ ...request.body, person_id: getResult.data[0].person_id })
+            .subscribe({ ...request.body, person: getResult.data[0].person })
             .then(async function (result2) {
                 if (result2.success) {
                 result2.error = "Successfully registered for this program.";

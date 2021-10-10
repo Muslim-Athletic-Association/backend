@@ -13,16 +13,15 @@ async function subscribe(data) {
   var invalid = c.simpleValidation(data, {
     person: "integer",
     subscription: "integer",
-    // datetime: "datetime",
-    // payment: "integer",
-    // consent: "list",
+    datetime: "datetime",
+    consent: "list",
   });
   if (invalid) {
     return invalid;
   }
   var sql =
-    "INSERT INTO registration (person, subscription, datetime, payment) VALUES ($1, $2, $3, $4) RETURNING *;";
-  var params = [data.person, data.subscription, data.datetime, data.payment];
+    "INSERT INTO registration (person, subscription, datetime) VALUES ($1, $2, $3) RETURNING *;";
+  var params = [data.person, data.subscription, data.datetime];
   var m = new c.Message({
     success: "Registration Successful.",
     duplicate: "You are already registered for this program.",
@@ -33,7 +32,7 @@ async function subscribe(data) {
     if (consents!= undefined){
       for (var i = 0; i < consents.length; i++) {
         var consent_response = await consent({
-          person_id: data.person_id,
+          person: data.person,
           // datetime: data.datetime,
           ...consents[i],
         });
@@ -53,7 +52,7 @@ async function subscribe(data) {
     if (Object.keys(data).includes("guardian") && data["guardian"]) {
       guardian_response = await addGuardian({
         ...data["guardian"],
-        person_id: data.person_id,
+        person: data.person,
       });
     }
     result = { ...result, guardian_responses: { ...guardian_response } };
@@ -68,7 +67,7 @@ async function subscribe(data) {
  */
 async function consent(data) {
   var invalid = c.simpleValidation(data, {
-    person_id: "integer",
+    person: "integer",
     // datetime: "datetime",
     purpose: "string",
     given: "bool",
@@ -78,7 +77,7 @@ async function consent(data) {
   }
   var sql =
     "INSERT INTO consent (person, is_given, purpose) VALUES ($1, $2, $3) RETURNING *;";
-  var params = [data.person_id, data.given, data.purpose];
+  var params = [data.person, data.given, data.purpose];
   var m = new c.Message({
     success: "Successfully added consent.",
     duplicate:
@@ -96,7 +95,7 @@ async function consent(data) {
  */
 async function addGuardian(data) {
   var invalid = c.simpleValidation(data, {
-    person_id: "integer",
+    person: "integer",
     full_name: "string",
     email: "email",
     phone: "phone",
@@ -106,7 +105,7 @@ async function addGuardian(data) {
   }
   var sql =
     "INSERT INTO guardian (person, full_name, email, phone) VALUES ($1, $2, $3, $4) RETURNING *;";
-  var params = [data.person_id, data.full_name, data.email, data.phone];
+  var params = [data.person, data.full_name, data.email, data.phone];
   var m = new c.Message({
     success: "Successfully added guardian.",
     duplicate: "You already have a guardian with that email and phone #.",
@@ -115,19 +114,19 @@ async function addGuardian(data) {
 }
 
 /**
- * Uses the remove operation from ./constants in order to remove a program from the database.
- *
+ * Get a person's registration info.
+ * 
  * @param {name: string} data
  */
 async function getPrograms(data) {
   var invalid = c.simpleValidation(data, {
-    person_id: "integer",
+    email: "email",
   });
   if (invalid) {
     return invalid;
   }
-  var sql = "SELECT * from personRegistration where person = $1;";
-  var params = [data.person_id];
+  var sql = "SELECT * FROM personRegistration JOIN person ON person.person_id=personRegistration.person WHERE email=$1;";
+  var params = [data.email];
   var m = new c.Message({
     success: "Successfully retrieved user registration.",
   });

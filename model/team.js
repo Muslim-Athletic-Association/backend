@@ -36,7 +36,7 @@ async function addPlayer(data, message = "") {
 async function createTeam(data) {
     var invalid = c.simpleValidation(data, {
         team_name: "string",
-        person_id: "int", // person, captain
+        person: "int", // person, captain
         team_capacity: "int",
     });
     if (invalid) {
@@ -44,7 +44,7 @@ async function createTeam(data) {
     }
     var sql =
         "INSERT INTO team (team_name, captain, team_capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.person_id, data.team_capacity];
+    var params = [data.team_name, data.person, data.team_capacity];
     var m = new c.Message({
         success: "Successfully created team. ",
         duplicate:
@@ -56,7 +56,7 @@ async function createTeam(data) {
         .then(async (result) => {
             if (result.success) {
                 let playerData = {
-                    person: data.person_id,
+                    person: data.person,
                     team: data.team_name,
                 };
                 let player = await addPlayer(playerData, m.success);
@@ -121,6 +121,30 @@ async function getTeamsByCompetition(data) {
     var params = [data.compTitle];
     var m = new c.Message({
         success: "Successfully retrieved all teams.",
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
+ * Fetches all of the teams registered for a league based on the league's title.
+ *
+ * Please note: at the beginning of a season, teams may all be
+ * placed into the same initial group.
+ *
+ * @param {name: string} data
+ */
+ async function getTeamByCaptain(data) {
+    var invalid = c.simpleValidation(data, {
+        captain: "email",
+    });
+    if (invalid) {
+        return invalid;
+    }
+
+    var sql = "select * from team join person on captain=person_id WHERE email=$1;";
+    var params = [data.captain];
+    var m = new c.Message({
+        success: "Successfully retrieved teams by captain email.",
     });
     return await c.retrieve(sql, params, m);
 }
@@ -240,6 +264,7 @@ module.exports = {
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
     getTeamsByCompetition: getTeamsByCompetition,
+    getTeamByCaptain: getTeamByCaptain,
     createTeamRecord: createTeamRecord,
     updateTeamRecord: updateTeamRecord,
     setTeamRecord: setTeamRecord,
