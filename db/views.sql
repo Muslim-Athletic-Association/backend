@@ -1,5 +1,4 @@
-create view personRegistration as select program.name, start_date, end_date, person from program join (select * from registration join subscription on registration.subscription = subscription.subscription_id) as foo on foo.program=program.program_id;
-create view ramadanRegistered as select * from person join personRegistration on person_id=person where name='Ramadan Wellness';
+create view personRegistration as select program.name as program_name, foo.name as subscription_name, start_date, end_date, person from program join (select * from registration join subscription on registration.subscription = subscription.subscription_id) as foo on foo.program=program.program_id;
 
 /* Purpose of the below view is to attach the title and program to the competition group */
 create view competitionOverview as SELECT * from competition c join competitionGroup cg on c.competition_id=cg.competition;
