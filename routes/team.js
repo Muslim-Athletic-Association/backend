@@ -44,6 +44,18 @@ router.get(
     }
 );
 
+// TODO: GET TEAMS BY CAPTAIN
+router.get(
+    "/api/getTeam/:captain",
+    async function getTeambyCaptainResponse(request, response) {
+        // returns member information in json format if successful
+        response.header("Access-Control-Allow-Origin", "*");
+        await t.getTeamByCaptain(request.params).then(async function (result) {
+            return await rc.simpleResponse(result, response);
+        });
+    }
+);
+
 /**
  * Register a person for a team based competition
  * Steps:
@@ -66,14 +78,12 @@ router.post(
                 }));
             if (result.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
                 let subBody = { ...request.body, ...getResult.data[0] };
+                subBody.person = subBody.person_id || subBody.person;
                 await r.subscribe(subBody).then(async function (result) {
                     if (result.success || result.ecode == errorEnum.UNIQUE) {
-                        let playerBody = {
-                            person: getResult.data[0].person_id,
-                            team: request.body.team,
-                        };
+                        console.log(subBody)
                         return await t
-                            .addPlayer(playerBody)
+                            .addPlayer(subBody)
                             .then(async function (result) {
                                 return await rc.simpleResponse(
                                     result,
