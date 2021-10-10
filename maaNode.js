@@ -24,6 +24,11 @@ app.use(cors({
   }));
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  console.log(`\nEndpoint Hit: ${req.originalUrl}\n`)
+  next()
+})
+
 app.use(auth.router);
 app.use(person);
 app.use(program);
