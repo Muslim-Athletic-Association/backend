@@ -33,7 +33,7 @@ function teamTests() {
         };
 
         let resp1 = await apiPOST(`/addPerson`, newPerson);
-        person = resp1.data.data[0];
+        person = {...resp1.data.data[0], birthday: newPerson.birthday};
         subscription = seedData.subscription[1];
         person2 = seedData.person[0];
         captain1 = seedData.person[1];
@@ -103,13 +103,12 @@ function teamTests() {
         };
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
-        console.log(resp);
         expect(newPlayer.team).toEqual(resp.data[0].team);
     });
 
     it("Register for a team as an existing person.", async () => {
         let newPlayer = {
-            email: person.email,
+            ...person,
             team: "TEST A FC",
             subscription: 2,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -121,9 +120,9 @@ function teamTests() {
         expect(newPlayer.team).toEqual(resp.data[0].team);
     });
 
-    it("Register for the same team a second time.", async () => {
+    it("Register for the same team a second time should fail.", async () => {
         let newPlayer = {
-            email: person.email,
+            ...person,
             team: "TEST A FC",
             subscription: 2,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
