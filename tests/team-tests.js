@@ -12,9 +12,18 @@ function teamTests() {
     let captain1;
     let subscription;
     let teams;
+    let newPerson2;
 
     beforeAll(async () => {
         let newPerson = {
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
+            email: faker.internet.email(),
+            phone: faker.phone.phoneNumber(),
+            gender: "false",
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+        };
+        newPerson2 = {
             first_name: faker.name.findName(),
             last_name: faker.name.findName(),
             email: faker.internet.email(),
@@ -46,8 +55,8 @@ function teamTests() {
 
     it("Create a team when not already subscribed to program.", async () => {
         let newTeam = {
+            ...newPerson2,
             team_name: "TEST C FC",
-            person: person.person_id,
             team_capacity: 12,
             subscription: subscription.subscription_id,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -60,12 +69,13 @@ function teamTests() {
         checkMatch(newTeam, team);
     });
 
-    it("Create a team when already subscribed to program.", async () => {
+    it("Create a team when already subscribed to the program.", async () => {
         // TODO: We may need to actually make this fail in future since
         // we don't want captains for multiple teams in the same league.
         let newTeam = {
+            ...newPerson2,
             team_name: "TEST D FC",
-            person: person.person_id,
+            email: person.email,
             team_capacity: 12,
             subscription: subscription.subscription_id,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -93,6 +103,7 @@ function teamTests() {
         };
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
+        console.log(resp);
         expect(newPlayer.team).toEqual(resp.data[0].team);
     });
 
@@ -125,7 +136,6 @@ function teamTests() {
 }
 
 function checkMatch(teamA, teamB) {
-    expect(teamA.person).toEqual(teamB.captain);
     expect(teamA.team_capacity).toEqual(teamB.team_capacity);
     expect(teamA.team_name).toEqual(teamB.team_name);
 }
