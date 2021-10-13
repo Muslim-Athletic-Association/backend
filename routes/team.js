@@ -27,21 +27,24 @@ router.post("/api/team/create", async function compSubResp(request, response) {
     // Register a person as captain for the league and create their team.
     response.header("Access-Control-Allow-Origin", "*");
     await p.createPerson(request.body).then(async function (result) {
-        let getResult = (result = await p
-            .getPerson(request.body)
-            .then((result) => {
+        console.log("Got here", result)
+        if (result.ecode != c.errorEnum.INVALID) {
+            getResult = await p.getPerson(request.body).then((result) => {
                 return result;
-            }));
-        if (result.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
-            let subBody = { ...request.body, ...getResult.data[0] };
-            subBody.person = subBody.person_id || subBody.person;
-            await r.subscribe(subBody).then(async function (result) {
-                return await t.createTeam(subBody).then(async (result) => {
-                    return await rc.simpleResponse(result, response);
-                });
             });
+            if (getResult.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
+                let subBody = { ...request.body, ...getResult.data[0] };
+                subBody.person = subBody.person_id || subBody.person;
+                await r.subscribe(subBody).then(async function (result) {
+                    return await t.createTeam(subBody).then(async (result) => {
+                        return await rc.simpleResponse(result, response);
+                    });
+                });
+            } else {
+                rc.simpleResponse(getResult, response);
+            }
         } else {
-            rc.simpleResponse(result, response)
+            rc.simpleResponse(result, response);
         }
     });
 });
