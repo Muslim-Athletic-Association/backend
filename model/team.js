@@ -43,14 +43,15 @@ async function createTeam(data) {
         return invalid;
     }
     var sql =
-        "INSERT INTO team (team_name, captain, team_capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.person, data.team_capacity];
+        "INSERT INTO team (team_name, captain, team_capacity, color) VALUES ($1, $2, $3, $4) RETURNING *;";
+    var params = [data.team_name, data.person, data.team_capacity, data.color];
     var m = new c.Message({
         success: "Successfully created team. ",
         duplicate:
             "A team with that name already exists, choose another team name.",
         foreign: "Captain must log in first in order to create a team.",
     });
+    console.log(data)
     return await c
         .create(sql, params, m)
         .then(async (result) => {
@@ -70,11 +71,7 @@ async function createTeam(data) {
         })
         .then(async (result2) => {
             if (result2.success) {
-                var sql =
-                    "INSERT INTO teamRecord (team, group_id) VALUES ($1, $2) RETURNING *;";
-                // Group is currently hard coded
-                var params = [result2.data[0].team_id, 1];
-                await c.create(sql, params, m);
+                createTeamRecord({...result2.data[0], group_id: data.group_id})
             }
             return result2;
         });

@@ -13,6 +13,7 @@ function teamTests() {
     let subscription;
     let teams;
     let newPerson2;
+    let competition;
 
     beforeAll(async () => {
         let newPerson = {
@@ -33,10 +34,11 @@ function teamTests() {
         };
 
         let resp1 = await apiPOST(`/addPerson`, newPerson);
-        person = {...resp1.data.data[0], birthday: newPerson.birthday};
+        person = { ...resp1.data.data[0], birthday: newPerson.birthday };
         subscription = seedData.subscription[1];
         person2 = seedData.person[0];
         captain1 = seedData.person[1];
+        competition = seedData.competition[0];
         teams = seedData.team;
     }, 30000);
 
@@ -88,6 +90,27 @@ function teamTests() {
         checkMatch(newTeam, team);
     });
 
+    it("Create a team with a badly formatted new person.", async () => {
+        // TODO: We may need to actually make this fail in future since
+        // we don't want captains for multiple teams in the same league.
+        let newTeam = {
+            ...newPerson2,
+            phone: 123,
+            team_name: "TEST D FC",
+            email: person.email,
+            team_capacity: 12,
+            subscription: subscription.subscription_id,
+            datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
+            consent: [],
+        };
+
+        let resp1 = await apiPOST(`/team/create`, newTeam);
+        expect(resp1.data.success).toEqual(false);
+        console.log(resp1.data.error);
+        expect(resp1.data.error).toEqual("Invalid value set for: phone");
+        
+    });
+
     it("Register for a team as a new person.", async () => {
         let newPlayer = {
             first_name: faker.name.findName(),
@@ -131,6 +154,13 @@ function teamTests() {
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
         expect(resp.success).toEqual(false);
+    });
+
+    it("Get Teams.", async () => {
+        const resp1 = await apiGET(`/${competition.title}/getTeams`);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(true);
+        expect(resp.data.length).toEqual(teams.length + 2) // Because the previous tests should add 2 teams
     });
 }
 

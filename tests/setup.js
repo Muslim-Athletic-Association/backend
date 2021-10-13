@@ -300,6 +300,7 @@ function prepareTableSQL(table) {
 async function seedDatabase() {
     await clearDatabase();
     let tables = Object.keys(seedData);
+    let table;
     for (let t = 0; t < tables.length; t++) {
         table = tables[t];
         let ret = prepareTableSQL(table);
@@ -316,6 +317,19 @@ async function seedDatabase() {
                     console.log(sql, rows[row]);
                 });
         }
+        // Here we're just reseting the sequence for each table because
+        // our manual inserts caused them to get out of sync
+        let primary_key = Object.keys(seedData[table][0])[0];
+        sql = `SELECT setval(pg_get_serial_sequence('${table}', '${primary_key}'), (SELECT MAX(${primary_key}) FROM ${table})+1);`;
+        await db
+            .query(sql, rows[row])
+            .then((result) => {
+                return result.rows;
+            })
+            .catch((e) => {
+                console.log("\nInsertion error!\n", e);
+                console.log(sql, rows[row]);
+            });
     }
     await db.end();
 }

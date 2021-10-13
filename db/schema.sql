@@ -68,6 +68,7 @@ CREATE TABLE team(
     captain INTEGER,
     team_name VARCHAR(50) UNIQUE,
     team_capacity INTEGER,
+    color VARCHAR(50),
 
     constraint teamCaptainFk foreign key (captain) references person(person_id) on update cascade on delete cascade
 );
