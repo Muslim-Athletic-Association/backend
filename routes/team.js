@@ -62,6 +62,19 @@ router.get(
     }
 );
 
+router.get(
+    "/api/:compTitle/getCaptains",
+    async function createMemberResponse(request, response) {
+        // returns member information in json format if successful
+        response.header("Access-Control-Allow-Origin", "*");
+        await t
+            .getCaptainsByCompetition(request.params)
+            .then(async function (result) {
+                return await rc.simpleResponse(result, response);
+            });
+    }
+);
+
 // TODO: GET TEAMS BY CAPTAIN
 router.get(
     "/api/getTeam/:captain",
