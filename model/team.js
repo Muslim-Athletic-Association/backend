@@ -107,13 +107,12 @@ async function deleteTeam(data) {
  */
 async function getTeamsByCompetition(data) {
     var invalid = c.simpleValidation(data, {
-        compTitle: "int",
+        compTitle: "string",
     });
     if (invalid) {
         return invalid;
     }
 
-    // TODO: Must create necessary views first (see the three new tables in ../db/views.ddl)
     var sql = "select * from teamCompetition where title=$1;";
     var params = [data.compTitle];
     var m = new c.Message({
@@ -123,10 +122,29 @@ async function getTeamsByCompetition(data) {
 }
 
 /**
- * Fetches all of the teams registered for a league based on the league's title.
+ * Fetches all of the team captains registered for a league based on the league's title.
  *
- * Please note: at the beginning of a season, teams may all be
- * placed into the same initial group.
+ * @param {name: string} data
+ */
+ async function getCaptainsByCompetition(data) {
+    var invalid = c.simpleValidation(data, {
+        compTitle: "string",
+    });
+    if (invalid) {
+        return invalid;
+    }
+
+    var sql =
+        "select team_name, first_name, last_name, email, phone, color from teamCompetition tc join person p on p.person_id=tc.captain where title=$1;";
+    var params = [data.compTitle];
+    var m = new c.Message({
+        success: `Successfully retrieved all team captains for ${data.compTitle}.`,
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
+ * Fetches all of the teams registered for a league based on the league's title.
  *
  * @param {name: string} data
  */
@@ -261,6 +279,7 @@ module.exports = {
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
     getTeamsByCompetition: getTeamsByCompetition,
+    getCaptainsByCompetition: getCaptainsByCompetition,
     getTeamByCaptain: getTeamByCaptain,
     createTeamRecord: createTeamRecord,
     updateTeamRecord: updateTeamRecord,
