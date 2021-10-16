@@ -42,6 +42,13 @@ function teamTests() {
         teams = seedData.team;
     }, 30000);
 
+    it("Get Teams.", async () => {
+        const resp1 = await apiGET(`/${competition.title}/getTeams`);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(true);
+        expect(resp.data.length).toEqual(teams.length) // Because the previous tests should add 2 teams
+    });
+
     it("Get a team by the captain.", async () => {
         const resp1 = await apiGET(`/getTeam/${person2.email}`);
         let data = resp1.data.data[0];
@@ -106,7 +113,7 @@ function teamTests() {
 
         let resp1 = await apiPOST(`/team/create`, newTeam);
         expect(resp1.data.success).toEqual(false);
-        console.log(resp1.data.error);
+
         expect(resp1.data.error).toEqual("Invalid value set for: phone");
         
     });
@@ -154,13 +161,6 @@ function teamTests() {
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
         expect(resp.success).toEqual(false);
-    });
-
-    it("Get Teams.", async () => {
-        const resp1 = await apiGET(`/${competition.title}/getTeams`);
-        let resp = resp1.data;
-        expect(resp.success).toEqual(true);
-        expect(resp.data.length).toEqual(teams.length + 2) // Because the previous tests should add 2 teams
     });
 }
 
