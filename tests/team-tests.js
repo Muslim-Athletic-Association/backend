@@ -72,7 +72,7 @@ function teamTests() {
             consent: [],
         };
 
-        let resp1 = await apiPOST(`/team/create`, newTeam);
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
         let team = resp1.data.data[0];
         expect(resp1.data.success).toEqual(true);
         checkMatch(newTeam, team);
@@ -91,7 +91,7 @@ function teamTests() {
             consent: [],
         };
 
-        let resp1 = await apiPOST(`/team/create`, newTeam);
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
         let team = resp1.data.data[0];
         expect(resp1.data.success).toEqual(true);
         checkMatch(newTeam, team);
@@ -111,7 +111,7 @@ function teamTests() {
             consent: [],
         };
 
-        let resp1 = await apiPOST(`/team/create`, newTeam);
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
         expect(resp1.data.success).toEqual(false);
 
         expect(resp1.data.error).toEqual("Invalid value set for: phone");
@@ -160,7 +160,28 @@ function teamTests() {
         };
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
+        console.log(resp.error)
         expect(resp.success).toEqual(false);
+        expect(resp.error).toEqual("This player is already registered for this team.");
+    });
+    
+    it("Register for a team with invalid info.", async () => {
+        let newPlayer = {
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
+            phone: faker.phone.phoneNumber(),
+            gender: "false",
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+            email: "aninvalidemail",
+            team: "TEST B FC",
+            subscription: 2,
+            datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
+            consent: [],
+        };
+        const resp1 = await apiPOST(`/team/player`, newPlayer);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(false);
+        expect(resp.error).toEqual("Invalid value set for: email");
     });
 }
 
