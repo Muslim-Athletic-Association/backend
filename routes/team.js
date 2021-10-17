@@ -23,11 +23,11 @@ const person = require("../model/person");
  * the competitionGroup of each team.
  */
 
-router.post("/api/team/create", async function compSubResp(request, response) {
+router.post("/api/team/captain", async function compSubResp(request, response) {
     // Register a person as captain for the league and create their team.
     response.header("Access-Control-Allow-Origin", "*");
     await p.createPerson(request.body).then(async function (result) {
-        console.log("Got here", result)
+        console.log("Got here", result);
         if (result.ecode != c.errorEnum.INVALID) {
             getResult = await p.getPerson(request.body).then((result) => {
                 return result;
@@ -102,16 +102,15 @@ router.post(
         response.header("Access-Control-Allow-Origin", "*");
         // console.log(request.params);
         await p.createPerson(request.body).then(async function (result) {
-            let getResult = (result = await p
-                .getPerson(request.body)
-                .then((result) => {
+            console.log("Got here", result);
+            if (result.ecode != c.errorEnum.INVALID) {
+                getResult = await p.getPerson(request.body).then((result) => {
                     return result;
-                }));
-            if (result.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
-                let subBody = { ...request.body, ...getResult.data[0] };
-                subBody.person = subBody.person_id || subBody.person;
-                await r.subscribe(subBody).then(async function (result) {
-                    if (result.success || result.ecode == errorEnum.UNIQUE) {
+                });
+                if (getResult.ecode == c.errorEnum.NONE || c.errorEnum.UNIQUE) {
+                    let subBody = { ...request.body, ...getResult.data[0] };
+                    subBody.person = subBody.person_id || subBody.person;
+                    await r.subscribe(subBody).then(async function (result) {
                         return await t
                             .addPlayer(subBody)
                             .then(async function (result) {
@@ -120,10 +119,10 @@ router.post(
                                     response
                                 );
                             });
-                    } else {
-                        return await rc.simpleResponse(result, response);
-                    }
-                });
+                    });
+                } else {
+                    rc.simpleResponse(getResult, response);
+                }
             } else {
                 rc.simpleResponse(result, response);
             }
