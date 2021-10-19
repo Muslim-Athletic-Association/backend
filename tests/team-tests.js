@@ -12,6 +12,8 @@ function teamTests() {
     let captain1;
     let subscription;
     let teams;
+    let newPerson2;
+    let competition;
 
     beforeAll(async () => {
         let newPerson = {
@@ -22,14 +24,30 @@ function teamTests() {
             gender: "false",
             birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
         };
+        newPerson2 = {
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
+            email: faker.internet.email(),
+            phone: faker.phone.phoneNumber(),
+            gender: "false",
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+        };
 
         let resp1 = await apiPOST(`/addPerson`, newPerson);
-        person = resp1.data.data[0];
+        person = { ...resp1.data.data[0], birthday: newPerson.birthday };
         subscription = seedData.subscription[1];
         person2 = seedData.person[0];
         captain1 = seedData.person[1];
+        competition = seedData.competition[0];
         teams = seedData.team;
     }, 30000);
+
+    it("Get Teams.", async () => {
+        const resp1 = await apiGET(`/${competition.title}/getTeams`);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(true);
+        expect(resp.data.length).toEqual(teams.length) // Because the previous tests should add 2 teams
+    });
 
     it("Get a team by the captain.", async () => {
         const resp1 = await apiGET(`/getTeam/${person2.email}`);
@@ -46,36 +64,58 @@ function teamTests() {
 
     it("Create a team when not already subscribed to program.", async () => {
         let newTeam = {
+            ...newPerson2,
             team_name: "TEST C FC",
-            person: person.person_id,
             team_capacity: 12,
             subscription: subscription.subscription_id,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
             consent: [],
         };
 
-        let resp1 = await apiPOST(`/team/create`, newTeam);
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
         let team = resp1.data.data[0];
         expect(resp1.data.success).toEqual(true);
         checkMatch(newTeam, team);
     });
 
-    it("Create a team when already subscribed to program.", async () => {
+    it("Create a team when already subscribed to the program.", async () => {
         // TODO: We may need to actually make this fail in future since
         // we don't want captains for multiple teams in the same league.
         let newTeam = {
+            ...newPerson2,
             team_name: "TEST D FC",
-            person: person.person_id,
+            email: person.email,
             team_capacity: 12,
             subscription: subscription.subscription_id,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
             consent: [],
         };
 
-        let resp1 = await apiPOST(`/team/create`, newTeam);
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
         let team = resp1.data.data[0];
         expect(resp1.data.success).toEqual(true);
         checkMatch(newTeam, team);
+    });
+
+    it("Create a team with a badly formatted new person.", async () => {
+        // TODO: We may need to actually make this fail in future since
+        // we don't want captains for multiple teams in the same league.
+        let newTeam = {
+            ...newPerson2,
+            phone: 123,
+            team_name: "TEST D FC",
+            email: person.email,
+            team_capacity: 12,
+            subscription: subscription.subscription_id,
+            datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
+            consent: [],
+        };
+
+        let resp1 = await apiPOST(`/team/captain`, newTeam);
+        expect(resp1.data.success).toEqual(false);
+
+        expect(resp1.data.error).toEqual("Invalid value set for: phone");
+        
     });
 
     it("Register for a team as a new person.", async () => {
@@ -98,7 +138,7 @@ function teamTests() {
 
     it("Register for a team as an existing person.", async () => {
         let newPlayer = {
-            email: person.email,
+            ...person,
             team: "TEST A FC",
             subscription: 2,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -110,9 +150,9 @@ function teamTests() {
         expect(newPlayer.team).toEqual(resp.data[0].team);
     });
 
-    it("Register for the same team a second time.", async () => {
+    it("Register for the same team a second time should fail.", async () => {
         let newPlayer = {
-            email: person.email,
+            ...person,
             team: "TEST A FC",
             subscription: 2,
             datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
@@ -120,12 +160,32 @@ function teamTests() {
         };
         const resp1 = await apiPOST(`/team/player`, newPlayer);
         let resp = resp1.data;
+        console.log(resp.error)
         expect(resp.success).toEqual(false);
+        expect(resp.error).toEqual("This player is already registered for this team.");
+    });
+    
+    it("Register for a team with invalid info.", async () => {
+        let newPlayer = {
+            first_name: faker.name.findName(),
+            last_name: faker.name.findName(),
+            phone: faker.phone.phoneNumber(),
+            gender: "false",
+            birthday: new moment(faker.date.past(100)).format("YYYY-MM-DD"),
+            email: "aninvalidemail",
+            team: "TEST B FC",
+            subscription: 2,
+            datetime: new Date().toISOString().slice(0, 19).replace("T", " "),
+            consent: [],
+        };
+        const resp1 = await apiPOST(`/team/player`, newPlayer);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(false);
+        expect(resp.error).toEqual("Invalid value set for: email");
     });
 }
 
 function checkMatch(teamA, teamB) {
-    expect(teamA.person).toEqual(teamB.captain);
     expect(teamA.team_capacity).toEqual(teamB.team_capacity);
     expect(teamA.team_name).toEqual(teamB.team_name);
 }
