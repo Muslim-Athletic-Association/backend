@@ -122,6 +122,30 @@ async function getTeamsByCompetition(data) {
 }
 
 /**
+ * Fetches all of the teams players for a league based on the league's title.
+ *
+ * Please note: at the beginning of a season, teams may all be
+ * placed into the same initial group.
+ *
+ * @param {name: string} data
+ */
+ async function getPlayersByCompetition(data) {
+    var invalid = c.simpleValidation(data, {
+        compTitle: "string",
+    });
+    if (invalid) {
+        return invalid;
+    }
+
+    var sql = "select r.team, first_name, last_name, email, phone, birthday, player_id, person_id from roster r join teamCompetition tc on r.team=tc.team_name where title=$1;";
+    var params = [data.compTitle];
+    var m = new c.Message({
+        success: "Successfully retrieved all teams.",
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
  * Fetches all of the team captains registered for a league based on the league's title.
  *
  * @param {name: string} data
@@ -279,6 +303,7 @@ module.exports = {
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
     getTeamsByCompetition: getTeamsByCompetition,
+    getPlayersByCompetition: getPlayersByCompetition,
     getCaptainsByCompetition: getCaptainsByCompetition,
     getTeamByCaptain: getTeamByCaptain,
     createTeamRecord: createTeamRecord,
