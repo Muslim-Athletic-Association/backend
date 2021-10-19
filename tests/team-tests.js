@@ -13,6 +13,7 @@ function teamTests() {
     let subscription;
     let teams;
     let newPerson2;
+    let players;
     let competition;
 
     beforeAll(async () => {
@@ -37,6 +38,7 @@ function teamTests() {
         person = { ...resp1.data.data[0], birthday: newPerson.birthday };
         subscription = seedData.subscription[1];
         person2 = seedData.person[0];
+        players = seedData.player;
         captain1 = seedData.person[1];
         competition = seedData.competition[0];
         teams = seedData.team;
@@ -47,6 +49,13 @@ function teamTests() {
         let resp = resp1.data;
         expect(resp.success).toEqual(true);
         expect(resp.data.length).toEqual(teams.length) // Because the previous tests should add 2 teams
+    });
+
+    it("Get team rosters.", async () => {
+        const resp1 = await apiGET(`/${competition.title}/getPlayers`);
+        let resp = resp1.data;
+        expect(resp.success).toEqual(true);
+        expect(resp.data.length).toEqual(players.length) // Because the previous tests should add 2 teams
     });
 
     it("Get a team by the captain.", async () => {

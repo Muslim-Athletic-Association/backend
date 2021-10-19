@@ -51,8 +51,7 @@ router.post("/api/team/captain", async function compSubResp(request, response) {
 
 router.get(
     "/api/:compTitle/getTeams",
-    async function createMemberResponse(request, response) {
-        // returns member information in json format if successful
+    async function getTeamsResponse(request, response) {
         response.header("Access-Control-Allow-Origin", "*");
         await t
             .getTeamsByCompetition(request.params)
@@ -63,9 +62,20 @@ router.get(
 );
 
 router.get(
+    "/api/:compTitle/getPlayers",
+    async function getPlayersResponse(request, response) {
+        response.header("Access-Control-Allow-Origin", "*");
+        await t
+            .getPlayersByCompetition(request.params)
+            .then(async function (result) {
+                return await rc.simpleResponse(result, response);
+            });
+    }
+);
+
+router.get(
     "/api/:compTitle/getCaptains",
-    async function createMemberResponse(request, response) {
-        // returns member information in json format if successful
+    async function getCaptainsResponse(request, response) {
         response.header("Access-Control-Allow-Origin", "*");
         await t
             .getCaptainsByCompetition(request.params)
