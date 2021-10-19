@@ -43,14 +43,15 @@ async function createTeam(data) {
         return invalid;
     }
     var sql =
-        "INSERT INTO team (team_name, captain, team_capacity) VALUES ($1, $2, $3) RETURNING *;";
-    var params = [data.team_name, data.person, data.team_capacity];
+        "INSERT INTO team (team_name, captain, team_capacity, color) VALUES ($1, $2, $3, $4) RETURNING *;";
+    var params = [data.team_name, data.person, data.team_capacity, data.color];
     var m = new c.Message({
         success: "Successfully created team. ",
         duplicate:
             "A team with that name already exists, choose another team name.",
         foreign: "Captain must log in first in order to create a team.",
     });
+    console.log(data)
     return await c
         .create(sql, params, m)
         .then(async (result) => {
@@ -70,11 +71,7 @@ async function createTeam(data) {
         })
         .then(async (result2) => {
             if (result2.success) {
-                var sql =
-                    "INSERT INTO teamRecord (team, group_id) VALUES ($1, $2) RETURNING *;";
-                // Group is currently hard coded
-                var params = [result2.data[0].team_id, 1];
-                await c.create(sql, params, m);
+                createTeamRecord({...result2.data[0], group_id: data.group_id})
             }
             return result2;
         });
@@ -110,13 +107,12 @@ async function deleteTeam(data) {
  */
 async function getTeamsByCompetition(data) {
     var invalid = c.simpleValidation(data, {
-        compTitle: "int",
+        compTitle: "string",
     });
     if (invalid) {
         return invalid;
     }
 
-    // TODO: Must create necessary views first (see the three new tables in ../db/views.ddl)
     var sql = "select * from teamCompetition where title=$1;";
     var params = [data.compTitle];
     var m = new c.Message({
@@ -126,10 +122,29 @@ async function getTeamsByCompetition(data) {
 }
 
 /**
- * Fetches all of the teams registered for a league based on the league's title.
+ * Fetches all of the team captains registered for a league based on the league's title.
  *
- * Please note: at the beginning of a season, teams may all be
- * placed into the same initial group.
+ * @param {name: string} data
+ */
+ async function getCaptainsByCompetition(data) {
+    var invalid = c.simpleValidation(data, {
+        compTitle: "string",
+    });
+    if (invalid) {
+        return invalid;
+    }
+
+    var sql =
+        "select team_name, first_name, last_name, email, phone, color from teamCompetition tc join person p on p.person_id=tc.captain where title=$1;";
+    var params = [data.compTitle];
+    var m = new c.Message({
+        success: `Successfully retrieved all team captains for ${data.compTitle}.`,
+    });
+    return await c.retrieve(sql, params, m);
+}
+
+/**
+ * Fetches all of the teams registered for a league based on the league's title.
  *
  * @param {name: string} data
  */
@@ -264,6 +279,7 @@ module.exports = {
     deleteTeam: deleteTeam,
     addPlayer: addPlayer,
     getTeamsByCompetition: getTeamsByCompetition,
+    getCaptainsByCompetition: getCaptainsByCompetition,
     getTeamByCaptain: getTeamByCaptain,
     createTeamRecord: createTeamRecord,
     updateTeamRecord: updateTeamRecord,

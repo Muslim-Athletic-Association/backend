@@ -1,16 +1,16 @@
-const https = require('https');
-const fs = require('fs');
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const person = require('./routes/person');
-const program = require('./routes/program');
-const registration = require('./routes/registration');
-const sessions = require('./routes/session');
-const auth = require('./routes/auth');
-const team = require('./routes/team');
-const schedule = require('./routes/schedule');
-const mail = require('./routes/mail');
+const https = require("https");
+const fs = require("fs");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const person = require("./routes/person");
+const program = require("./routes/program");
+const registration = require("./routes/registration");
+const sessions = require("./routes/session");
+const auth = require("./routes/auth");
+const team = require("./routes/team");
+const schedule = require("./routes/schedule");
+const mail = require("./routes/mail");
 const cookieParser = require("cookie-parser");
 
 var port = 3001;
@@ -18,16 +18,13 @@ var port = 3001;
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({
-    credentials: true,
-    origin: "http://offlinequran.com"
-  }));
-app.use(cookieParser());
+// app.use(
+  
 
 app.use((req, res, next) => {
-  console.log(`\nEndpoint Hit: ${req.originalUrl}\n`)
-  next()
-})
+    console.log(`\nEndpoint Hit: ${req.originalUrl}\n`);
+    next();
+});
 
 app.use(auth.router);
 app.use(person);
@@ -50,4 +47,6 @@ app.use(mail);
 //    console.log("Serving on https");
 //  });
 
-app.listen(port, () => {console.log("Listening on port " + port)})
+app.listen(port, () => {
+    console.log("Listening on port " + port);
+});
