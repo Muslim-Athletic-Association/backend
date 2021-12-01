@@ -1,3 +1,5 @@
+### NOTE: This project is now stale
+
 ### MAA BACKEND
 Contains all of the back-end server code for the Muslim Athletic Association.
 
